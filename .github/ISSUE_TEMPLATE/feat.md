@@ -1,6 +1,6 @@
 ---
 name: Feat
-about: Suggest an idea for this project
+about: 기능 구현
 title: ''
 labels: ''
 assignees: ''
