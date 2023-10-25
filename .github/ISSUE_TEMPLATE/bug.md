@@ -1,6 +1,6 @@
 ---
 name: Bug
-about: Create a report to help us improve
+about: 버그 제보
 title: ''
 labels: ''
 assignees: ''
