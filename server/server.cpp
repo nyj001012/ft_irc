@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 22:34:58 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/30 22:53:18 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,11 @@ void initializeServer(const char *port) {
   bind(server_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
   if (is_debug)
     printServerInfo(server_socket, serv_addr);
+}
+
+void printServerInfo(int server_socket, struct sockaddr_in serv_addr) {
+  std::cout << F_CYAN << "[INFO] Server: " << FB_DEFAULT << std::endl;
+  std::cout << "=> Server socket: " << server_socket << std::endl;
+  std::cout << "=> Server address: " << inet_ntoa(serv_addr.sin_addr) << std::endl;
+  std::cout << "=> Server port: " << ntohs(serv_addr.sin_port) << std::endl;
 }
