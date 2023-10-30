@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 21:09:12 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 21:47:27 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/30 21:58:29 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,6 @@
 #define F_WHITE "\033[0;37m"
 #define FB_DEFAULT "\033[0m"
 
-bool isDebug = false;
+static bool isDebug = false;
 
 #endif //FT_IRC_INCLUDE_COMMON_HPP_
