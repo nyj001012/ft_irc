@@ -6,11 +6,11 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 22:32:26 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/30 22:34:58 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/initialize_server.hpp"
+#include "../include/server.hpp"
 
 void initializeServer(const char *port) {
   struct sockaddr_in serv_addr;
@@ -23,5 +23,5 @@ void initializeServer(const char *port) {
 
   bind(server_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
   if (is_debug)
-    printServerInfo(port);
+    printServerInfo(server_socket, serv_addr);
 }
