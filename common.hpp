@@ -6,13 +6,9 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 21:09:12 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 21:40:31 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/30 21:47:27 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-//
-// Created by 나예진 on 2023/10/30.
-//
 
 #ifndef FT_IRC_INCLUDE_COMMON_HPP_
 #define FT_IRC_INCLUDE_COMMON_HPP_
