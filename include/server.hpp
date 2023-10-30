@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 22:49:59 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/30 23:08:14 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <iomanip>
+#include <unistd.h>
 
 void initializeServer(const char *port);
-void printServerInfo(int server_socket, struct sockaddr_in serv_addr);
+void printServerInfo(struct sockaddr_in serv_addr);
 
 #endif //FT_IRC_SERVER_INITIALIZE_HPP_
