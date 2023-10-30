@@ -6,12 +6,16 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:39:21 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 22:19:03 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/30 22:46:27 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/utils.hpp"
 #include "include/debug.hpp"
+#include "include/server.hpp"
+
+bool is_debug = false;
+int server_socket = 0;
 
 int main(int argc, char *argv[]) {
   const char *port;
@@ -30,6 +34,6 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   initializeServer(port);
-  runServer();
+//  runServer();
   return 0;
 }
