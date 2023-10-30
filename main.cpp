@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.hpp"
-#include "debug.hpp"
+#include "include/utils.hpp"
+#include "include/debug.hpp"
 
 int main(int argc, char *argv[]) {
   const char *port;
