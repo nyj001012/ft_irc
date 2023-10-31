@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 23:07:33 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/31 16:20:46 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ void initializeServer(const char *port) {
   if (is_debug)
     printServerInfo(serv_addr);
   delete[] port_backup;
+  if (listen(server_socket, MAX_CLIENT_NUM) == -1) {
+    close(server_socket);
+    throw std::runtime_error("Error: listen() failed");
+  }
 }
 
 /**
@@ -49,4 +53,23 @@ void printServerInfo(struct sockaddr_in serv_addr) {
   std::cout << "=> Server socket: " << server_socket << std::endl;
   std::cout << "=> Server address: " << inet_ntoa(serv_addr.sin_addr) << std::endl;
   std::cout << "=> Server port: " << ntohs(serv_addr.sin_port) << std::endl;
+}
+
+/**
+ * 클라이언트를 초기화한다. 클라이언트 소켓을 생성하고, 클라이언트의 주소를 받아온다.
+ */
+void initializeClient() {
+  struct sockaddr_in addr_client;
+  socklen_t addr_client_len = sizeof(addr_client_len);
+
+  std::memset(&addr_client, 0, sizeof(addr_client));
+  client_socket = accept(server_socket, (struct sockaddr *) &addr_client, &addr_client_len);
+  if (client_socket == -1) {
+    close(server_socket);
+    throw std::runtime_error("Error: accept() failed");
+  }
+}
+
+void runServer() {
+
 }
