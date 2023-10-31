@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/10/31 16:18:13 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/31 16:26:03 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <unistd.h>
 
 #define MAX_CLIENT_NUM 10
+#define BUFFER_SIZE 512
 
 void initializeServer(const char *port);
 void printServerInfo(struct sockaddr_in serv_addr);

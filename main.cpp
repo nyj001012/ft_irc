@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:39:21 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 23:08:38 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/31 16:00:51 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ int main(int argc, char *argv[]) {
   }
   try {
     initializeServer(port);
-//  runServer();
+    initializeClient();
+    runServer();
   } catch (std::exception &e) {
     printError(e.what());
     return 1;

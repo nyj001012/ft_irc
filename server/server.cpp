@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/10/31 16:20:46 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/31 16:30:04 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,23 @@ void initializeClient() {
   }
 }
 
+/**
+ * 서버를 실행한다. 클라이언트로부터 명령어를 받아서 처리한다.
+ */
 void runServer() {
+  char buffer[BUFFER_SIZE];
 
+  while (true) {
+    std::memset(buffer, 0, BUFFER_SIZE);
+    int read_size = read(client_socket, buffer, sizeof(buffer) - 1);
+    if (read_size == -1) {
+      std::cerr << "read() error" << std::endl;
+      break;
+    }
+    buffer[std::strlen(buffer)] = '\n';
+    buffer[std::strlen(buffer) - 1] = '\r';
+    // TODO => 명령어 파싱
+    // TODO => 명령어 실행하는 함수에 파싱된 명령어 전달
+  }
+  close(server_socket);
 }
