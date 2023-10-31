@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:39:21 by yena              #+#    #+#             */
-/*   Updated: 2023/10/31 16:00:51 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/31 16:59:00 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 bool is_debug = false;
 int server_socket = 0;
+int client_socket = 0;
 
 int main(int argc, char *argv[]) {
   const char *port;
