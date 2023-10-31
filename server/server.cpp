@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/10/31 16:30:04 by yena             ###   ########.fr       */
+/*   Updated: 2023/10/31 16:31:28 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ void runServer() {
     }
     buffer[std::strlen(buffer)] = '\n';
     buffer[std::strlen(buffer) - 1] = '\r';
+    if (is_debug)
+      std::cout << F_CYAN << "[ INFO ]" << FB_DEFAULT << "Client: " << buffer << std::endl;
     // TODO => 명령어 파싱
     // TODO => 명령어 실행하는 함수에 파싱된 명령어 전달
   }
