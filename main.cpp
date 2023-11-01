@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:39:21 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 13:38:01 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/01 15:20:34 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   }
   port = argv[1];
   if (!std::strcmp(argv[1], "DEBUG")) {
-    port = getPortInDebugMode();
+    port = (getPortInDebugMode()).c_str();
     server.setIsDebug(true);
   }
   if (!isValidPort(port)) {
