@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 14:50:50 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/01 15:23:25 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,9 +160,11 @@ void Server::runServer() {
       if (FD_ISSET(i, &read_fds)) {
         if (i == this->_server_socket)
           this->acceptClient();
-        else
-          this->receiveMessage(i);
+        else {
+          char *message = this->receiveMessage(i);
+          delete[] message;
           // TODO => receiveMessage() 함수에서 메시지를 받아서 처리하는 함수를 호출한다.
+        }
       }
     }
   }
@@ -185,12 +187,12 @@ void Server::acceptClient() {
 }
 
 /**
- * 클라이언트로부터 메시지를 받아온다.
+ * 클라이언트로부터 메시지를 받아온다. 사용 후에 메모리를 해제해야 한다.
  * @param client_socket 클라이언트 소켓
  * @return 클라이언트로부터 받은 메시지
  */
 char *Server::receiveMessage(int client_socket) {
-  char buffer[BUFFER_SIZE];
+  char *buffer = new char[BUFFER_SIZE];
 
   std::memset(buffer, 0, BUFFER_SIZE);
   ssize_t read_size = read(client_socket, buffer, BUFFER_SIZE);
