@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 21:54:30 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 22:06:04 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/01 15:20:15 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,6 @@
 
 #include "common.hpp"
 
-const char *getPortInDebugMode();
+std::string getPortInDebugMode();
 
 #endif //FT_IRC__DEBUG_HPP_
