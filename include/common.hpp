@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 21:09:12 by yena              #+#    #+#             */
-/*   Updated: 2023/10/31 16:04:51 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/01 13:35:11 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,5 @@
 #define F_CYAN "\033[0;36m"
 #define F_WHITE "\033[0;37m"
 #define FB_DEFAULT "\033[0m"
-
-extern bool is_debug;
-extern int server_socket;
-extern int client_socket;
 
 #endif //FT_IRC_INCLUDE_COMMON_HPP_
