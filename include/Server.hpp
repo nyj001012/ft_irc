@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 14:05:37 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/01 14:17:59 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 #define MAX_CLIENT_NUM 10
 #define BUFFER_SIZE 512
-#define TIMEOUT_SEC 10
+#define TIMEOUT_SEC 5
 
 class Server {
  public:
