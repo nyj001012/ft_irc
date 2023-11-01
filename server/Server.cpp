@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 14:11:31 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/01 14:23:19 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,12 +133,10 @@ void Server::initializeServer(const char *port) {
 void Server::initializeClient() {
   struct sockaddr_in addr_client;
   socklen_t addr_client_len = sizeof(addr_client_len);
-  fd_set client_fds = this->getClientFds();
-  int serverSocket = this->getServerSocket();
 
-  FD_ZERO(&client_fds);
-  FD_SET(serverSocket, &client_fds);
-  this->setFdMax(serverSocket);
+  FD_ZERO(&this->_client_fds);
+  FD_SET(this->_server_socket, &this->_client_fds);
+  this->setFdMax(this->_server_socket);
 }
 
 /**
@@ -159,7 +157,7 @@ void Server::runServer() {
       continue;
     for (int i = 0; i <= this->_fd_max; i++) {
       if (FD_ISSET(i, &this->_client_fds)) {
-        if (i == this->getServerSocket())
+        if (i == this->_server_socket)
           this->acceptClient();
         else
           this->receiveMessage(i);
@@ -171,7 +169,7 @@ void Server::runServer() {
 void Server::acceptClient() {
   socklen_t client_addr_len = sizeof(struct sockaddr_in);
   struct sockaddr client_addr;
-  int client_socket = accept(this->getServerSocket(), &client_addr, &client_addr_len);
+  int client_socket = accept(this->_server_socket, &client_addr, &client_addr_len);
   if (client_socket == -1)
     throw std::runtime_error("Error: accept() failed");
   FD_SET(client_socket, &this->_client_fds);
