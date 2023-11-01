@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 14:23:19 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/01 14:36:02 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,17 +146,18 @@ void Server::runServer() {
   struct timeval tv = {TIMEOUT_SEC, 0};
 
   while (true) {
+    fd_set read_fds = this->_client_fds;
     if (this->_is_debug) {
       std::cout << F_YELLOW << "[DEBUG] Server running..." << FB_DEFAULT << std::endl;
       std::cout << *this << std::endl;
     }
-    int ready_descriptors = select(this->_fd_max + 1, &this->_client_fds, nullptr, nullptr, &tv);
+    int ready_descriptors = select(this->_fd_max + 1, &read_fds, nullptr, nullptr, &tv);
     if (ready_descriptors == -1)
       throw std::runtime_error("Error: select() failed");
     if (ready_descriptors == 0)
       continue;
     for (int i = 0; i <= this->_fd_max; i++) {
-      if (FD_ISSET(i, &this->_client_fds)) {
+      if (FD_ISSET(i, &read_fds)) {
         if (i == this->_server_socket)
           this->acceptClient();
         else
