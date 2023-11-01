@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   }
   try {
     server.initializeServer(port);
-    server.initializeClient();
+    server.initializeClientFds();
     server.runServer();
   } catch (std::exception &e) {
     printError(e.what());
