@@ -6,11 +6,11 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 14:36:02 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/01 14:50:50 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/Server.hpp"
+#include "Server.hpp"
 
 Server::Server() {
   _max_client_number = MAX_CLIENT_NUM;
@@ -128,19 +128,19 @@ void Server::initializeServer(const char *port) {
 }
 
 /**
- * 클라이언트를 초기화한다. 클라이언트 소켓을 생성하고, 클라이언트의 주소를 받아온다.
+ * 클라이언트에 할당할 fd_set을 초기화한다. 서버 소켓을 fd_set에 추가한다.
  */
-void Server::initializeClient() {
-  struct sockaddr_in addr_client;
-  socklen_t addr_client_len = sizeof(addr_client_len);
-
+void Server::initializeClientFds() {
   FD_ZERO(&this->_client_fds);
   FD_SET(this->_server_socket, &this->_client_fds);
   this->setFdMax(this->_server_socket);
 }
 
 /**
- * 서버를 실행한다. 클라이언트로부터 명령어를 받아서 처리한다.
+ * 서버를 실행한다.
+ * select() 함수를 이용해 이벤트가 발생했는지 확인한다.
+ * 이벤트가 발생했다면 acceptClient() 또는 receiveMessage() 함수를 호출한다.
+ * 이벤트가 발생하지 않았다면 다시 select() 함수를 호출한다.
  */
 void Server::runServer() {
   struct timeval tv = {TIMEOUT_SEC, 0};
@@ -162,11 +162,15 @@ void Server::runServer() {
           this->acceptClient();
         else
           this->receiveMessage(i);
+          // TODO => receiveMessage() 함수에서 메시지를 받아서 처리하는 함수를 호출한다.
       }
     }
   }
 }
 
+/**
+ * 클라이언트의 연결 요청을 수락하고, 클라이언트 소켓을 fd_set에 추가한다.
+ */
 void Server::acceptClient() {
   socklen_t client_addr_len = sizeof(struct sockaddr_in);
   struct sockaddr client_addr;
@@ -180,7 +184,12 @@ void Server::acceptClient() {
     std::cout << F_YELLOW << "[DEBUG] New client connected: " << client_socket << FB_DEFAULT << std::endl;
 }
 
-void Server::receiveMessage(int client_socket) {
+/**
+ * 클라이언트로부터 메시지를 받아온다.
+ * @param client_socket 클라이언트 소켓
+ * @return 클라이언트로부터 받은 메시지
+ */
+char *Server::receiveMessage(int client_socket) {
   char buffer[BUFFER_SIZE];
 
   std::memset(buffer, 0, BUFFER_SIZE);
@@ -189,13 +198,17 @@ void Server::receiveMessage(int client_socket) {
     throw std::runtime_error("Error: read() failed");
   if (read_size == 0) {
     this->closeClient(client_socket);
-    return;
+    return NULL;
   }
   if (this->_is_debug)
     std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer << FB_DEFAULT << std::endl;
-  this->sendMessage(client_socket, buffer);
+  return buffer;
 }
 
+/**
+ * 클라이언트 소켓을 닫고, fd_set에서 제거한다.
+ * @param client_socket
+ */
 void Server::closeClient(int client_socket) {
   close(client_socket);
   FD_CLR(client_socket, &this->_client_fds);
@@ -203,12 +216,20 @@ void Server::closeClient(int client_socket) {
     std::cout << F_YELLOW << "[DEBUG] Client closed: " << client_socket << FB_DEFAULT << std::endl;
 }
 
+/**
+ * 클라이언트에게 메시지를 보낸다.
+ * @param client_socket 메시지를 보낼 클라이언트 소켓
+ * @param message 보낼 메시지
+ */
 void Server::sendMessage(int client_socket, char *message) {
   ssize_t write_size = write(client_socket, message, std::strlen(message));
   if (write_size == -1)
     throw std::runtime_error("Error: write() failed");
 }
 
+/**
+ * 서버 소켓을 닫는다.
+ */
 void Server::closeServer() {
   close(this->_server_socket);
 }
@@ -217,12 +238,10 @@ std::ostream &operator<<(std::ostream &os, const fd_set &client_fds) {
   os << "[ ";
   for (int i = 0; i < FD_SETSIZE; i++) {
     if (FD_ISSET(i, &client_fds)) {
-      os << i << std::endl;
-      if (i != FD_SETSIZE - 1)
-        os << ", ";
+      os << i << " ";
     }
   }
-  os << " ]";
+  os << "]";
   return os;
 }
 

@@ -12,7 +12,7 @@
 
 #include "include/utils.hpp"
 #include "include/debug.hpp"
-#include "include/Server.hpp"
+#include "server/Server.hpp"
 
 int main(int argc, char *argv[]) {
   const char *port;
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   }
   try {
     server.initializeServer(port);
-    server.initializeClient();
+    server.initializeClientFds();
     server.runServer();
   } catch (std::exception &e) {
     printError(e.what());

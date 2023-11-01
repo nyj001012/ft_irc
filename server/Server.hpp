@@ -13,7 +13,7 @@
 #ifndef FT_IRC_SERVER_INITIALIZE_HPP_
 #define FT_IRC_SERVER_INITIALIZE_HPP_
 
-#include "common.hpp"
+#include "../include/common.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -43,10 +43,10 @@ class Server {
   void setServerAddr(struct sockaddr_in server_addr);
   void setIsDebug(bool is_debug);
   void initializeServer(const char *port);
-  void initializeClient();
+  void initializeClientFds();
   void runServer();
   void acceptClient();
-  void receiveMessage(int client_socket);
+  char *receiveMessage(int client_socket);
   void sendMessage(int client_socket, char *message);
   void closeClient(int client_socket);
   void closeServer();
