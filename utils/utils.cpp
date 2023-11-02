@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../include/utils.hpp"
+#include <cstdlib>
 
 /**
  * 에러 메시지를 출력하는 함수
@@ -45,7 +46,7 @@ bool isValidPort(const char *port) {
   if (!isNumber(port))
     return false;
 
-  int i_port = std::atoi(port);
+  int i_port = atoi(port);
   if (i_port < 0 || i_port > 65535)
     return false;
   return true;

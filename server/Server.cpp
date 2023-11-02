@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include <cstring>
+#include <cstdlib>
 
 Server::Server() {
   _max_client_number = MAX_CLIENT_NUM;
@@ -111,7 +113,7 @@ void Server::initializeServer(const char *port) {
   std::memset(&serv_addr, 0, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-  serv_addr.sin_port = htons(std::atoi(port_backup));
+  serv_addr.sin_port = htons(atoi(port_backup));
 
   if (bind(this->_server_socket, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) == -1) {
     this->closeServer();
@@ -151,7 +153,7 @@ void Server::runServer() {
       std::cout << F_YELLOW << "[DEBUG] Server running..." << FB_DEFAULT << std::endl;
       std::cout << *this << std::endl;
     }
-    int ready_descriptors = select(this->_fd_max + 1, &read_fds, nullptr, nullptr, &tv);
+    int ready_descriptors = select(this->_fd_max + 1, &read_fds, NULL, NULL, &tv);
     if (ready_descriptors == -1)
       throw std::runtime_error("Error: select() failed");
     if (ready_descriptors == 0)

@@ -1,0 +1,95 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/bart/Developer/42/ft_irc/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+${NAME}	Makefile	/^${NAME}:	${OBJS}$/;"	t
+%.o	Makefile	/^%.o: %.cpp$/;"	t
+BUFFER_SIZE	server/Server.hpp	/^#define BUFFER_SIZE /;"	d
+CXXFLAGS	Makefile	/^CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g$/;"	m
+FB_DEFAULT	include/common.hpp	/^#define FB_DEFAULT /;"	d
+FT_IRC_INCLUDE_COMMON_HPP_	include/common.hpp	/^#define FT_IRC_INCLUDE_COMMON_HPP_$/;"	d
+FT_IRC_SERVER_INITIALIZE_HPP_	server/Server.hpp	/^#define FT_IRC_SERVER_INITIALIZE_HPP_$/;"	d
+FT_IRC__DEBUG_HPP_	include/debug.hpp	/^#define FT_IRC__DEBUG_HPP_$/;"	d
+FT_IRC__UTILS_HPP_	include/utils.hpp	/^#define FT_IRC__UTILS_HPP_$/;"	d
+F_BLACK	include/common.hpp	/^#define F_BLACK /;"	d
+F_BLUE	include/common.hpp	/^#define F_BLUE /;"	d
+F_CYAN	include/common.hpp	/^#define F_CYAN /;"	d
+F_GREEN	include/common.hpp	/^#define F_GREEN /;"	d
+F_MAGENTA	include/common.hpp	/^#define F_MAGENTA /;"	d
+F_RED	include/common.hpp	/^#define F_RED /;"	d
+F_WHITE	include/common.hpp	/^#define F_WHITE /;"	d
+F_YELLOW	include/common.hpp	/^#define F_YELLOW /;"	d
+INCLUDE	Makefile	/^INCLUDE = -I include -I include\/server$/;"	m
+MAX_CLIENT_NUM	server/Server.hpp	/^#define MAX_CLIENT_NUM /;"	d
+MacOS에만 해당하는 사항	README.md	/^### MacOS에만 해당하는 사항$/;"	S	section:ft_irc""필수 파트
+NAME	Makefile	/^NAME = ft_irc$/;"	m
+OBJS	Makefile	/^OBJS = ${SRCS:.cpp=.o}$/;"	m
+RM	Makefile	/^RM = rm -f$/;"	m
+SRCS	Makefile	/^SRCS = main.cpp \\$/;"	m
+Server	server/Server.cpp	/^Server::Server() {$/;"	f	class:Server
+Server	server/Server.cpp	/^Server::Server(const Server &server) {$/;"	f	class:Server
+Server	server/Server.hpp	/^class Server {$/;"	c
+TIMEOUT_SEC	server/Server.hpp	/^#define TIMEOUT_SEC /;"	d
+_client_fds	server/Server.hpp	/^  fd_set _client_fds;$/;"	m	class:Server	typeref:typename:fd_set
+_fd_max	server/Server.hpp	/^  int _fd_max;$/;"	m	class:Server	typeref:typename:int
+_is_debug	server/Server.hpp	/^  bool _is_debug;$/;"	m	class:Server	typeref:typename:bool
+_max_client_number	server/Server.hpp	/^  int _max_client_number;$/;"	m	class:Server	typeref:typename:int
+_server_addr	server/Server.hpp	/^  struct sockaddr_in _server_addr;$/;"	m	class:Server	typeref:struct:sockaddr_in
+_server_socket	server/Server.hpp	/^  int _server_socket;$/;"	m	class:Server	typeref:typename:int
+acceptClient	server/Server.cpp	/^void Server::acceptClient() {$/;"	f	class:Server	typeref:typename:void
+all	Makefile	/^all:	${NAME}$/;"	t
+clean	Makefile	/^clean:$/;"	t
+closeClient	server/Server.cpp	/^void Server::closeClient(int client_socket) {$/;"	f	class:Server	typeref:typename:void
+closeServer	server/Server.cpp	/^void Server::closeServer() {$/;"	f	class:Server	typeref:typename:void
+fclean	Makefile	/^fclean:	clean$/;"	t
+ft_irc	README.md	/^# ft_irc$/;"	c
+getClientFds	server/Server.cpp	/^fd_set Server::getClientFds() const {$/;"	f	class:Server	typeref:typename:fd_set
+getFdMax	server/Server.cpp	/^int Server::getFdMax() const {$/;"	f	class:Server	typeref:typename:int
+getIsDebug	server/Server.cpp	/^bool Server::getIsDebug() const {$/;"	f	class:Server	typeref:typename:bool
+getMaxClientNumber	server/Server.cpp	/^int Server::getMaxClientNumber() const {$/;"	f	class:Server	typeref:typename:int
+getPortInDebugMode	debug/debug.cpp	/^std::string getPortInDebugMode() {$/;"	f	typeref:typename:std::string
+getServerAddr	server/Server.cpp	/^struct sockaddr_in Server::getServerAddr() const {$/;"	f	class:Server	typeref:struct:sockaddr_in
+getServerSocket	server/Server.cpp	/^int Server::getServerSocket() const {$/;"	f	class:Server	typeref:typename:int
+initializeClientFds	server/Server.cpp	/^void Server::initializeClientFds() {$/;"	f	class:Server	typeref:typename:void
+initializeServer	server/Server.cpp	/^void Server::initializeServer(const char *port) {$/;"	f	class:Server	typeref:typename:void
+isNumber	utils/utils.cpp	/^bool isNumber(const char *str) {$/;"	f	typeref:typename:bool
+isValidPort	utils/utils.cpp	/^bool isValidPort(const char *port) {$/;"	f	typeref:typename:bool
+main	main.cpp	/^int main(int argc, char *argv[]) {$/;"	f	typeref:typename:int
+operator <<	server/Server.cpp	/^std::ostream &operator<<(std::ostream &os, const Server &server) {$/;"	f	typeref:typename:std::ostream &
+operator <<	server/Server.cpp	/^std::ostream &operator<<(std::ostream &os, const fd_set &client_fds) {$/;"	f	typeref:typename:std::ostream &
+operator =	server/Server.cpp	/^Server &Server::operator=(const Server &server) {$/;"	f	class:Server	typeref:typename:Server &
+printError	utils/utils.cpp	/^void printError(std::string message) {$/;"	f	typeref:typename:void
+re	Makefile	/^re:		fclean all$/;"	t
+receiveMessage	server/Server.cpp	/^char *Server::receiveMessage(int client_socket) {$/;"	f	class:Server	typeref:typename:char *
+runServer	server/Server.cpp	/^void Server::runServer() {$/;"	f	class:Server	typeref:typename:void
+sendMessage	server/Server.cpp	/^void Server::sendMessage(int client_socket, char *message) {$/;"	f	class:Server	typeref:typename:void
+setClientFds	server/Server.cpp	/^void Server::setClientFds(fd_set client_fds) {$/;"	f	class:Server	typeref:typename:void
+setFdMax	server/Server.cpp	/^void Server::setFdMax(int fd_max) {$/;"	f	class:Server	typeref:typename:void
+setIsDebug	server/Server.cpp	/^void Server::setIsDebug(bool is_debug) {$/;"	f	class:Server	typeref:typename:void
+setMaxClientNumber	server/Server.cpp	/^void Server::setMaxClientNumber(int max_client_number) {$/;"	f	class:Server	typeref:typename:void
+setServerAddr	server/Server.cpp	/^void Server::setServerAddr(struct sockaddr_in server_addr) {$/;"	f	class:Server	typeref:typename:void
+setServerSocket	server/Server.cpp	/^void Server::setServerSocket(int server_socket) {$/;"	f	class:Server	typeref:typename:void
+~Server	server/Server.cpp	/^Server::~Server() {$/;"	f	class:Server
+개요	.github/ISSUE_TEMPLATE/bug.md	/^## 개요$/;"	s
+개요	.github/ISSUE_TEMPLATE/chore.md	/^## 개요$/;"	s
+개요	.github/ISSUE_TEMPLATE/feat.md	/^## 개요$/;"	s
+변경점	pull_request_template.md	/^## 변경점$/;"	s
+보너스 파트	README.md	/^## 보너스 파트$/;"	s	chapter:ft_irc
+비고	.github/ISSUE_TEMPLATE/bug.md	/^## 비고$/;"	s
+스크린샷(선택)	.github/ISSUE_TEMPLATE/bug.md	/^## 스크린샷(선택)$/;"	s
+스크린샷(선택)	pull_request_template.md	/^## 스크린샷(선택)$/;"	s
+요구사항	README.md	/^### 요구사항$/;"	S	section:ft_irc""필수 파트
+원하는 동작	.github/ISSUE_TEMPLATE/bug.md	/^## 원하는 동작$/;"	s
+작업 내용	.github/ISSUE_TEMPLATE/feat.md	/^## 작업 내용$/;"	s
+재현 방법	.github/ISSUE_TEMPLATE/bug.md	/^## 재현 방법$/;"	s
+점검	pull_request_template.md	/^## 점검$/;"	s
+테스트 내용 (선택)	pull_request_template.md	/^## 테스트 내용 (선택)$/;"	s
+테스트 예시	README.md	/^### 테스트 예시$/;"	S	section:ft_irc""필수 파트
+필수 파트	README.md	/^## 필수 파트$/;"	s	chapter:ft_irc
