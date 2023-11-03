@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "User.hpp"
+#include "../channel/Channel.hpp"
 #include "../include/utils.hpp"
 #include <netinet/in.h>
 #include <stdexcept>
@@ -18,6 +19,7 @@
 #include <arpa/inet.h>
 
 using std::string;
+using std::vector;
 
 Connection::Connection(): is_alive(false) {}
 Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): is_alive(false), socket_fd(socket_fd) {
@@ -53,13 +55,18 @@ User::~User() { }
 User::User(const User& other):
 	connection(other.connection),
 	nickname(other.nickname),
-	hostname(other.hostname)
+	hostname(other.hostname),
+	joined_channels(other.joined_channels)
 {
 	
 }
 
-User& User::operator=(const User& _other) {
-	(void)_other;
+User& User::operator=(const User& other) {
+	
+	connection = other.connection;
+	nickname = other.nickname;
+	hostname = other.hostname;
+	joined_channels = other.joined_channels;
 	return *this;
 }
 
@@ -73,6 +80,49 @@ const string& User::get_nickname() const {
 
 const string& User::get_hostname() const {
 	return hostname;
+}
+
+void User::add_channel(const Channel& channel) {
+	if (!is_joined(channel.get_name())) {
+		joined_channels.push_back(&channel);	
+	}
+}
+
+void User::remove_channel(const Channel& channel) {
+
+	std::vector<const Channel*>::iterator iter;
+	for (iter = joined_channels.begin(); iter != joined_channels.end(); ++iter) {
+		if (*iter == &channel) {
+			break;
+		}
+	}
+	if (iter == joined_channels.end())
+		return ;
+	joined_channels.erase(iter);
+}
+
+void User::remove_channel(const string& name) {
+	std::vector<const Channel*>::iterator iter;
+	for (iter = joined_channels.begin(); iter != joined_channels.end(); ++iter) {
+		if (name == (*iter)->get_name())
+			break;
+	}
+	if (iter == joined_channels.end())
+		return ;
+	joined_channels.erase(iter);
+}
+
+bool User::is_joined(const string& channel_name) const {
+	vector<const Channel*>::const_iterator iter;
+	for (iter = joined_channels.begin(); iter != joined_channels.end(); ++iter) {
+		if ((*iter)->get_name() == channel_name)
+			return true;
+	}
+	return false;
+}
+
+vector<const Channel*> User::get_all_channels() const {
+	return joined_channels;
 }
 
 bool User::operator==(const User& other) const {

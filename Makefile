@@ -7,7 +7,9 @@ SRCS = main.cpp \
 		 utils/socket_utils.cpp \
 		 message/Message.cpp \
 		 user/User.cpp \
-		 data/Data.cpp
+		 channel/Channel.cpp \
+		 data/UserData.cpp \
+		 data/ChannelData.cpp
 OBJS = ${SRCS:.cpp=.o}
 INCLUDE = -I include -I include/server
 

@@ -14,6 +14,9 @@
 # define USER_HPP
 # include <string>
 # include <sys/socket.h>
+# include <vector>
+
+class Channel;
 
 struct Connection {
 
@@ -45,12 +48,19 @@ class User {
 		const Connection& get_connection() const;
 		bool operator==(const User&) const;
 
+		void add_channel(const Channel&);
+		void remove_channel(const Channel&);
+		void remove_channel(const std::string&);
+		bool is_joined(const std::string&) const;
+		std::vector<const Channel*> get_all_channels() const;
+
 	private:
 		User();
 		User& operator=(const User&);
 		Connection connection;
 		std::string nickname;
 		std::string hostname;
+		std::vector<const Channel*> joined_channels;
 };
 
 bool operator==(const User&, const User&);

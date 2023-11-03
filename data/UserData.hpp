@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DATA_HPP
-# define DATA_HPP
-#include <exception>
+#ifndef USER_DATA_HPP
+# define USER_DATA_HPP
+# include <exception>
 # include <map>
 # include <string>
 # include <vector>
