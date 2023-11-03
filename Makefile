@@ -2,7 +2,12 @@ NAME = ft_irc
 SRCS = main.cpp \
 	   debug/debug.cpp \
 	   server/Server.cpp \
-	   utils/utils.cpp
+	   utils/utils.cpp \
+		 utils/string_utils.cpp \
+		 utils/socket_utils.cpp \
+		 message/Message.cpp \
+		 user/User.cpp \
+		 data/Data.cpp
 OBJS = ${SRCS:.cpp=.o}
 INCLUDE = -I include -I include/server
 

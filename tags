@@ -12,7 +12,16 @@
 ${NAME}	Makefile	/^${NAME}:	${OBJS}$/;"	t
 %.o	Makefile	/^%.o: %.cpp$/;"	t
 BUFFER_SIZE	server/Server.hpp	/^#define BUFFER_SIZE /;"	d
+CMD_STRINGIFY	message/Message.cpp	/^# define CMD_STRINGIFY(/;"	d	file:
+COMMAND_HPP	message/Message.hpp	/^# define COMMAND_HPP$/;"	d
 CXXFLAGS	Makefile	/^CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g$/;"	m
+Command	message/Message.cpp	/^Command::Command() {}$/;"	f	class:Command
+Command	message/Message.cpp	/^Command::Command(const string& str) {$/;"	f	class:Command
+Command	message/Message.hpp	/^struct Command {$/;"	s
+Connection	user/User.cpp	/^Connection::Connection(): is_alive(false) {}$/;"	f	class:Connection
+Connection	user/User.cpp	/^Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): is_alive(false/;"	f	class:Connection
+Connection	user/User.hpp	/^struct Connection {$/;"	s
+DATA_HPP	data/Data.hpp	/^# define DATA_HPP$/;"	d
 FB_DEFAULT	include/common.hpp	/^#define FB_DEFAULT /;"	d
 FT_IRC_INCLUDE_COMMON_HPP_	include/common.hpp	/^#define FT_IRC_INCLUDE_COMMON_HPP_$/;"	d
 FT_IRC_SERVER_INITIALIZE_HPP_	server/Server.hpp	/^#define FT_IRC_SERVER_INITIALIZE_HPP_$/;"	d
@@ -27,16 +36,37 @@ F_RED	include/common.hpp	/^#define F_RED /;"	d
 F_WHITE	include/common.hpp	/^#define F_WHITE /;"	d
 F_YELLOW	include/common.hpp	/^#define F_YELLOW /;"	d
 INCLUDE	Makefile	/^INCLUDE = -I include -I include\/server$/;"	m
+INVITE	message/Message.hpp	/^		INVITE,$/;"	e	enum:Command::Type
 MAX_CLIENT_NUM	server/Server.hpp	/^#define MAX_CLIENT_NUM /;"	d
+MODE	message/Message.hpp	/^		MODE$/;"	e	enum:Command::Type
 MacOS에만 해당하는 사항	README.md	/^### MacOS에만 해당하는 사항$/;"	S	section:ft_irc""필수 파트
+Message	message/Message.cpp	/^Message::Message(const std::string& str): params(vector<string>()) {$/;"	f	class:Message
+Message	message/Message.hpp	/^struct Message {$/;"	s
 NAME	Makefile	/^NAME = ft_irc$/;"	m
+NICK	message/Message.hpp	/^		NICK = 0,$/;"	e	enum:Command::Type
 OBJS	Makefile	/^OBJS = ${SRCS:.cpp=.o}$/;"	m
+ParsingFail	message/Message.hpp	/^	struct ParsingFail: public std::exception {$/;"	s	struct:Message
 RM	Makefile	/^RM = rm -f$/;"	m
 SRCS	Makefile	/^SRCS = main.cpp \\$/;"	m
 Server	server/Server.cpp	/^Server::Server() {$/;"	f	class:Server
 Server	server/Server.cpp	/^Server::Server(const Server &server) {$/;"	f	class:Server
 Server	server/Server.hpp	/^class Server {$/;"	c
 TIMEOUT_SEC	server/Server.hpp	/^#define TIMEOUT_SEC /;"	d
+TOPIC	message/Message.hpp	/^		TOPIC,$/;"	e	enum:Command::Type
+Type	message/Message.hpp	/^	enum Type{$/;"	g	struct:Command
+USER_HPP	user/User.hpp	/^# define USER_HPP$/;"	d
+UnSupported	message/Message.hpp	/^	struct UnSupported: public std::exception {$/;"	s	struct:Command
+User	user/User.cpp	/^User::User() { }$/;"	f	class:User
+User	user/User.cpp	/^User::User(const Connection connection, const string& nick)$/;"	f	class:User
+User	user/User.cpp	/^User::User(const User& other):$/;"	f	class:User
+User	user/User.hpp	/^class User {$/;"	c
+UserAlreadyExist	data/Data.hpp	/^	struct UserAlreadyExist: public std::exception {$/;"	s	class:UserData
+UserData	data/Data.cpp	/^UserData::UserData() {}$/;"	f	class:UserData
+UserData	data/Data.hpp	/^class UserData {$/;"	c
+UserNotExist	data/Data.hpp	/^	struct UserNotExist: public std::exception {$/;"	s	class:UserData
+V4	user/User.hpp	/^		V4,$/;"	e	enum:Connection::__anon77e66f480103
+V6	user/User.hpp	/^		V6$/;"	e	enum:Connection::__anon77e66f480103
+__anon77e66f480103	user/User.hpp	/^	enum {$/;"	g	struct:Connection
 _client_fds	server/Server.hpp	/^  fd_set _client_fds;$/;"	m	class:Server	typeref:typename:fd_set
 _fd_max	server/Server.hpp	/^  int _fd_max;$/;"	m	class:Server	typeref:typename:int
 _is_debug	server/Server.hpp	/^  bool _is_debug;$/;"	m	class:Server	typeref:typename:bool
@@ -44,10 +74,16 @@ _max_client_number	server/Server.hpp	/^  int _max_client_number;$/;"	m	class:Ser
 _server_addr	server/Server.hpp	/^  struct sockaddr_in _server_addr;$/;"	m	class:Server	typeref:struct:sockaddr_in
 _server_socket	server/Server.hpp	/^  int _server_socket;$/;"	m	class:Server	typeref:typename:int
 acceptClient	server/Server.cpp	/^void Server::acceptClient() {$/;"	f	class:Server	typeref:typename:void
+add_user	data/Data.cpp	/^void UserData::add_user(const User& user) {$/;"	f	class:UserData	typeref:typename:void
+address	user/User.hpp	/^	std::string address;$/;"	m	struct:Connection	typeref:typename:std::string
 all	Makefile	/^all:	${NAME}$/;"	t
+all_commands	message/Message.cpp	/^const char *all_commands[] = {$/;"	v	typeref:typename:const char * []
 clean	Makefile	/^clean:$/;"	t
 closeClient	server/Server.cpp	/^void Server::closeClient(int client_socket) {$/;"	f	class:Server	typeref:typename:void
 closeServer	server/Server.cpp	/^void Server::closeServer() {$/;"	f	class:Server	typeref:typename:void
+command	message/Message.hpp	/^	Command command;$/;"	m	struct:Message	typeref:typename:Command
+connection	user/User.hpp	/^		Connection connection;$/;"	m	class:User	typeref:typename:Connection
+delete_user	data/Data.cpp	/^void UserData::delete_user(const User& user) {$/;"	f	class:UserData	typeref:typename:void
 fclean	Makefile	/^fclean:	clean$/;"	t
 ft_irc	README.md	/^# ft_irc$/;"	c
 getClientFds	server/Server.cpp	/^fd_set Server::getClientFds() const {$/;"	f	class:Server	typeref:typename:fd_set
@@ -57,14 +93,33 @@ getMaxClientNumber	server/Server.cpp	/^int Server::getMaxClientNumber() const {$
 getPortInDebugMode	debug/debug.cpp	/^std::string getPortInDebugMode() {$/;"	f	typeref:typename:std::string
 getServerAddr	server/Server.cpp	/^struct sockaddr_in Server::getServerAddr() const {$/;"	f	class:Server	typeref:struct:sockaddr_in
 getServerSocket	server/Server.cpp	/^int Server::getServerSocket() const {$/;"	f	class:Server	typeref:typename:int
+get_hostname	user/User.cpp	/^const string& User::get_hostname() const {$/;"	f	class:User	typeref:typename:const string &
+get_in_addr	utils/socket_utils.cpp	/^void* get_in_addr(const struct sockaddr* sa)$/;"	f	typeref:typename:void *
+get_nickname	user/User.cpp	/^const string& User::get_nickname() const {$/;"	f	class:User	typeref:typename:const string &
+get_storage	data/Data.cpp	/^UserData& UserData::get_storage() {$/;"	f	class:UserData	typeref:typename:UserData &
+get_user	data/Data.cpp	/^User& UserData::get_user(const string& nickname) const {$/;"	f	class:UserData	typeref:typename:User &
+hostname	user/User.hpp	/^		std::string hostname;$/;"	m	class:User	typeref:typename:std::string
 initializeClientFds	server/Server.cpp	/^void Server::initializeClientFds() {$/;"	f	class:Server	typeref:typename:void
 initializeServer	server/Server.cpp	/^void Server::initializeServer(const char *port) {$/;"	f	class:Server	typeref:typename:void
+ip_family	user/User.hpp	/^	} ip_family;$/;"	m	struct:Connection	typeref:enum:Connection::__anon77e66f480103
 isNumber	utils/utils.cpp	/^bool isNumber(const char *str) {$/;"	f	typeref:typename:bool
 isValidPort	utils/utils.cpp	/^bool isValidPort(const char *port) {$/;"	f	typeref:typename:bool
+is_alive	user/User.hpp	/^	bool is_alive;$/;"	m	struct:Connection	typeref:typename:bool
+is_available	user/User.cpp	/^bool User::is_available() const {$/;"	f	class:User	typeref:typename:bool
+is_user_exist	data/Data.cpp	/^bool UserData::is_user_exist(const string& nickname) const {$/;"	f	class:UserData	typeref:typename:bool
 main	main.cpp	/^int main(int argc, char *argv[]) {$/;"	f	typeref:typename:int
+nickname	user/User.hpp	/^		std::string nickname;$/;"	m	class:User	typeref:typename:std::string
 operator <<	server/Server.cpp	/^std::ostream &operator<<(std::ostream &os, const Server &server) {$/;"	f	typeref:typename:std::ostream &
 operator <<	server/Server.cpp	/^std::ostream &operator<<(std::ostream &os, const fd_set &client_fds) {$/;"	f	typeref:typename:std::ostream &
 operator =	server/Server.cpp	/^Server &Server::operator=(const Server &server) {$/;"	f	class:Server	typeref:typename:Server &
+operator =	user/User.cpp	/^User& User::operator=(const User& _other) {$/;"	f	class:User	typeref:typename:User &
+operator ==	user/User.cpp	/^bool Connection::operator==(const Connection& other) const {$/;"	f	class:Connection	typeref:typename:bool
+operator ==	user/User.cpp	/^bool User::operator==(const User& other) const {$/;"	f	class:User	typeref:typename:bool
+operator ==	user/User.cpp	/^bool operator==(const Connection& a, const Connection& b) {$/;"	f	typeref:typename:bool
+operator ==	user/User.cpp	/^bool operator==(const User& a, const User& b) {$/;"	f	typeref:typename:bool
+params	message/Message.hpp	/^	std::vector<std::string> params;$/;"	m	struct:Message	typeref:typename:std::vector<std::string>
+port	user/User.hpp	/^	int port;$/;"	m	struct:Connection	typeref:typename:int
+prefix	message/Message.hpp	/^	std::string prefix;$/;"	m	struct:Message	typeref:typename:std::string
 printError	utils/utils.cpp	/^void printError(std::string message) {$/;"	f	typeref:typename:void
 re	Makefile	/^re:		fclean all$/;"	t
 receiveMessage	server/Server.cpp	/^char *Server::receiveMessage(int client_socket) {$/;"	f	class:Server	typeref:typename:char *
@@ -76,7 +131,20 @@ setIsDebug	server/Server.cpp	/^void Server::setIsDebug(bool is_debug) {$/;"	f	cl
 setMaxClientNumber	server/Server.cpp	/^void Server::setMaxClientNumber(int max_client_number) {$/;"	f	class:Server	typeref:typename:void
 setServerAddr	server/Server.cpp	/^void Server::setServerAddr(struct sockaddr_in server_addr) {$/;"	f	class:Server	typeref:typename:void
 setServerSocket	server/Server.cpp	/^void Server::setServerSocket(int server_socket) {$/;"	f	class:Server	typeref:typename:void
+socket_fd	user/User.hpp	/^	int socket_fd;$/;"	m	struct:Connection	typeref:typename:int
+split_string	utils/string_utils.cpp	/^vector<string> split_string(const string& str) {$/;"	f	typeref:typename:vector<string>
+str_iter	utils/string_utils.cpp	/^typedef std::istream_iterator<string> str_iter;$/;"	t	typeref:typename:std::istream_iterator<string>	file:
+type	message/Message.hpp	/^	} type;$/;"	m	struct:Command	typeref:enum:Command::Type
+type_string	message/Message.cpp	/^string Command::type_string() const {$/;"	f	class:Command	typeref:typename:string
+user_nick_map	data/Data.hpp	/^		std::map<std::string, std::list<User>::iterator> user_nick_map;$/;"	m	class:UserData	typeref:typename:std::map<std::string,std::list<User>::iterator>
+users	data/Data.hpp	/^		std::list<User> users;$/;"	m	class:UserData	typeref:typename:std::list<User>
+what	data/Data.cpp	/^const char* UserData::UserAlreadyExist::what() {$/;"	f	class:UserData::UserAlreadyExist	typeref:typename:const char *
+what	data/Data.cpp	/^const char* UserData::UserNotExist::what() {$/;"	f	class:UserData::UserNotExist	typeref:typename:const char *
+what	message/Message.cpp	/^const char* Command::UnSupported::what() {$/;"	f	class:Command::UnSupported	typeref:typename:const char *
+what	message/Message.cpp	/^const char* Message::ParsingFail::what() {$/;"	f	class:Message::ParsingFail	typeref:typename:const char *
 ~Server	server/Server.cpp	/^Server::~Server() {$/;"	f	class:Server
+~User	user/User.cpp	/^User::~User() { }$/;"	f	class:User
+~UserData	data/Data.cpp	/^UserData::~UserData() {$/;"	f	class:UserData
 개요	.github/ISSUE_TEMPLATE/bug.md	/^## 개요$/;"	s
 개요	.github/ISSUE_TEMPLATE/chore.md	/^## 개요$/;"	s
 개요	.github/ISSUE_TEMPLATE/feat.md	/^## 개요$/;"	s
