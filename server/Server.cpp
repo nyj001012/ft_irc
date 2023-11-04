@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 15:23:25 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/04 16:23:55 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void Server::initializeServer(const char *port) {
   char *port_backup = new char[std::strlen(port) + 1];
   std::strcpy(port_backup, port);
   std::memset(&serv_addr, 0, sizeof(serv_addr));
-  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_family = AF_UNSPEC;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   serv_addr.sin_port = htons(std::atoi(port_backup));
 
