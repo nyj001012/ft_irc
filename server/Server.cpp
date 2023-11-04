@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 15:23:25 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/04 16:35:13 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,11 @@ void Server::initializeServer(const char *port) {
 
   if (this->_server_socket == -1)
     throw std::runtime_error("Error: socket() failed");
+  fcntl(this->_server_socket, F_SETFL, O_NONBLOCK);
   char *port_backup = new char[std::strlen(port) + 1];
   std::strcpy(port_backup, port);
   std::memset(&serv_addr, 0, sizeof(serv_addr));
-  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_family = AF_UNSPEC;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   serv_addr.sin_port = htons(std::atoi(port_backup));
 
@@ -162,8 +163,8 @@ void Server::runServer() {
           this->acceptClient();
         else {
           char *message = this->receiveMessage(i);
-          delete[] message;
           // TODO => receiveMessage() 함수에서 메시지를 받아서 처리하는 함수를 호출한다.
+          delete[] message;
         }
       }
     }

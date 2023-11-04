@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 14:33:42 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/04 16:28:57 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "../include/common.hpp"
 #include <sys/socket.h>
+#include <sys/fcntl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <iomanip>
