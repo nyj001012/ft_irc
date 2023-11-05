@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/05 16:04:30 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/05 16:12:17 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <iostream>
 #include "common.hpp"
 
-bool isValidMessageFormat(std::string command);
+bool isValidMessageFormat(std::string command, bool is_debug);
 bool isValidCommandWithOptions(std::string command);
 bool isValidCommand(std::string command_part);
 bool isExecutableCommand(std::string command_part);

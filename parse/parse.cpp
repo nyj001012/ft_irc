@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/05 16:09:06 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/05 16:16:40 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,18 @@ or NUL or CR or LF, the first of which may not be ':'>
  * @param command 확인할 명령어
  * @return 유효한 명령어면 true, 아니면 false
  */
-bool isValidMessageFormat(std::string command) {
+bool isValidMessageFormat(std::string command, bool is_debug) {
+  bool result;
   if (command.empty() || command[command.length() - 1] != '\n')
-    return false;
-  if (command[0] == ':')
-    return isValidCommandWithOptions(command);
-  return isValidCommand(command);
+    result = false;
+  else if (command[0] == ':')
+    result = isValidCommandWithOptions(command);
+  else
+    result = isValidCommand(command);
+  if (is_debug)
+    std::cout << F_YELLOW<< "[DEBUG] isValidMessageFormat \""
+              << command << "\": " << result << FB_DEFAULT << std::endl;
+  return result;
 }
 
 /**
