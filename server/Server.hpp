@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/04 16:28:57 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/05 13:44:20 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <arpa/inet.h>
 #include <iomanip>
 #include <unistd.h>
+#include "parse.hpp"
 
 #define MAX_CLIENT_NUM 10
 #define BUFFER_SIZE 512

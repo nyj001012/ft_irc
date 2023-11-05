@@ -163,7 +163,8 @@ void Server::runServer() {
           this->acceptClient();
         else {
           char *message = this->receiveMessage(i);
-          // TODO => receiveMessage() 함수에서 메시지를 받아서 처리하는 함수를 호출한다.
+          if (isValidMessageFormat(message))
+            this->sendMessage(i, message);
           delete[] message;
         }
       }
