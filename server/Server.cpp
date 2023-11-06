@@ -163,7 +163,7 @@ void Server::runServer() {
           this->acceptClient();
         else {
           char *message = this->receiveMessage(i);
-          if (isValidMessageFormat(message, this->_is_debug))
+          if (parseMessageFormat(message, this->_is_debug))
             this->sendMessage(i, message);
           delete[] message;
         }

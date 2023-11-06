@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 19:56:20 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 20:00:30 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include "common.hpp"
 #include "utils.hpp"
 
-#define SUCCESS 0
-#define FAIL 1
+#define SUCCESS true
+#define FAIL false
 
 typedef enum e_token_type {
   SERVER_NAME,
@@ -35,13 +35,13 @@ typedef struct s_token {
   std::string value;
 } t_token;
 
-bool isValidMessageFormat(std::string command, bool is_debug);
-bool isValidUserAndHost(std::string nick_and_host);
-bool isValidCommandWithOptions(std::string command);
-bool isValidCommand(std::string command_part);
+int parseMessageFormat(std::string command, bool is_debug);
+int parseUserAndHost(std::string nick_and_host);
+int parseCommandWithOptions(std::string command);
+int parseCommand(std::string command_part);
 bool isExecutableCommand(std::string command_part);
-bool isValidParams(std::string command_part);
-bool isValidTrailing(std::string params);
-bool isValidMiddle(std::string params);
+int parseParams(std::string command_part);
+int parseTrailing(std::string params);
+int parseMiddle(std::string params);
 
 #endif //FT_IRC_PARSE_PARSE_HPP_
