@@ -6,11 +6,11 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 21:40:08 by yena              #+#    #+#             */
-/*   Updated: 2023/10/30 22:14:22 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 18:28:22 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/utils.hpp"
+#include "utils.hpp"
 
 /**
  * 에러 메시지를 출력하는 함수
@@ -49,4 +49,17 @@ bool isValidPort(const char *port) {
   if (i_port < 0 || i_port > 65535)
     return false;
   return true;
+}
+
+/**
+ * 문자열 앞에 있는 스페이스를 스킵하는 함수
+ * @param str 스킵될 문자열. 문자열에 처음으로 나오는 스페이스부터 스페이스가 아닌 문자가 나올 때까지 스킵된다.
+ */
+void skipSpace(std::string &str) {
+  size_t pos = str.find_first_of(' ');
+  if (pos != std::string::npos) {
+    while (str[pos] == ' ')
+      pos++;
+    str = str.substr(pos);
+  }
 }

@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 18:19:55 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 18:32:27 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ or NUL or CR or LF, the first of which may not be ':'>
 bool isValidMessageFormat(std::string command, bool is_debug) {
   // TODO => 여러 스페이스를 스킵하는 함수 적용
   bool result;
+  command[command.length() - 1] = '\0';
   if (command.empty() || command[command.length() - 1] != '\n')
     result = false;
   else if (command[0] == ':')
@@ -65,7 +66,7 @@ bool isValidCommandWithOptions(std::string command) {
   if (!isValidUserAndHost(options)) {
     return false;
   }
-  command = command.substr(command.find(' ') + 1);
+  skipSpace(command);
   return isValidCommand(command);
 }
 
@@ -124,10 +125,9 @@ bool isValidCommand(std::string command_part) {
  * @return 실행할 수 있는 명령어면 true, 아니면 false
  */
 bool isExecutableCommand(std::string command_part) {
-  size_t pos = command_part.find(' ');
-  std::string command = command_part.substr(0, pos);
-  if (command == "KICK" || command == "INVITE"
-      || command == "TOPIC" || command == "MODE")
+  skipSpace(command_part);
+  if (command_part == "KICK" || command_part == "INVITE"
+      || command_part == "TOPIC" || command_part == "MODE")
     return true;
   return false;
 }
@@ -141,14 +141,13 @@ bool isExecutableCommand(std::string command_part) {
 bool isValidParams(std::string command_part) {
   if (command_part.empty())
     return true;
-  size_t pos = command_part.find(' ');
-  if (pos == std::string::npos)
-    return true;
-  std::string params = command_part.substr(pos + 1);
-  if (params[0] == ':') {
-    return isValidTrailing(params);
+  skipSpace(command_part);
+  if (command_part.empty())
+    return false;
+  if (command_part[0] == ':') {
+    return isValidTrailing(command_part);
   } else {
-    return isValidMiddle(params);
+    return isValidMiddle(command_part);
   }
 }
 
