@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/05 16:16:40 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 18:19:55 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ or NUL or CR or LF, the first of which may not be ':'>
  * @return 유효한 명령어면 true, 아니면 false
  */
 bool isValidMessageFormat(std::string command, bool is_debug) {
+  // TODO => 여러 스페이스를 스킵하는 함수 적용
   bool result;
   if (command.empty() || command[command.length() - 1] != '\n')
     result = false;
@@ -43,7 +44,7 @@ bool isValidMessageFormat(std::string command, bool is_debug) {
   else
     result = isValidCommand(command);
   if (is_debug)
-    std::cout << F_YELLOW<< "[DEBUG] isValidMessageFormat \""
+    std::cout << F_YELLOW << "[DEBUG] isValidMessageFormat \""
               << command << "\": " << result << FB_DEFAULT << std::endl;
   return result;
 }
@@ -61,20 +62,33 @@ bool isValidCommandWithOptions(std::string command) {
   std::string options = command.substr(1, pos - 1);
   if (options.empty())
     return false;
-  pos = options.find('!');
-  if (pos != std::string::npos) { // user가 있는 경우
-    std::string nick = options.substr(0, pos);
-    if (options[pos + 1] == '\0' || options[pos + 1] == '@' || nick.empty())
-      return false;
-    pos = options.find('@');
-    if (pos != std::string::npos) { // host가 있는 경우
-      std::string user = options.substr(pos + 1);
-      if (options[pos + 1] == '\0' || user.empty())
-        return false;
-    }
+  if (!isValidUserAndHost(options)) {
+    return false;
   }
   command = command.substr(command.find(' ') + 1);
   return isValidCommand(command);
+}
+
+/**
+ * 유효한 user와 host인지 확인하는 함수
+ * options의 [ '!' <user> ] [ '@' <host> ] 형식에 해당한다.
+ * @param nick_and_host 확인할 user와 host가 포함된 options 부분
+ * @return 유효한 user와 host면 true, 아니면 false
+ */
+bool isValidUserAndHost(std::string nick_and_host) {
+  size_t pos = nick_and_host.find('!');
+  if (pos != std::string::npos) { // user가 있는 경우
+    std::string nick = nick_and_host.substr(0, pos);
+    if (nick_and_host[pos + 1] == '\0' || nick_and_host[pos + 1] == '@' || nick.empty())
+      return false;
+    pos = nick_and_host.find('@');
+    if (pos != std::string::npos) { // host가 있는 경우
+      std::string user = nick_and_host.substr(pos + 1);
+      if (nick_and_host[pos + 1] == '\0' || user.empty())
+        return false;
+    }
+  }
+  return true;
 }
 
 /**
