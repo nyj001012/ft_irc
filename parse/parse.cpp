@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 21:06:50 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 21:23:26 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,8 +206,41 @@ int parseMiddle(std::string params, std::vector<t_token> &tokens) {
  */
 void printTokens(std::vector<t_token> tokens) {
   std::cout << F_YELLOW << "[DEBUG] Tokens: " << FB_DEFAULT;
+  size_t type_length = getLongestTokenType(tokens);
+  size_t value_length = getLongestTokenValue(tokens);
+
+  std::cout << "| " << std::setw(type_length) << "TYPE" << " | ";
+  std::cout << std::setw(value_length) << "VALUE" << " |" << std::endl;
   for (int i = 0; i < tokens.size(); i++) {
-    std::cout << tokens[i].value << " ";
+    std::cout << std::setw(type_length) << tokens[i].type << " | ";
+    std::cout << std::setw(value_length) << tokens[i].value << " |" << std::endl;
   }
-  std::cout << std::endl;
+}
+
+/**
+ * 토큰들 중 가장 긴 type의 길이를 구하는 함수
+ * @param tokens 토큰들이 저장된 벡터
+ * @return 가장 긴 type의 길이
+ */
+size_t getLongestTokenType(std::vector<t_token> tokens) {
+  size_t type_length = 0;
+  for (int i = 0; i < tokens.size(); i++) {
+    if (tokens[i].type.length() > type_length)
+      type_length = tokens[i].type.length();
+  }
+  return type_length;
+}
+
+/**
+ * 토큰들 중 가장 긴 value의 길이를 구하는 함수
+ * @param tokens 토큰들이 저장된 벡터
+ * @return 가장 긴 value의 길이
+ */
+size_t getLongestTokenValue(std::vector<t_token> tokens) {
+  size_t value_length = 0;
+  for (int i = 0; i < tokens.size(); i++) {
+    if (tokens[i].value.length() > value_length)
+      value_length = tokens[i].value.length();
+  }
+  return value_length;
 }
