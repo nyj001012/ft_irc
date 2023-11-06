@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 20:00:41 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 20:12:24 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,11 @@ or NUL or CR or LF, the first of which may not be ':'>
 /**
  * 유효한 명령어인지 확인하는 함수
  * @param command 확인할 명령어
+ * @param is_debug 디버그 모드인지 확인하는 변수
+ * @param tokens 파싱된 토큰들이 저장될 벡터
  * @return 유효한 명령어면 SUCCESS, 아니면 FAIL
  */
-int parseMessageFormat(std::string command, bool is_debug) {
+int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token> &tokens) {
   bool result;
   if (command.empty() || command[command.length() - 1] != '\n')
     result = FAIL;

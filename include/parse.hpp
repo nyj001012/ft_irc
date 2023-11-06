@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 20:00:30 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 20:12:03 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_token {
   std::string value;
 } t_token;
 
-int parseMessageFormat(std::string command, bool is_debug);
+int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token> &tokens);
 int parseUserAndHost(std::string nick_and_host);
 int parseCommandWithOptions(std::string command);
 int parseCommand(std::string command_part);

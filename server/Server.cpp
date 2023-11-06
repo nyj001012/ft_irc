@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/05 16:12:00 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 20:11:44 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,8 @@ void Server::runServer() {
           this->acceptClient();
         else {
           char *message = this->receiveMessage(i);
-          if (parseMessageFormat(message, this->_is_debug))
+          std::vector<t_token> tokens;
+          if (parseMessageFormat(message, this->_is_debug, tokens))
             this->sendMessage(i, message);
           delete[] message;
         }
