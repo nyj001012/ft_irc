@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 19:02:41 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 19:55:21 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ or NUL or CR or LF, the first of which may not be ':'>
  * @return 유효한 명령어면 true, 아니면 false
  */
 bool isValidMessageFormat(std::string command, bool is_debug) {
-  // TODO => 여러 스페이스를 스킵하는 함수 적용
   bool result;
   if (command.empty() || command[command.length() - 1] != '\n')
     result = false;
