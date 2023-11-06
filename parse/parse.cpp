@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 21:23:26 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 21:43:54 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,14 +205,16 @@ int parseMiddle(std::string params, std::vector<t_token> &tokens) {
  * @param tokens 파싱된 토큰들이 저장된 벡터
  */
 void printTokens(std::vector<t_token> tokens) {
-  std::cout << F_YELLOW << "[DEBUG] Tokens: " << FB_DEFAULT;
+  std::cout << F_YELLOW << "[DEBUG] Tokens: " << FB_DEFAULT << std::endl;
   size_t type_length = getLongestTokenType(tokens);
   size_t value_length = getLongestTokenValue(tokens);
 
-  std::cout << "| " << std::setw(type_length) << "TYPE" << " | ";
-  std::cout << std::setw(value_length) << "VALUE" << " |" << std::endl;
+  type_length = type_length > 4 ? type_length : 4;
+  value_length = value_length > 5 ? value_length : 5;
+  std::cout << F_BLACK_W_WHITE << "| " << std::setw(type_length ) << "TYPE" << " | ";
+  std::cout << std::setw(value_length) << "VALUE" << " |" << FB_DEFAULT << std::endl;
   for (int i = 0; i < tokens.size(); i++) {
-    std::cout << std::setw(type_length) << tokens[i].type << " | ";
+    std::cout << "| " << std::setw(type_length) << tokens[i].type << " | ";
     std::cout << std::setw(value_length) << tokens[i].value << " |" << std::endl;
   }
 }
