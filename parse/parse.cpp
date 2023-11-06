@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 20:55:55 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 21:06:50 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,14 +84,20 @@ int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens) {
     std::string user = user_and_host.substr(0, pos);
     if (user_and_host[pos + 1] == '\0' || user_and_host[pos + 1] == '@' || user.empty())
       return FAIL;
+    tokens.push_back((t_token) {SERVER_NAME_OR_NICK, user_and_host.substr(0, pos)});
     tokens.push_back((t_token) {USER, user});
-    pos = user_and_host.find('@');
-    if (pos != std::string::npos) { // host가 있는 경우
-      std::string host = user_and_host.substr(pos + 1);
-      if (user_and_host[pos + 1] == '\0' || host.empty())
-        return FAIL;
-      tokens.push_back((t_token) {HOST, host});
-    }
+  }
+  pos = user_and_host.find('@');
+  if (pos != std::string::npos) { // host가 있는 경우
+    std::string host = user_and_host.substr(pos + 1);
+    if (user_and_host[pos + 1] == '\0' || host.empty())
+      return FAIL;
+    if (tokens.empty())
+      tokens.push_back((t_token) {
+          SERVER_NAME_OR_NICK,
+          user_and_host.substr(0, pos)
+      });
+    tokens.push_back((t_token) {HOST, host});
   }
   return SUCCESS;
 }

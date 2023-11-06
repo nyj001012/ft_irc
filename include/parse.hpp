@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 20:56:26 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 21:05:25 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@
 
 #define SUCCESS true
 #define FAIL false
-#define SERVER_NAME "server_name"
-#define NICK "nick"
+#define SERVER_NAME_OR_NICK "server_name | nick"
 #define USER "user"
 #define HOST "host"
 #define COMMAND "command"
