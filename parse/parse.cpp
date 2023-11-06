@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 18:49:33 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 19:02:41 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,19 +101,20 @@ bool isValidUserAndHost(std::string nick_and_host) {
 bool isValidCommand(std::string command_part) {
   if (command_part.empty())
     return false;
-  if (std::isdigit(command_part[0])) {
-    if (command_part.length() != 3)
+  std::string command = command_part.substr(0, command_part.find(' '));
+  if (std::isdigit(command[0])) {
+    if (command.length() != 3)
       return false;
     for (int i = 0; i < 3; i++) {
-      if (!std::isdigit(command_part[i]))
+      if (!std::isdigit(command[i]))
         return false;
     }
   } else {
-    for (int i = 0; i < command_part.length(); i++) {
-      if (!std::isalpha(command_part[i]))
+    for (int i = 0; i < command.length(); i++) {
+      if (!std::isalpha(command[i]))
         return false;
     }
-    if (!isExecutableCommand(command_part))
+    if (!isExecutableCommand(command))
       return false;
   }
   return isValidParams(command_part);
@@ -125,7 +126,7 @@ bool isValidCommand(std::string command_part) {
  * @return 실행할 수 있는 명령어면 true, 아니면 false
  */
 bool isExecutableCommand(std::string command_part) {
-  skipChar(command_part, ' ');
+  command_part = command_part.substr(0, command_part.find(' '));
   if (command_part == "KICK" || command_part == "INVITE"
       || command_part == "TOPIC" || command_part == "MODE")
     return true;
@@ -172,7 +173,7 @@ bool isValidTrailing(std::string params) {
  * @return 유효한 middle이면 true, 아니면 false
  */
 bool isValidMiddle(std::string params) {
-  if (params.empty())
+  if (params.empty() || params[0] == ':')
     return false;
   for (int i = 0; i < params.length(); i++) {
     if (params[i] == '\0' || params[i] == '\r' || params[i] == '\n' || params[i] == ' ')
