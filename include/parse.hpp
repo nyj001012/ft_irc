@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 20:31:20 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 20:56:26 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,29 +19,26 @@
 
 #define SUCCESS true
 #define FAIL false
-
-typedef enum e_token_type {
-  SERVER_NAME,
-  NICK,
-  USER,
-  HOST,
-  COMMAND,
-  PARAMS,
-  SPACE,
-} t_token_type;
+#define SERVER_NAME "server_name"
+#define NICK "nick"
+#define USER "user"
+#define HOST "host"
+#define COMMAND "command"
+#define PARAMS "params"
 
 typedef struct s_token {
-  t_token_type type;
+  std::string type;
   std::string value;
 } t_token;
 
 int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token> &tokens);
-int parseUserAndHost(std::string nick_and_host, std::vector<t_token> &tokens);
+int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens);
 int parseCommandWithOptions(std::string command, std::vector<t_token> &tokens);
 int parseCommand(std::string command_part, std::vector<t_token> &tokens);
 bool isExecutableCommand(std::string command_part);
 int parseParams(std::string command_part, std::vector<t_token> &tokens);
 int parseTrailing(std::string params, std::vector<t_token> &tokens);
 int parseMiddle(std::string params, std::vector<t_token> &tokens);
+void printTokens(std::vector<t_token> tokens);
 
 #endif //FT_IRC_PARSE_PARSE_HPP_

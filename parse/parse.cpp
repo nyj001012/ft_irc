@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 20:35:18 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 20:55:55 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@ int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token> 
   else
     result = parseCommand(command, tokens);
   if (is_debug)
-    std::cout << F_YELLOW << "[DEBUG] parseMessageFormat \""
-              << command << "\": " << result << FB_DEFAULT << std::endl;
+    printTokens(tokens);
   return result;
 }
 
@@ -79,19 +78,19 @@ int parseCommandWithOptions(std::string command, std::vector<t_token> &tokens) {
  * @param tokens 파싱된 토큰들이 저장될 벡터
  * @return 유효한 user와 host면 SUCCESS, 아니면 FAIL
  */
-int parseUserAndHost(std::string nick_and_host, std::vector<t_token> &tokens) {
-  size_t pos = nick_and_host.find('!');
+int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens) {
+  size_t pos = user_and_host.find('!');
   if (pos != std::string::npos) { // user가 있는 경우
-    std::string nick = nick_and_host.substr(0, pos);
-    if (nick_and_host[pos + 1] == '\0' || nick_and_host[pos + 1] == '@' || nick.empty())
+    std::string user = user_and_host.substr(0, pos);
+    if (user_and_host[pos + 1] == '\0' || user_and_host[pos + 1] == '@' || user.empty())
       return FAIL;
-    tokens.push_back((t_token) {NICK, nick});
-    pos = nick_and_host.find('@');
+    tokens.push_back((t_token) {USER, user});
+    pos = user_and_host.find('@');
     if (pos != std::string::npos) { // host가 있는 경우
-      std::string user = nick_and_host.substr(pos + 1);
-      if (nick_and_host[pos + 1] == '\0' || user.empty())
+      std::string host = user_and_host.substr(pos + 1);
+      if (user_and_host[pos + 1] == '\0' || host.empty())
         return FAIL;
-      tokens.push_back((t_token) {USER, user});
+      tokens.push_back((t_token) {HOST, host});
     }
   }
   return SUCCESS;
@@ -193,4 +192,16 @@ int parseMiddle(std::string params, std::vector<t_token> &tokens) {
   }
   tokens.push_back((t_token) {PARAMS, params});
   return SUCCESS;
+}
+
+/**
+ * 파싱된 토큰들을 출력하는 함수
+ * @param tokens 파싱된 토큰들이 저장된 벡터
+ */
+void printTokens(std::vector<t_token> tokens) {
+  std::cout << F_YELLOW << "[DEBUG] Tokens: " << FB_DEFAULT;
+  for (int i = 0; i < tokens.size(); i++) {
+    std::cout << tokens[i].value << " ";
+  }
+  std::cout << std::endl;
 }
