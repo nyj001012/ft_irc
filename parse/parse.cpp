@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 18:32:27 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 18:49:33 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ or NUL or CR or LF, the first of which may not be ':'>
 bool isValidMessageFormat(std::string command, bool is_debug) {
   // TODO => 여러 스페이스를 스킵하는 함수 적용
   bool result;
-  command[command.length() - 1] = '\0';
   if (command.empty() || command[command.length() - 1] != '\n')
     result = false;
-  else if (command[0] == ':')
+  command.erase(command.length() - 1);
+  if (command[0] == ':')
     result = isValidCommandWithOptions(command);
   else
     result = isValidCommand(command);
@@ -66,7 +66,7 @@ bool isValidCommandWithOptions(std::string command) {
   if (!isValidUserAndHost(options)) {
     return false;
   }
-  skipSpace(command);
+  skipChar(command, ' ');
   return isValidCommand(command);
 }
 
@@ -125,7 +125,7 @@ bool isValidCommand(std::string command_part) {
  * @return 실행할 수 있는 명령어면 true, 아니면 false
  */
 bool isExecutableCommand(std::string command_part) {
-  skipSpace(command_part);
+  skipChar(command_part, ' ');
   if (command_part == "KICK" || command_part == "INVITE"
       || command_part == "TOPIC" || command_part == "MODE")
     return true;
@@ -139,9 +139,7 @@ bool isExecutableCommand(std::string command_part) {
  * @return 유효한 파라미터면 true, 아니면 false
  */
 bool isValidParams(std::string command_part) {
-  if (command_part.empty())
-    return true;
-  skipSpace(command_part);
+  skipChar(command_part, ' ');
   if (command_part.empty())
     return false;
   if (command_part[0] == ':') {
@@ -159,8 +157,6 @@ bool isValidParams(std::string command_part) {
  * @return 유효한 trailing이면 true, 아니면 false
  */
 bool isValidTrailing(std::string params) {
-  if (params.empty())
-    return false;
   for (int i = 1; i < params.length(); i++) {
     if (params[i] == '\0' || params[i] == '\r' || params[i] == '\n')
       return false;

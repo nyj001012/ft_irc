@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 21:40:08 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 18:28:22 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/06 18:42:11 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ void printError(std::string message) {
 
 /**
  * 문자열이 숫자로만 이루어져있는지 확인하는 함수
- * @param str 확인할 문자열
+ * @param string 확인할 문자열
  * @return 숫자로만 이루어져있으면 true, 아니면 false
  */
-bool isNumber(const char *str) {
+bool isNumber(const char *string) {
   int i = 0;
 
-  while (str[i]) {
-    if (!std::isdigit(str[i]))
+  while (string[i]) {
+    if (!std::isdigit(string[i]))
       return false;
     i++;
   }
@@ -52,14 +52,17 @@ bool isValidPort(const char *port) {
 }
 
 /**
- * 문자열 앞에 있는 스페이스를 스킵하는 함수
- * @param str 스킵될 문자열. 문자열에 처음으로 나오는 스페이스부터 스페이스가 아닌 문자가 나올 때까지 스킵된다.
+ * 문자열에서 앞에서부터 c를 찾아 스킵하는 함수
+ * @param string 스킵될 문자열. 문자열에 처음으로 나오는 c부터 c가 아닌 문자가 나올 때까지 스킵된다.
+ * @param c 스킵할 문자
  */
-void skipSpace(std::string &str) {
-  size_t pos = str.find_first_of(' ');
+void skipChar(std::string &string, char c) {
+  if (string.empty())
+    return;
+  size_t pos = string.find_first_of(c);
   if (pos != std::string::npos) {
-    while (str[pos] == ' ')
+    while (string[pos] == ' ')
       pos++;
-    str = str.substr(pos);
+    string = string.substr(pos);
   }
 }
