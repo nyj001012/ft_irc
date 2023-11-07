@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 21:43:54 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/07 13:15:50 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,26 +79,28 @@ int parseCommandWithOptions(std::string command, std::vector<t_token> &tokens) {
  * @return 유효한 user와 host면 SUCCESS, 아니면 FAIL
  */
 int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens) {
-  size_t pos = user_and_host.find('!');
-  if (pos != std::string::npos) { // user가 있는 경우
-    std::string user = user_and_host.substr(0, pos);
-    if (user_and_host[pos + 1] == '\0' || user_and_host[pos + 1] == '@' || user.empty())
+  size_t user_pos = user_and_host.find('!');
+  if (user_pos != std::string::npos) { // user가 있는 경우
+    std::string user = user_and_host.substr(0, user_pos);
+    if (user_and_host[user_pos + 1] == '\0' || user_and_host[user_pos + 1] == '@' || user.empty())
       return FAIL;
-    tokens.push_back((t_token) {SERVER_NAME_OR_NICK, user_and_host.substr(0, pos)});
+    tokens.push_back((t_token) {SERVER_NAME_OR_NICK, user_and_host.substr(0, user_pos)});
     tokens.push_back((t_token) {USER, user});
   }
-  pos = user_and_host.find('@');
-  if (pos != std::string::npos) { // host가 있는 경우
-    std::string host = user_and_host.substr(pos + 1);
-    if (user_and_host[pos + 1] == '\0' || host.empty())
+  size_t host_pos = user_and_host.find('@');
+  if (host_pos != std::string::npos) { // host가 있는 경우
+    std::string host = user_and_host.substr(host_pos + 1);
+    if (user_and_host[host_pos + 1] == '\0' || host.empty())
       return FAIL;
     if (tokens.empty())
       tokens.push_back((t_token) {
           SERVER_NAME_OR_NICK,
-          user_and_host.substr(0, pos)
+          user_and_host.substr(0, host_pos)
       });
     tokens.push_back((t_token) {HOST, host});
   }
+  if (user_pos == std::string::npos && host_pos == std::string::npos) // user, host가 없는 경우
+    tokens.insert(tokens.begin(), (t_token) {SERVER_NAME_OR_NICK, user_and_host});
   return SUCCESS;
 }
 
@@ -152,6 +154,8 @@ bool isExecutableCommand(std::string command_part) {
  * @return 유효한 파라미터면 SUCCESS, 아니면 FAIL
  */
 int parseParams(std::string command_part, std::vector<t_token> &tokens) {
+  if (command_part.find(' ') == std::string::npos)
+    return SUCCESS;
   skipChar(command_part, ' ');
   if (command_part.empty())
     return FAIL;
@@ -211,7 +215,7 @@ void printTokens(std::vector<t_token> tokens) {
 
   type_length = type_length > 4 ? type_length : 4;
   value_length = value_length > 5 ? value_length : 5;
-  std::cout << F_BLACK_W_WHITE << "| " << std::setw(type_length ) << "TYPE" << " | ";
+  std::cout << F_BLACK_W_WHITE << "| " << std::setw(type_length) << "TYPE" << " | ";
   std::cout << std::setw(value_length) << "VALUE" << " |" << FB_DEFAULT << std::endl;
   for (int i = 0; i < tokens.size(); i++) {
     std::cout << "| " << std::setw(type_length) << tokens[i].type << " | ";
