@@ -18,10 +18,18 @@
 
 struct Command {
 	enum Type{
-		NICK = 0,
-		INVITE,
+		PASS = 0,
+		USER,
+		NICK,
+		QUIT,
+		JOIN,
+		PART,
+		MODE,
 		TOPIC,
-		MODE
+		INVITE,
+		PRIVMSG,
+		//PING,
+		//PONG
 	} type;
 
 	Command(const std::string&);
@@ -35,11 +43,9 @@ struct Command {
 
 struct Message {
 
-	std::string prefix;
 	Command command;
+	std::string prefix;
 	std::vector<std::string> params;
-
-	Message(const std::string&);
 
 	struct ParsingFail: public std::exception {
 		 virtual const char* what();

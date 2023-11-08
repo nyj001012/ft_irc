@@ -22,6 +22,18 @@ const char *all_commands[] = {
 	CMD_STRINGIFY(Command::INVITE),
 	CMD_STRINGIFY(Command::TOPIC),
 	CMD_STRINGIFY(Command::MODE),
+	CMD_STRINGIFY(Command::PASS),
+	CMD_STRINGIFY(Command::USER),
+	CMD_STRINGIFY(Command::NICK),
+	CMD_STRINGIFY(Command::QUIT),
+	CMD_STRINGIFY(Command::JOIN),
+	CMD_STRINGIFY(Command::PART),
+	CMD_STRINGIFY(Command::MODE),
+	CMD_STRINGIFY(Command::TOPIC),
+	CMD_STRINGIFY(Command::INVITE),
+	CMD_STRINGIFY(Command::PRIVMSG),
+	//PING,
+	//PONG
 };
 
 Command::Command() {}
@@ -38,26 +50,6 @@ Command::Command(const string& str) {
 
 string Command::type_string() const {
 	return all_commands[type];
-}
-	
-Message::Message(const std::string& str): params(vector<string>()) {
-	if (str.length() == 0)
-		throw Message::ParsingFail();
-	vector<string> split = split_string(str);
-	if (split.size() == 0)
-		throw Message::ParsingFail();
-	vector<string>::iterator iter = split.begin();
-	if ((*iter)[0] == ':') {
-		prefix = iter->substr(1);
-		++iter;
-		if (iter == split.end())
-			throw Message::ParsingFail();
-	}
-	command = Command(*iter);
-	++iter;
-	while (iter != split.end()) {
-		params.push_back(*iter);
-	}
 }
 
 const char* Message::ParsingFail::what() {

@@ -47,16 +47,20 @@ F_WHITE	include/common.hpp	/^#define F_WHITE /;"	d
 F_YELLOW	include/common.hpp	/^#define F_YELLOW /;"	d
 INCLUDE	Makefile	/^INCLUDE = -I include -I include\/server$/;"	m
 INVITE	message/Message.hpp	/^		INVITE,$/;"	e	enum:Command::Type
+JOIN	message/Message.hpp	/^		JOIN,$/;"	e	enum:Command::Type
 MAX_CLIENT_NUM	server/Server.hpp	/^#define MAX_CLIENT_NUM /;"	d
-MODE	message/Message.hpp	/^		MODE$/;"	e	enum:Command::Type
+MODE	message/Message.hpp	/^		MODE,$/;"	e	enum:Command::Type
 MacOS에만 해당하는 사항	README.md	/^### MacOS에만 해당하는 사항$/;"	S	section:ft_irc""필수 파트
-Message	message/Message.cpp	/^Message::Message(const std::string& str): params(vector<string>()) {$/;"	f	class:Message
 Message	message/Message.hpp	/^struct Message {$/;"	s
 NAME	Makefile	/^NAME = ft_irc$/;"	m
-NICK	message/Message.hpp	/^		NICK = 0,$/;"	e	enum:Command::Type
+NICK	message/Message.hpp	/^		NICK,$/;"	e	enum:Command::Type
 NoPermission	channel/Channel.hpp	/^		struct NoPermission: std::exception {$/;"	s	class:Channel
 OBJS	Makefile	/^OBJS = ${SRCS:.cpp=.o}$/;"	m
+PART	message/Message.hpp	/^		PART,$/;"	e	enum:Command::Type
+PASS	message/Message.hpp	/^		PASS = 0,$/;"	e	enum:Command::Type
+PRIVMSG	message/Message.hpp	/^		PRIVMSG,$/;"	e	enum:Command::Type
 ParsingFail	message/Message.hpp	/^	struct ParsingFail: public std::exception {$/;"	s	struct:Message
+QUIT	message/Message.hpp	/^		QUIT,$/;"	e	enum:Command::Type
 RM	Makefile	/^RM = rm -f$/;"	m
 SRCS	Makefile	/^SRCS = main.cpp \\$/;"	m
 Server	server/Server.cpp	/^Server::Server() {$/;"	f	class:Server
@@ -65,6 +69,7 @@ Server	server/Server.hpp	/^class Server {$/;"	c
 TIMEOUT_SEC	server/Server.hpp	/^#define TIMEOUT_SEC /;"	d
 TOPIC	message/Message.hpp	/^		TOPIC,$/;"	e	enum:Command::Type
 Type	message/Message.hpp	/^	enum Type{$/;"	g	struct:Command
+USER	message/Message.hpp	/^		USER,$/;"	e	enum:Command::Type
 USER_DATA_HPP	data/UserData.hpp	/^# define USER_DATA_HPP$/;"	d
 USER_HPP	user/User.hpp	/^# define USER_HPP$/;"	d
 UnSupported	message/Message.hpp	/^	struct UnSupported: public std::exception {$/;"	s	struct:Command
