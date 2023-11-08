@@ -84,7 +84,7 @@ int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens) {
     std::string user = user_and_host.substr(0, user_pos);
     if (user_and_host[user_pos + 1] == '\0' || user_and_host[user_pos + 1] == '@' || user.empty())
       return FAIL;
-    tokens.push_back((t_token) {SERVER_NAME_OR_NICK, user_and_host.substr(0, user_pos)});
+    tokens.push_back((t_token) {NICK, user_and_host.substr(0, user_pos)});
     tokens.push_back((t_token) {USER, user});
   }
   size_t host_pos = user_and_host.find('@');
@@ -94,13 +94,13 @@ int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens) {
       return FAIL;
     if (tokens.empty())
       tokens.push_back((t_token) {
-          SERVER_NAME_OR_NICK,
+          NICK,
           user_and_host.substr(0, host_pos)
       });
     tokens.push_back((t_token) {HOST, host});
   }
   if (user_pos == std::string::npos && host_pos == std::string::npos) // user, host가 없는 경우
-    tokens.insert(tokens.begin(), (t_token) {SERVER_NAME_OR_NICK, user_and_host});
+    tokens.insert(tokens.begin(), (t_token) {NICK, user_and_host});
   return SUCCESS;
 }
 

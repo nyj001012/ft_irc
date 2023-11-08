@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/07 12:23:44 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/08 19:35:22 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 /*----------------------------------*
  * Token Type                       *
  *----------------------------------*/
-#define SERVER_NAME_OR_NICK "server_name | nick"
+#define NICK "nick"
 #define USER "user"
 #define HOST "host"
 #define COMMAND "command"

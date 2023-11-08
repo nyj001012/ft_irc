@@ -107,6 +107,7 @@ void Server::initializeServer(const char *port) {
   if (this->_server_socket == -1)
     throw std::runtime_error("Error: socket() failed");
   fcntl(this->_server_socket, F_SETFL, O_NONBLOCK);
+  // TODO => port backup 삭제
   char *port_backup = new char[std::strlen(port) + 1];
   std::strcpy(port_backup, port);
   std::memset(&serv_addr, 0, sizeof(serv_addr));
