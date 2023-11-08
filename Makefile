@@ -3,7 +3,6 @@ SRCS = main.cpp \
 	   debug/debug.cpp \
 	   server/Server.cpp \
 	   utils/utils.cpp \
-		 utils/string_utils.cpp \
 		 utils/socket_utils.cpp \
 		 message/Message.cpp \
 		 user/User.cpp \
