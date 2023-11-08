@@ -13,6 +13,8 @@
 #include "include/utils.hpp"
 #include "include/debug.hpp"
 #include "server/Server.hpp"
+#include <cstring>
+#include <iterator>
 
 int main(int argc, char *argv[]) {
   const char *port;
