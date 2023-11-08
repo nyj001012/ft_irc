@@ -14,10 +14,13 @@
 #define FT_IRC__UTILS_HPP_
 
 #include "common.hpp"
+#include <vector>
+#include <string>
 
 void printError(std::string message);
 bool isNumber(const char *string);
 bool isValidPort(const char *port);
 void skipChar(std::string &string, char c);
 
+void *get_in_addr(const struct sockaddr *sa);
 #endif //FT_IRC__UTILS_HPP_
