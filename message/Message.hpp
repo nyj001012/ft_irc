@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:14:43 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 00:14:43 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:12:35 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ struct Command {
 
 	std::string type_string() const;
 	struct UnSupported: public std::exception {
-		virtual const char* what();
+		virtual const char* what() const throw();
 	};
 };
 
@@ -48,7 +48,7 @@ struct Message {
 	std::vector<std::string> params;
 
 	struct ParsingFail: public std::exception {
-		 virtual const char* what();
+		 virtual const char* what() const throw();
 	};
 };
 #endif

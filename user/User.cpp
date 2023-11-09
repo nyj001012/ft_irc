@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 02:43:18 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:25:08 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,8 @@ vector<const Channel*> User::get_all_channels() const {
 	return joined_channels;
 }
 
-bool User::operator==(const User& other) const {
-	if (!(connection.operator==(other.connection)))
+bool User::is_equal(const User& other) const {
+	if (!(connection.is_equal(other.connection)))
 		return false;
 	if (nickname != other.nickname || 
 			hostname != other.hostname)
@@ -134,7 +134,7 @@ bool User::operator==(const User& other) const {
 	return true;
 }
 
-bool Connection::operator==(const Connection& other) const {
+bool Connection::is_equal(const Connection& other) const {
 	if (is_alive != other.is_alive)
 		return false;
 	if (ip_family != other.ip_family)
@@ -150,9 +150,8 @@ bool Connection::operator==(const Connection& other) const {
 }
 
 bool operator==(const User& a, const User& b) {
-	return a.operator==(b);
+	return a.is_equal(b);
 }
-
 bool operator==(const Connection& a, const Connection& b) {
-	return a.operator==(b);
+	return a.is_equal(b);
 }

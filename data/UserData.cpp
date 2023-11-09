@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 13:19:44 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 13:19:44 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:14:15 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,10 @@ void UserData::delete_user(const User& user) {
 	}
 }
 
-const char* UserData::UserNotExist::what() {
+const char* UserData::UserNotExist::what() const throw() {
 	return "User not exist";
 }
 
-const char* UserData::UserAlreadyExist::what() {
+const char* UserData::UserAlreadyExist::what() const throw() {
 	return "User already exist";
 }

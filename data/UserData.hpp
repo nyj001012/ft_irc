@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Data.hpp                                           :+:      :+:    :+:   */
+/*   UserData.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 03:41:50 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 03:41:50 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:14:01 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ class UserData {
 		void delete_user(const User&);
 
 	struct UserNotExist: public std::exception {
-		virtual const char* what();
+		virtual const char* what() const throw();
 	};
 
 	struct UserAlreadyExist: public std::exception {
-		virtual const char* what();
+		virtual const char* what() const throw();
 	};
 
 	private:
