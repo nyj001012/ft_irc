@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 18:42:07 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 18:42:07 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:25:53 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void Channel::remove_user(const User& user) {
 	//TODO: Check operator
 }
 
-bool Channel::operator==(const Channel& other) const {
+bool Channel::is_equal(const Channel& other) const {
 	if (name != other.name || topic != other.topic)
 		return false;
 	if (users != other.users)
@@ -72,7 +72,7 @@ bool Channel::operator==(const Channel& other) const {
 }
 
 bool operator==(const Channel& a, const Channel& b) {
-	return a.operator==(b);
+	return a.is_equal(b);
 }
 
 Channel::Channel(const Channel& other) {
@@ -84,10 +84,10 @@ Channel& Channel::operator=(const Channel& other) {
 	return *this;
 }
 
-const char* Channel::AlreadyJoined::what() {
+const char* Channel::AlreadyJoined::what() const throw() {
 	return "Already joined to channel";
 }
 
-const char* Channel::NoPermission::what() {
+const char* Channel::NoPermission::what() const throw() {
 	return "No permission";
 }

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 21:02:20 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 21:02:20 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:14:26 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ class ChannelData{
 		void leave_channel(const Channel& channel, const User&);
 
 		struct ChannelNotExist: public std::exception { 
-			virtual const char* what();
+			virtual const char* what() const throw();
 		};
 
 		struct ChannelAlreadyExist: public std::exception {
-			virtual const char* what();
+			virtual const char* what() const throw();
 		};
 
 	private:

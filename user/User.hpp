@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 02:20:54 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:27:18 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ struct Connection {
 	std::string address;
 	int port;
 	int socket_fd;
-	bool operator==(const Connection&) const;
 
+	bool is_equal(const Connection&) const;
 	Connection();
 	Connection(const struct sockaddr_storage*, const int socket_fd);
 };
@@ -46,13 +46,13 @@ class User {
 		const std::string& get_nickname() const;
 		const std::string& get_hostname() const;
 		const Connection& get_connection() const;
-		bool operator==(const User&) const;
 
 		void add_channel(const Channel&);
 		void remove_channel(const Channel&);
 		void remove_channel(const std::string&);
 		bool is_joined(const std::string&) const;
 		std::vector<const Channel*> get_all_channels() const;
+		bool is_equal(const User&) const;
 
 	private:
 		User();

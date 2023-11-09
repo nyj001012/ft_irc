@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 21:02:30 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 21:02:30 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:14:36 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ void ChannelData::remove_channel(const Channel& channel) {
 	}
 }
 
-const char* ChannelData::ChannelNotExist::what() {
+const char* ChannelData::ChannelNotExist::what() const throw() {
 	return "Channel not exist";
 }
 
-const char* ChannelData::ChannelAlreadyExist::what() {
+const char* ChannelData::ChannelAlreadyExist::what() const throw() {
 	return "Channel already exist";
 }

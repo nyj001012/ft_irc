@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Command.cpp                                        :+:      :+:    :+:   */
+/*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 00:25:33 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:12:53 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,11 @@ string Command::type_string() const {
 	return all_commands[type];
 }
 
-const char* Message::ParsingFail::what() {
+const char* Message::ParsingFail::what() const throw(){
 	return "Fail to parse message";
 }
 
-const char* Command::UnSupported::what() {
+const char* Command::UnSupported::what() const throw(){
 	return "Unsupported command";
 }
 #undef CMD_STRINGIFY

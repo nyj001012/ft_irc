@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 17:50:03 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/03 17:50:03 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 19:25:34 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ class Channel {
 		const User& get_operator() const;
 		std::vector<const User*> get_users() const;
 		std::vector<std::string> get_user_names() const;
-		bool operator==(const Channel&) const;
+		bool is_equal(const Channel&) const;
 		void add_user(const User&);
 		void remove_user(const User&);
 
 		struct AlreadyJoined: std::exception {
-			virtual const char * what();
+			virtual const char * what() const throw();
 		};
 
 		struct NoPermission: std::exception {
-			virtual const char * what();
+			virtual const char * what() const throw();
 		};
 	
 	private:
