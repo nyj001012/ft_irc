@@ -8,7 +8,8 @@ SRCS = main.cpp \
 		 user/User.cpp \
 		 channel/Channel.cpp \
 		 data/UserData.cpp \
-		 data/ChannelData.cpp
+		 data/ChannelData.cpp \
+		 parse/parse.cpp
 OBJS = ${SRCS:.cpp=.o}
 INCLUDE = -I include -I include/server
 

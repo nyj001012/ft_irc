@@ -6,11 +6,11 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/07 13:15:50 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/09 19:35:45 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parse.hpp"
+#include "../include/parse.hpp"
 
 /*
 ** Command format **
@@ -118,12 +118,12 @@ int parseCommand(std::string command_part, std::vector<t_token> &tokens) {
   if (std::isdigit(command[0])) {
     if (command.length() != 3)
       return FAIL;
-    for (int i = 0; i < 3; i++) {
+    for (size_t i = 0; i < 3; i++) {
       if (!std::isdigit(command[i]))
         return FAIL;
     }
   } else {
-    for (int i = 0; i < command.length(); i++) {
+    for (size_t i = 0; i < command.length(); i++) {
       if (!std::isalpha(command[i]))
         return FAIL;
     }
@@ -175,7 +175,7 @@ int parseParams(std::string command_part, std::vector<t_token> &tokens) {
  * @return 유효한 trailing이면 SUCCESS, 아니면 FAIL
  */
 int parseTrailing(std::string params, std::vector<t_token> &tokens) {
-  for (int i = 1; i < params.length(); i++) {
+  for (size_t i = 1; i < params.length(); i++) {
     if (params[i] == '\0' || params[i] == '\r' || params[i] == '\n')
       return FAIL;
   }
@@ -194,7 +194,7 @@ int parseTrailing(std::string params, std::vector<t_token> &tokens) {
 int parseMiddle(std::string params, std::vector<t_token> &tokens) {
   if (params.empty() || params[0] == ':')
     return FAIL;
-  for (int i = 0; i < params.length(); i++) {
+  for (size_t i = 0; i < params.length(); i++) {
     if (params[i] == ' ')
       return parseParams(params.substr(i), tokens);
     if (params[i] == '\0' || params[i] == '\r' || params[i] == '\n' || params[i] == ' ')
@@ -217,7 +217,7 @@ void printTokens(std::vector<t_token> tokens) {
   value_length = value_length > 5 ? value_length : 5;
   std::cout << F_BLACK_W_WHITE << "| " << std::setw(type_length) << "TYPE" << " | ";
   std::cout << std::setw(value_length) << "VALUE" << " |" << FB_DEFAULT << std::endl;
-  for (int i = 0; i < tokens.size(); i++) {
+  for (size_t i = 0; i < tokens.size(); i++) {
     std::cout << "| " << std::setw(type_length) << tokens[i].type << " | ";
     std::cout << std::setw(value_length) << tokens[i].value << " |" << std::endl;
   }
@@ -230,7 +230,7 @@ void printTokens(std::vector<t_token> tokens) {
  */
 size_t getLongestTokenType(std::vector<t_token> tokens) {
   size_t type_length = 0;
-  for (int i = 0; i < tokens.size(); i++) {
+  for (size_t i = 0; i < tokens.size(); i++) {
     if (tokens[i].type.length() > type_length)
       type_length = tokens[i].type.length();
   }
@@ -244,7 +244,7 @@ size_t getLongestTokenType(std::vector<t_token> tokens) {
  */
 size_t getLongestTokenValue(std::vector<t_token> tokens) {
   size_t value_length = 0;
-  for (int i = 0; i < tokens.size(); i++) {
+  for (size_t i = 0; i < tokens.size(); i++) {
     if (tokens[i].value.length() > value_length)
       value_length = tokens[i].value.length();
   }
