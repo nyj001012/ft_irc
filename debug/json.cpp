@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug.hpp                                          :+:      :+:    :+:   */
+/*   json.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/30 21:54:30 by yena              #+#    #+#             */
-/*   Updated: 2023/11/09 20:09:06 by heshin           ###   ########.fr       */
+/*   Created: 2023/11/09 21:42:41 by heshin            #+#    #+#             */
+/*   Updated: 2023/11/09 21:45:13 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_IRC__DEBUG_HPP_
-#define FT_IRC__DEBUG_HPP_
+#include "../include/json.hpp"
 
-#include "common.hpp"
+template <>
+std::ostream& json(std::ostream&os, std::string& s) {
+	return os << '"' << s << '"';
+}
 
-std::string getPortInDebugMode();
-
-
-#endif //FT_IRC__DEBUG_HPP_
+template <>
+std::ostream& json(std::ostream&os, std::string s) {
+	return os << '"' << s << '"';
+}

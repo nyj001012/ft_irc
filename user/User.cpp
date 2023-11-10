@@ -6,20 +6,23 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:25:08 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 21:56:35 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
 #include "../channel/Channel.hpp"
 #include "../include/utils.hpp"
+#include "../include/json.hpp"
 #include <netinet/in.h>
+#include <ostream>
 #include <stdexcept>
 #include <vector>
 #include <arpa/inet.h>
 
 using std::string;
 using std::vector;
+using std::ostream;
 
 Connection::Connection(): is_alive(false) {}
 Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): is_alive(false), socket_fd(socket_fd) {
@@ -152,6 +155,16 @@ bool Connection::is_equal(const Connection& other) const {
 bool operator==(const User& a, const User& b) {
 	return a.is_equal(b);
 }
+
 bool operator==(const Connection& a, const Connection& b) {
 	return a.is_equal(b);
+}
+
+template<>
+bool has_label<User>() {
+	return true;
+}
+
+string User::get_label() const {
+	return "User:" + nickname;
 }

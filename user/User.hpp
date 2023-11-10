@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:27:18 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 21:53:37 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ class User {
 		bool is_joined(const std::string&) const;
 		std::vector<const Channel*> get_all_channels() const;
 		bool is_equal(const User&) const;
+
+		std::string get_label() const;
 
 	private:
 		User();
