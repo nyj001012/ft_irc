@@ -26,8 +26,7 @@ class Serializable {
 		virtual std::string _serialize(const int) const;
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
-		virtual std::string _get_label() const = 0;
-
+		virtual std::string _get_label() const;
 };
 
 template <typename T>

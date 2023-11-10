@@ -14,6 +14,7 @@
 #include "../channel/Channel.hpp"
 #include "../include/utils.hpp"
 #include "../include/json.hpp"
+#include "../debug/Serializable.hpp"
 #include <netinet/in.h>
 #include <ostream>
 #include <stdexcept>
@@ -29,6 +30,7 @@ using std::stringstream;
 using std::ostream;
 using std::pair;
 using std::make_pair;
+using std::map;
 
 typedef std::pair<string, const Serializable*> KeyValue;
 
@@ -168,7 +170,7 @@ bool operator==(const Connection& a, const Connection& b) {
 	return a.is_equal(b);
 }
 
-// Serialization
+// Serializable
 
 string Connection::_get_label() const {
 	stringstream ss;
@@ -208,9 +210,12 @@ ostream& User::_add_to_serialization(ostream& os, const int depth) const {
 	os << ',';
 	_json(os, "nickname", ':', nickname, ',');
 	_json(os, "hostname", ':', hostname, ',');
-	_json(os, "connection", ':', connection._get_label(), ',');
-	_json(os, "number of joined channels", ':', joined_channels.size());
-	//_json(os, "joined channes" , ':');
-	(void)depth;
+	if (depth > 0) {
+		vector<const Serializable*> vec(joined_channels.begin(), joined_channels.end());
+		_json(os, "channel", ':') << ::_serialize(vec, depth - 1);
+	}
+	else {
+		_json(os, "number of joined channels", ':', joined_channels.size());
+	}
 	return os;
 }

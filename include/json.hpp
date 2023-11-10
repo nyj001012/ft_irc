@@ -84,16 +84,16 @@ std::ostream& _json(std::ostream& os, const std::vector<T>& v) {
 
 template <typename T>
 std::ostream& _json(std::ostream& os, const std::map<std::string, T>& map) {
-	os << "{";
+	os << '{';
 	typename std::map<std::string, T>::const_iterator iter = map.begin();
 	while(true) {
-		os <<'"' << iter->first << '"' << ":";
+		os <<'"' << iter->first << '"' << ':';
 		_json(os, iter->second);
 		if (++iter == map.end()) {
-			 os << "}";
+			 os << '}';
 			 break;
 		}
-		os << ",";
+		os << ',';
 	}
 	return os;
 }

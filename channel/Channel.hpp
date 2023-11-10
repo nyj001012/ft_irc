@@ -12,13 +12,14 @@
 
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
-#include <exception>
+# include "../debug/Serializable.hpp"
+# include <exception>
 # include <vector>
 # include <string>
 
 class User;
 
-class Channel {
+class Channel: public Serializable {
 
 	public:
 		Channel(const std::string& name, const User& operator_user);
@@ -32,6 +33,10 @@ class Channel {
 		bool is_equal(const Channel&) const;
 		void add_user(const User&);
 		void remove_user(const User&);
+
+		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
+		virtual std::string _get_label() const;
 
 		struct AlreadyJoined: std::exception {
 			virtual const char * what() const throw();

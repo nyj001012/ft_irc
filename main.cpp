@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "channel/Channel.hpp"
 #include "include/utils.hpp"
 #include "include/debug.hpp"
 #include "server/Server.hpp"
@@ -23,6 +24,7 @@ int main(int argc, char *argv[]) {
 
 	(void)argc, (void)argv;
 
+
 	Connection c;
 	c.is_alive = true;
 	c.address = "127.0.0.1";
@@ -30,8 +32,11 @@ int main(int argc, char *argv[]) {
 	c.socket_fd = 10;
 
 	User heshin = User(c, "heshin");
+	Channel ch("42", heshin);
+	
+	heshin.add_channel(ch);
 
-	cout << heshin._serialize(2) << '\n';
+	cout << ch._serialize(2) << '\n';
 	return 0;
 
   const char *port;
