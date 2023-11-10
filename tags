@@ -1,0 +1,271 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/bart/Developer/42/ft_irc/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+${NAME}	Makefile	/^${NAME}:	${OBJS}$/;"	t
+%.o	Makefile	/^%.o: %.cpp$/;"	t
+AlreadyJoined	channel/Channel.hpp	/^		struct AlreadyJoined: std::exception {$/;"	s	class:Channel
+BUFFER_SIZE	server/Server.hpp	/^#define BUFFER_SIZE /;"	d
+CHANNEL_DATA_HPP	data/ChannelData.hpp	/^# define CHANNEL_DATA_HPP$/;"	d
+CHANNEL_HPP	channel/Channel.hpp	/^# define CHANNEL_HPP$/;"	d
+CMD_STRINGIFY	message/Message.cpp	/^# define CMD_STRINGIFY(/;"	d	file:
+COMMAND	include/parse.hpp	/^#define COMMAND /;"	d
+COMMAND_HPP	message/Message.hpp	/^# define COMMAND_HPP$/;"	d
+CXXFLAGS	Makefile	/^CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g$/;"	m
+Channel	channel/Channel.cpp	/^Channel::Channel(): operator_user(NULL) {}$/;"	f	class:Channel
+Channel	channel/Channel.cpp	/^Channel::Channel(const Channel& other) {$/;"	f	class:Channel
+Channel	channel/Channel.cpp	/^Channel::Channel(const string& name, const User& operator_user)$/;"	f	class:Channel
+Channel	channel/Channel.hpp	/^class Channel {$/;"	c
+ChannelAlreadyExist	data/ChannelData.hpp	/^		struct ChannelAlreadyExist: public std::exception {$/;"	s	class:ChannelData
+ChannelData	data/ChannelData.cpp	/^ChannelData::ChannelData() {}$/;"	f	class:ChannelData
+ChannelData	data/ChannelData.hpp	/^class ChannelData{$/;"	c
+ChannelNotExist	data/ChannelData.hpp	/^		struct ChannelNotExist: public std::exception { $/;"	s	class:ChannelData
+Command	message/Message.cpp	/^Command::Command() {}$/;"	f	class:Command
+Command	message/Message.cpp	/^Command::Command(const string& str) {$/;"	f	class:Command
+Command	message/Message.hpp	/^struct Command {$/;"	s
+Connection	user/User.cpp	/^Connection::Connection(): is_alive(false) {}$/;"	f	class:Connection
+Connection	user/User.cpp	/^Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): is_alive(false/;"	f	class:Connection
+Connection	user/User.hpp	/^struct Connection: Serializable {$/;"	s
+FAIL	include/parse.hpp	/^#define FAIL /;"	d
+FB_DEFAULT	include/common.hpp	/^#define FB_DEFAULT /;"	d
+FT_IRC_INCLUDE_COMMON_HPP_	include/common.hpp	/^#define FT_IRC_INCLUDE_COMMON_HPP_$/;"	d
+FT_IRC_PARSE_PARSE_HPP_	include/parse.hpp	/^#define FT_IRC_PARSE_PARSE_HPP_$/;"	d
+FT_IRC_SERVER_INITIALIZE_HPP_	server/Server.hpp	/^#define FT_IRC_SERVER_INITIALIZE_HPP_$/;"	d
+FT_IRC__DEBUG_HPP_	include/debug.hpp	/^#define FT_IRC__DEBUG_HPP_$/;"	d
+FT_IRC__UTILS_HPP_	include/utils.hpp	/^#define FT_IRC__UTILS_HPP_$/;"	d
+F_BLACK	include/common.hpp	/^#define F_BLACK /;"	d
+F_BLACK_W_WHITE	include/common.hpp	/^#define F_BLACK_W_WHITE /;"	d
+F_BLUE	include/common.hpp	/^#define F_BLUE /;"	d
+F_CYAN	include/common.hpp	/^#define F_CYAN /;"	d
+F_GREEN	include/common.hpp	/^#define F_GREEN /;"	d
+F_MAGENTA	include/common.hpp	/^#define F_MAGENTA /;"	d
+F_RED	include/common.hpp	/^#define F_RED /;"	d
+F_WHITE	include/common.hpp	/^#define F_WHITE /;"	d
+F_YELLOW	include/common.hpp	/^#define F_YELLOW /;"	d
+HOST	include/parse.hpp	/^#define HOST /;"	d
+INCLUDE	Makefile	/^INCLUDE = -I include -I include\/server$/;"	m
+INVITE	message/Message.hpp	/^		INVITE,$/;"	e	enum:Command::Type
+JOIN	message/Message.hpp	/^		JOIN,$/;"	e	enum:Command::Type
+KeyValue	debug/Serializable.cpp	/^typedef std::pair<string, const Serializable*> KeyValue;$/;"	t	typeref:typename:std::pair<string,const Serializable * >	file:
+KeyValue	user/User.cpp	/^typedef std::pair<string, const Serializable*> KeyValue;$/;"	t	typeref:typename:std::pair<string,const Serializable * >	file:
+MAX_CLIENT_NUM	server/Server.hpp	/^#define MAX_CLIENT_NUM /;"	d
+MODE	message/Message.hpp	/^		MODE,$/;"	e	enum:Command::Type
+MacOS에만 해당하는 사항	README.md	/^### MacOS에만 해당하는 사항$/;"	S	section:ft_irc""필수 파트
+Message	message/Message.hpp	/^struct Message {$/;"	s
+NAME	Makefile	/^NAME = ft_irc$/;"	m
+NICK	include/parse.hpp	/^#define NICK /;"	d
+NICK	message/Message.hpp	/^		NICK,$/;"	e	enum:Command::Type
+NoPermission	channel/Channel.hpp	/^		struct NoPermission: std::exception {$/;"	s	class:Channel
+OBJS	Makefile	/^OBJS = ${SRCS:.cpp=.o}$/;"	m
+PARAMS	include/parse.hpp	/^#define PARAMS /;"	d
+PART	message/Message.hpp	/^		PART,$/;"	e	enum:Command::Type
+PASS	message/Message.hpp	/^		PASS = 0,$/;"	e	enum:Command::Type
+PRIVMSG	message/Message.hpp	/^		PRIVMSG,$/;"	e	enum:Command::Type
+ParsingFail	message/Message.hpp	/^	struct ParsingFail: public std::exception {$/;"	s	struct:Message
+QUIT	message/Message.hpp	/^		QUIT,$/;"	e	enum:Command::Type
+RM	Makefile	/^RM = rm -f$/;"	m
+SERIALIZE_HPP	debug/Serializable.hpp	/^# define SERIALIZE_HPP$/;"	d
+SRCS	Makefile	/^SRCS = main.cpp \\$/;"	m
+SUCCESS	include/parse.hpp	/^#define SUCCESS /;"	d
+Serializable	debug/Serializable.hpp	/^class Serializable {$/;"	c
+Server	server/Server.cpp	/^Server::Server() {$/;"	f	class:Server
+Server	server/Server.cpp	/^Server::Server(const Server &server) {$/;"	f	class:Server
+Server	server/Server.hpp	/^class Server {$/;"	c
+TIMEOUT_SEC	server/Server.hpp	/^#define TIMEOUT_SEC /;"	d
+TOPIC	message/Message.hpp	/^		TOPIC,$/;"	e	enum:Command::Type
+Type	message/Message.hpp	/^	enum Type{$/;"	g	struct:Command
+USER	include/parse.hpp	/^#define USER /;"	d
+USER	message/Message.hpp	/^		USER,$/;"	e	enum:Command::Type
+USER_DATA_HPP	data/UserData.hpp	/^# define USER_DATA_HPP$/;"	d
+USER_HPP	user/User.hpp	/^# define USER_HPP$/;"	d
+UnSupported	message/Message.hpp	/^	struct UnSupported: public std::exception {$/;"	s	struct:Command
+User	user/User.cpp	/^User::User() { }$/;"	f	class:User
+User	user/User.cpp	/^User::User(const Connection connection, const string& nick)$/;"	f	class:User
+User	user/User.cpp	/^User::User(const User& other):$/;"	f	class:User
+User	user/User.hpp	/^class User: public Serializable {$/;"	c
+UserAlreadyExist	data/UserData.hpp	/^	struct UserAlreadyExist: public std::exception {$/;"	s	class:UserData
+UserData	data/UserData.cpp	/^UserData::UserData() {}$/;"	f	class:UserData
+UserData	data/UserData.hpp	/^class UserData {$/;"	c
+UserNotExist	data/UserData.hpp	/^	struct UserNotExist: public std::exception {$/;"	s	class:UserData
+V4	user/User.hpp	/^		V4,$/;"	e	enum:Connection::__anon77e66f480103
+V6	user/User.hpp	/^		V6$/;"	e	enum:Connection::__anon77e66f480103
+__anon77e66f480103	user/User.hpp	/^	enum {$/;"	g	struct:Connection
+_add_to_serialization	debug/Serializable.cpp	/^ostream& Serializable::_add_to_serialization(ostream& os, const int _d) const {$/;"	f	class:Serializable	typeref:typename:ostream &
+_add_to_serialization	user/User.cpp	/^ostream& Connection::_add_to_serialization(ostream& os, const int _d) const {$/;"	f	class:Connection	typeref:typename:ostream &
+_add_to_serialization	user/User.cpp	/^ostream& User::_add_to_serialization(ostream& os, const int depth) const {$/;"	f	class:User	typeref:typename:ostream &
+_client_fds	server/Server.hpp	/^  fd_set _client_fds;$/;"	m	class:Server	typeref:typename:fd_set
+_fd_max	server/Server.hpp	/^  int _fd_max;$/;"	m	class:Server	typeref:typename:int
+_get_children	debug/Serializable.cpp	/^std::vector<KeyValue> Serializable::_get_children() const {$/;"	f	class:Serializable	typeref:typename:std::vector<KeyValue>
+_get_children	user/User.cpp	/^vector<KeyValue> User::_get_children() const {$/;"	f	class:User	typeref:typename:vector<KeyValue>
+_get_label	debug/Serializable.cpp	/^string _get_label(Serializable &s) {$/;"	f	typeref:typename:string
+_get_label	include/json.hpp	/^std::string _get_label(T &_t) {$/;"	f	typeref:typename:std::string
+_get_label	user/User.cpp	/^string Connection::_get_label() const {$/;"	f	class:Connection	typeref:typename:string
+_get_label	user/User.cpp	/^string User::_get_label() const {$/;"	f	class:User	typeref:typename:string
+_has_label	debug/Serializable.cpp	/^bool _has_label<Serializable>() {$/;"	f	typeref:typename:bool
+_has_label	include/json.hpp	/^bool _has_label() {$/;"	f	typeref:typename:bool
+_is_debug	server/Server.hpp	/^  bool _is_debug;$/;"	m	class:Server	typeref:typename:bool
+_is_serializable	debug/Serializable.cpp	/^bool _is_serializable<Serializable>() {$/;"	f	typeref:typename:bool
+_is_serializable	debug/Serializable.hpp	/^bool _is_serializable() {$/;"	f	typeref:typename:bool
+_json	debug/Serializable.cpp	/^std::ostream& _json<Serializable>(std::ostream& os, Serializable* t) {$/;"	f	typeref:typename:std::ostream &
+_json	debug/json.cpp	/^ostream& _json(ostream& os, bool b) {$/;"	f	typeref:typename:ostream &
+_json	debug/json.cpp	/^ostream& _json(ostream& os, char* s) {$/;"	f	typeref:typename:ostream &
+_json	debug/json.cpp	/^ostream& _json(ostream& os, string s) {$/;"	f	typeref:typename:ostream &
+_json	debug/json.cpp	/^ostream& _json(ostream& os, string& s) {$/;"	f	typeref:typename:ostream &
+_json	include/json.hpp	/^std::ostream& _json(std::ostream& os, T t) {$/;"	f	typeref:typename:std::ostream &
+_json	include/json.hpp	/^std::ostream& _json(std::ostream& os, T t, U u){$/;"	f	typeref:typename:std::ostream &
+_json	include/json.hpp	/^std::ostream& _json(std::ostream& os, T t, U u, V v){$/;"	f	typeref:typename:std::ostream &
+_json	include/json.hpp	/^std::ostream& _json(std::ostream& os, T t, U u, V v, X x){$/;"	f	typeref:typename:std::ostream &
+_json	include/json.hpp	/^std::ostream& _json(std::ostream& os, T* t) {$/;"	f	typeref:typename:std::ostream &
+_json	include/json.hpp	/^std::ostream& _json(std::ostream& os, const T* t) {$/;"	f	typeref:typename:std::ostream &
+_json	include/json.hpp	/^std::ostream& _json(std::ostream& os, const std::map<std::string, T>& map) {$/;"	f	typeref:typename:std::ostream &
+_json	include/json.hpp	/^std::ostream& _json(std::ostream& os, const std::vector<T>& v) {$/;"	f	typeref:typename:std::ostream &
+_max_client_number	server/Server.hpp	/^  int _max_client_number;$/;"	m	class:Server	typeref:typename:int
+_serialize	debug/Serializable.cpp	/^string Serializable::_serialize(const int depth) const {$/;"	f	class:Serializable	typeref:typename:string
+_serialize	debug/Serializable.cpp	/^string _serialize(const list<Serializable>&, const int) {$/;"	f	typeref:typename:string
+_serialize	debug/Serializable.cpp	/^string _serialize(const map<string, const Serializable*>&, const int) {$/;"	f	typeref:typename:string
+_server_addr	server/Server.hpp	/^  struct sockaddr_in _server_addr;$/;"	m	class:Server	typeref:struct:sockaddr_in
+_server_socket	server/Server.hpp	/^  int _server_socket;$/;"	m	class:Server	typeref:typename:int
+acceptClient	server/Server.cpp	/^void Server::acceptClient() {$/;"	f	class:Server	typeref:typename:void
+add_channel	user/User.cpp	/^void User::add_channel(const Channel& channel) {$/;"	f	class:User	typeref:typename:void
+add_user	channel/Channel.cpp	/^void Channel::add_user(const User& user) {$/;"	f	class:Channel	typeref:typename:void
+add_user	data/UserData.cpp	/^void UserData::add_user(const User& user) {$/;"	f	class:UserData	typeref:typename:void
+address	user/User.hpp	/^	std::string address;$/;"	m	struct:Connection	typeref:typename:std::string
+all	Makefile	/^all:	${NAME}$/;"	t
+all_commands	message/Message.cpp	/^const char *all_commands[] = {$/;"	v	typeref:typename:const char * []
+channel_map	data/ChannelData.hpp	/^		std::map<std::string, std::list<Channel>::iterator> channel_map;$/;"	m	class:ChannelData	typeref:typename:std::map<std::string,std::list<Channel>::iterator>
+channels	data/ChannelData.hpp	/^		std::list<Channel> channels;$/;"	m	class:ChannelData	typeref:typename:std::list<Channel>
+clean	Makefile	/^clean:$/;"	t
+closeClient	server/Server.cpp	/^void Server::closeClient(int client_socket) {$/;"	f	class:Server	typeref:typename:void
+closeServer	server/Server.cpp	/^void Server::closeServer() {$/;"	f	class:Server	typeref:typename:void
+command	message/Message.hpp	/^	Command command;$/;"	m	struct:Message	typeref:typename:Command
+connection	user/User.hpp	/^		Connection connection;$/;"	m	class:User	typeref:typename:Connection
+create_channel	data/ChannelData.cpp	/^void ChannelData::create_channel(const string& name, const User& user) {$/;"	f	class:ChannelData	typeref:typename:void
+delete_user	data/UserData.cpp	/^void UserData::delete_user(const User& user) {$/;"	f	class:UserData	typeref:typename:void
+fclean	Makefile	/^fclean:	clean$/;"	t
+ft_irc	README.md	/^# ft_irc$/;"	c
+getClientFds	server/Server.cpp	/^fd_set Server::getClientFds() const {$/;"	f	class:Server	typeref:typename:fd_set
+getFdMax	server/Server.cpp	/^int Server::getFdMax() const {$/;"	f	class:Server	typeref:typename:int
+getIsDebug	server/Server.cpp	/^bool Server::getIsDebug() const {$/;"	f	class:Server	typeref:typename:bool
+getLongestTokenType	parse/parse.cpp	/^size_t getLongestTokenType(std::vector<t_token> tokens) {$/;"	f	typeref:typename:size_t
+getLongestTokenValue	parse/parse.cpp	/^size_t getLongestTokenValue(std::vector<t_token> tokens) {$/;"	f	typeref:typename:size_t
+getMaxClientNumber	server/Server.cpp	/^int Server::getMaxClientNumber() const {$/;"	f	class:Server	typeref:typename:int
+getPortInDebugMode	debug/debug.cpp	/^std::string getPortInDebugMode() {$/;"	f	typeref:typename:std::string
+getServerAddr	server/Server.cpp	/^struct sockaddr_in Server::getServerAddr() const {$/;"	f	class:Server	typeref:struct:sockaddr_in
+getServerSocket	server/Server.cpp	/^int Server::getServerSocket() const {$/;"	f	class:Server	typeref:typename:int
+get_all_channels	user/User.cpp	/^vector<const Channel*> User::get_all_channels() const {$/;"	f	class:User	typeref:typename:vector<const Channel * >
+get_channel	data/ChannelData.cpp	/^Channel& ChannelData::get_channel(const string& name) const {$/;"	f	class:ChannelData	typeref:typename:Channel &
+get_hostname	user/User.cpp	/^const string& User::get_hostname() const {$/;"	f	class:User	typeref:typename:const string &
+get_in_addr	utils/socket_utils.cpp	/^void* get_in_addr(const struct sockaddr* sa)$/;"	f	typeref:typename:void *
+get_name	channel/Channel.cpp	/^const string& Channel::get_name() const {$/;"	f	class:Channel	typeref:typename:const string &
+get_nickname	user/User.cpp	/^const string& User::get_nickname() const {$/;"	f	class:User	typeref:typename:const string &
+get_operator	channel/Channel.cpp	/^const User& Channel::get_operator() const {$/;"	f	class:Channel	typeref:typename:const User &
+get_storage	data/ChannelData.cpp	/^ChannelData& ChannelData::get_storage() {$/;"	f	class:ChannelData	typeref:typename:ChannelData &
+get_storage	data/UserData.cpp	/^UserData& UserData::get_storage() {$/;"	f	class:UserData	typeref:typename:UserData &
+get_topic	channel/Channel.cpp	/^const string& Channel::get_topic() const {$/;"	f	class:Channel	typeref:typename:const string &
+get_user	data/UserData.cpp	/^User& UserData::get_user(const string& nickname) const {$/;"	f	class:UserData	typeref:typename:User &
+get_user_names	channel/Channel.cpp	/^vector<string> Channel::get_user_names() const {$/;"	f	class:Channel	typeref:typename:vector<string>
+get_users	channel/Channel.cpp	/^vector<const User*> Channel::get_users() const {$/;"	f	class:Channel	typeref:typename:vector<const User * >
+hostname	user/User.hpp	/^		std::string hostname;$/;"	m	class:User	typeref:typename:std::string
+initializeClientFds	server/Server.cpp	/^void Server::initializeClientFds() {$/;"	f	class:Server	typeref:typename:void
+initializeServer	server/Server.cpp	/^void Server::initializeServer(const char *port) {$/;"	f	class:Server	typeref:typename:void
+ip_family	user/User.hpp	/^	} ip_family;$/;"	m	struct:Connection	typeref:enum:Connection::__anon77e66f480103
+isExecutableCommand	parse/parse.cpp	/^bool isExecutableCommand(std::string command_part) {$/;"	f	typeref:typename:bool
+isNumber	utils/utils.cpp	/^bool isNumber(const char *string) {$/;"	f	typeref:typename:bool
+isValidPort	utils/utils.cpp	/^bool isValidPort(const char *port) {$/;"	f	typeref:typename:bool
+is_alive	user/User.hpp	/^	bool is_alive;$/;"	m	struct:Connection	typeref:typename:bool
+is_available	user/User.cpp	/^bool User::is_available() const {$/;"	f	class:User	typeref:typename:bool
+is_channel_exist	data/ChannelData.cpp	/^bool ChannelData::is_channel_exist(const string& name) const {$/;"	f	class:ChannelData	typeref:typename:bool
+is_equal	channel/Channel.cpp	/^bool Channel::is_equal(const Channel& other) const {$/;"	f	class:Channel	typeref:typename:bool
+is_equal	user/User.cpp	/^bool Connection::is_equal(const Connection& other) const {$/;"	f	class:Connection	typeref:typename:bool
+is_equal	user/User.cpp	/^bool User::is_equal(const User& other) const {$/;"	f	class:User	typeref:typename:bool
+is_joined	user/User.cpp	/^bool User::is_joined(const string& channel_name) const {$/;"	f	class:User	typeref:typename:bool
+is_user_exist	data/UserData.cpp	/^bool UserData::is_user_exist(const string& nickname) const {$/;"	f	class:UserData	typeref:typename:bool
+join_channel	data/ChannelData.cpp	/^void ChannelData::join_channel(const string& name, const User& user) {$/;"	f	class:ChannelData	typeref:typename:void
+joined_channels	user/User.hpp	/^		std::vector<const Channel*> joined_channels;$/;"	m	class:User	typeref:typename:std::vector<const Channel * >
+leave_channel	data/ChannelData.cpp	/^void ChannelData::leave_channel(const Channel &channel, const User& user) {$/;"	f	class:ChannelData	typeref:typename:void
+main	main.cpp	/^int main(int argc, char *argv[]) {$/;"	f	typeref:typename:int
+name	channel/Channel.hpp	/^		std::string name;$/;"	m	class:Channel	typeref:typename:std::string
+nickname	user/User.hpp	/^		std::string nickname;$/;"	m	class:User	typeref:typename:std::string
+operator <<	server/Server.cpp	/^std::ostream &operator<<(std::ostream &os, const Server &server) {$/;"	f	typeref:typename:std::ostream &
+operator <<	server/Server.cpp	/^std::ostream &operator<<(std::ostream &os, const fd_set &client_fds) {$/;"	f	typeref:typename:std::ostream &
+operator =	channel/Channel.cpp	/^Channel& Channel::operator=(const Channel& other) {$/;"	f	class:Channel	typeref:typename:Channel &
+operator =	server/Server.cpp	/^Server &Server::operator=(const Server &server) {$/;"	f	class:Server	typeref:typename:Server &
+operator =	user/User.cpp	/^User& User::operator=(const User& other) {$/;"	f	class:User	typeref:typename:User &
+operator ==	channel/Channel.cpp	/^bool operator==(const Channel& a, const Channel& b) {$/;"	f	typeref:typename:bool
+operator ==	user/User.cpp	/^bool operator==(const Connection& a, const Connection& b) {$/;"	f	typeref:typename:bool
+operator ==	user/User.cpp	/^bool operator==(const User& a, const User& b) {$/;"	f	typeref:typename:bool
+operator_user	channel/Channel.hpp	/^		const User* operator_user;$/;"	m	class:Channel	typeref:typename:const User *
+params	message/Message.hpp	/^	std::vector<std::string> params;$/;"	m	struct:Message	typeref:typename:std::vector<std::string>
+parseCommand	parse/parse.cpp	/^int parseCommand(std::string command_part, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
+parseCommandWithOptions	parse/parse.cpp	/^int parseCommandWithOptions(std::string command, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
+parseMessageFormat	parse/parse.cpp	/^int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
+parseMiddle	parse/parse.cpp	/^int parseMiddle(std::string params, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
+parseParams	parse/parse.cpp	/^int parseParams(std::string command_part, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
+parseTrailing	parse/parse.cpp	/^int parseTrailing(std::string params, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
+parseUserAndHost	parse/parse.cpp	/^int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
+port	user/User.hpp	/^	int port;$/;"	m	struct:Connection	typeref:typename:int
+prefix	message/Message.hpp	/^	std::string prefix;$/;"	m	struct:Message	typeref:typename:std::string
+printError	utils/utils.cpp	/^void printError(std::string message) {$/;"	f	typeref:typename:void
+printTokens	parse/parse.cpp	/^void printTokens(std::vector<t_token> tokens) {$/;"	f	typeref:typename:void
+re	Makefile	/^re:		fclean all$/;"	t
+receiveMessage	server/Server.cpp	/^char *Server::receiveMessage(int client_socket) {$/;"	f	class:Server	typeref:typename:char *
+remove_channel	data/ChannelData.cpp	/^void ChannelData::remove_channel(const Channel& channel) {$/;"	f	class:ChannelData	typeref:typename:void
+remove_channel	user/User.cpp	/^void User::remove_channel(const Channel& channel) {$/;"	f	class:User	typeref:typename:void
+remove_channel	user/User.cpp	/^void User::remove_channel(const string& name) {$/;"	f	class:User	typeref:typename:void
+remove_user	channel/Channel.cpp	/^void Channel::remove_user(const User& user) {$/;"	f	class:Channel	typeref:typename:void
+runServer	server/Server.cpp	/^void Server::runServer() {$/;"	f	class:Server	typeref:typename:void
+s_token	include/parse.hpp	/^typedef struct s_token {$/;"	s
+sendMessage	server/Server.cpp	/^void Server::sendMessage(int client_socket, char *message) {$/;"	f	class:Server	typeref:typename:void
+setClientFds	server/Server.cpp	/^void Server::setClientFds(fd_set client_fds) {$/;"	f	class:Server	typeref:typename:void
+setFdMax	server/Server.cpp	/^void Server::setFdMax(int fd_max) {$/;"	f	class:Server	typeref:typename:void
+setIsDebug	server/Server.cpp	/^void Server::setIsDebug(bool is_debug) {$/;"	f	class:Server	typeref:typename:void
+setMaxClientNumber	server/Server.cpp	/^void Server::setMaxClientNumber(int max_client_number) {$/;"	f	class:Server	typeref:typename:void
+setServerAddr	server/Server.cpp	/^void Server::setServerAddr(struct sockaddr_in server_addr) {$/;"	f	class:Server	typeref:typename:void
+setServerSocket	server/Server.cpp	/^void Server::setServerSocket(int server_socket) {$/;"	f	class:Server	typeref:typename:void
+skipChar	utils/utils.cpp	/^void skipChar(std::string &string, char c) {$/;"	f	typeref:typename:void
+socket_fd	user/User.hpp	/^	int socket_fd;$/;"	m	struct:Connection	typeref:typename:int
+t_token	include/parse.hpp	/^} t_token;$/;"	t	typeref:struct:s_token
+topic	channel/Channel.hpp	/^		std::string topic;$/;"	m	class:Channel	typeref:typename:std::string
+type	include/parse.hpp	/^  std::string type;$/;"	m	struct:s_token	typeref:typename:std::string
+type	message/Message.hpp	/^	} type;$/;"	m	struct:Command	typeref:enum:Command::Type
+type_string	message/Message.cpp	/^string Command::type_string() const {$/;"	f	class:Command	typeref:typename:string
+user_nick_map	data/UserData.hpp	/^		std::map<std::string, std::list<User>::iterator> user_nick_map;$/;"	m	class:UserData	typeref:typename:std::map<std::string,std::list<User>::iterator>
+users	channel/Channel.hpp	/^		std::vector<const User*> users;$/;"	m	class:Channel	typeref:typename:std::vector<const User * >
+users	data/UserData.hpp	/^		std::list<User> users;$/;"	m	class:UserData	typeref:typename:std::list<User>
+value	include/parse.hpp	/^  std::string value;$/;"	m	struct:s_token	typeref:typename:std::string
+what	channel/Channel.cpp	/^const char* Channel::AlreadyJoined::what() const throw() {$/;"	f	class:Channel::AlreadyJoined	typeref:typename:const char *
+what	channel/Channel.cpp	/^const char* Channel::NoPermission::what() const throw() {$/;"	f	class:Channel::NoPermission	typeref:typename:const char *
+what	data/ChannelData.cpp	/^const char* ChannelData::ChannelAlreadyExist::what() const throw() {$/;"	f	class:ChannelData::ChannelAlreadyExist	typeref:typename:const char *
+what	data/ChannelData.cpp	/^const char* ChannelData::ChannelNotExist::what() const throw() {$/;"	f	class:ChannelData::ChannelNotExist	typeref:typename:const char *
+what	data/UserData.cpp	/^const char* UserData::UserAlreadyExist::what() const throw() {$/;"	f	class:UserData::UserAlreadyExist	typeref:typename:const char *
+what	data/UserData.cpp	/^const char* UserData::UserNotExist::what() const throw() {$/;"	f	class:UserData::UserNotExist	typeref:typename:const char *
+what	message/Message.cpp	/^const char* Command::UnSupported::what() const throw(){$/;"	f	class:Command::UnSupported	typeref:typename:const char *
+what	message/Message.cpp	/^const char* Message::ParsingFail::what() const throw(){$/;"	f	class:Message::ParsingFail	typeref:typename:const char *
+~Channel	channel/Channel.cpp	/^Channel::~Channel() { }$/;"	f	class:Channel
+~ChannelData	data/ChannelData.cpp	/^ChannelData::~ChannelData() {$/;"	f	class:ChannelData
+~Server	server/Server.cpp	/^Server::~Server() {$/;"	f	class:Server
+~User	user/User.cpp	/^User::~User() { }$/;"	f	class:User
+~UserData	data/UserData.cpp	/^UserData::~UserData() {$/;"	f	class:UserData
+개요	.github/ISSUE_TEMPLATE/bug.md	/^## 개요$/;"	s
+개요	.github/ISSUE_TEMPLATE/chore.md	/^## 개요$/;"	s
+개요	.github/ISSUE_TEMPLATE/feat.md	/^## 개요$/;"	s
+변경점	pull_request_template.md	/^## 변경점$/;"	s
+보너스 파트	README.md	/^## 보너스 파트$/;"	s	chapter:ft_irc
+비고	.github/ISSUE_TEMPLATE/bug.md	/^## 비고$/;"	s
+스크린샷(선택)	.github/ISSUE_TEMPLATE/bug.md	/^## 스크린샷(선택)$/;"	s
+스크린샷(선택)	pull_request_template.md	/^## 스크린샷(선택)$/;"	s
+요구사항	README.md	/^### 요구사항$/;"	S	section:ft_irc""필수 파트
+원하는 동작	.github/ISSUE_TEMPLATE/bug.md	/^## 원하는 동작$/;"	s
+작업 내용	.github/ISSUE_TEMPLATE/feat.md	/^## 작업 내용$/;"	s
+재현 방법	.github/ISSUE_TEMPLATE/bug.md	/^## 재현 방법$/;"	s
+점검	pull_request_template.md	/^## 점검$/;"	s
+테스트 내용 (선택)	pull_request_template.md	/^## 테스트 내용 (선택)$/;"	s
+테스트 예시	README.md	/^### 테스트 예시$/;"	S	section:ft_irc""필수 파트
+필수 파트	README.md	/^## 필수 파트$/;"	s	chapter:ft_irc

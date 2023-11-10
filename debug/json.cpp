@@ -12,12 +12,25 @@
 
 #include "../include/json.hpp"
 
+using std::ostream;
+using std::string;
+
 template <>
-std::ostream& json(std::ostream&os, std::string& s) {
+ostream& _json(ostream& os, string& s) {
 	return os << '"' << s << '"';
 }
 
 template <>
-std::ostream& json(std::ostream&os, std::string s) {
+ostream& _json(ostream& os, string s) {
 	return os << '"' << s << '"';
+}
+
+template <>
+ostream& _json(ostream& os, char* s) {
+	return _json(os, string(s)); 
+}
+
+template <>
+ostream& _json(ostream& os, bool b) {
+	return os << (b ? "true": "false");
 }

@@ -17,12 +17,20 @@
 #include <netinet/in.h>
 #include <ostream>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 #include <arpa/inet.h>
+#include <sstream>
 
 using std::string;
 using std::vector;
 using std::ostream;
+using std::stringstream;
+using std::ostream;
+using std::pair;
+using std::make_pair;
+
+typedef std::pair<string, const Serializable*> KeyValue;
 
 Connection::Connection(): is_alive(false) {}
 Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): is_alive(false), socket_fd(socket_fd) {
@@ -160,11 +168,49 @@ bool operator==(const Connection& a, const Connection& b) {
 	return a.is_equal(b);
 }
 
-template<>
-bool has_label<User>() {
-	return true;
+// Serialization
+
+string Connection::_get_label() const {
+	stringstream ss;
+	ss << address << ":" << port;
+	if (is_alive)
+		ss << "(alive)";
+	else 
+		ss << "(not alive)";
+	return ss.str();
+} 
+
+ostream& Connection::_add_to_serialization(ostream& os, const int _d) const {
+	
+	_json(os, "address", ':', address, ',');
+	_json(os, "port", ':', port, ',');
+	_json(os, "is_alive", ':', is_alive, ',');
+	_json(os, "socket_fd", ':', socket_fd);
+	(void)_d;
+	return os;
 }
 
-string User::get_label() const {
-	return "User:" + nickname;
+string User::_get_label() const {
+	if (hostname.empty())
+		return nickname;
+	return nickname + "@" + hostname;
+}
+
+
+vector<KeyValue> User::_get_children() const {
+	vector<KeyValue> v;
+	v.push_back(make_pair("connection", &this->connection));		
+	return v;
+}
+
+ostream& User::_add_to_serialization(ostream& os, const int depth) const {
+
+	os << ',';
+	_json(os, "nickname", ':', nickname, ',');
+	_json(os, "hostname", ':', hostname, ',');
+	_json(os, "connection", ':', connection._get_label(), ',');
+	_json(os, "number of joined channels", ':', joined_channels.size());
+	//_json(os, "joined channes" , ':');
+	(void)depth;
+	return os;
 }

@@ -13,10 +13,27 @@
 #include "include/utils.hpp"
 #include "include/debug.hpp"
 #include "server/Server.hpp"
+#include "user/User.hpp"
 #include <cstring>
 #include <iterator>
+#include <iostream>
+using std::cout;
 
 int main(int argc, char *argv[]) {
+
+	(void)argc, (void)argv;
+
+	Connection c;
+	c.is_alive = true;
+	c.address = "127.0.0.1";
+	c.port = 8080;
+	c.socket_fd = 10;
+
+	User heshin = User(c, "heshin");
+
+	cout << heshin._serialize(2) << '\n';
+	return 0;
+
   const char *port;
   Server server;
 

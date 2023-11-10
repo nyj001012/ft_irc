@@ -12,13 +12,15 @@
 
 #ifndef USER_HPP
 # define USER_HPP
+# include "../debug/Serializable.hpp"
 # include <string>
 # include <sys/socket.h>
 # include <vector>
+# include <ostream>
 
 class Channel;
 
-struct Connection {
+struct Connection: Serializable {
 
 	bool is_alive;
 
@@ -29,13 +31,15 @@ struct Connection {
 	std::string address;
 	int port;
 	int socket_fd;
+	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+	virtual std::string _get_label() const;
 
 	bool is_equal(const Connection&) const;
 	Connection();
 	Connection(const struct sockaddr_storage*, const int socket_fd);
 };
 
-class User {
+class User: public Serializable {
 
 	public:
 		User(const Connection connection, const std::string& nick);
@@ -54,7 +58,9 @@ class User {
 		std::vector<const Channel*> get_all_channels() const;
 		bool is_equal(const User&) const;
 
-		std::string get_label() const;
+	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+	virtual std::string _get_label() const;
+	virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 
 	private:
 		User();
