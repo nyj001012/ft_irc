@@ -98,6 +98,7 @@ UserData	data/UserData.hpp	/^class UserData: public Serializable {$/;"	c
 UserNotExist	data/UserData.hpp	/^	struct UserNotExist: public std::exception {$/;"	s	class:UserData
 V4	user/User.hpp	/^		V4,$/;"	e	enum:Connection::__anon77e66f480103
 V6	user/User.hpp	/^		V6$/;"	e	enum:Connection::__anon77e66f480103
+__JSON_HPP	include/json.hpp	/^# define  __JSON_HPP$/;"	d
 __anon77e66f480103	user/User.hpp	/^	enum {$/;"	g	struct:Connection
 _add_to_serialization	channel/Channel.cpp	/^ostream& Channel::_add_to_serialization(ostream& os, const int depth) const {$/;"	f	class:Channel	typeref:typename:ostream &
 _add_to_serialization	data/ChannelData.cpp	/^ostream& ChannelData::_add_to_serialization(ostream& os, const int depth) const {$/;"	f	class:ChannelData	typeref:typename:ostream &
@@ -115,10 +116,15 @@ _get_label	data/ChannelData.cpp	/^string ChannelData::_get_label() const {$/;"	f
 _get_label	data/UserData.cpp	/^string UserData::_get_label() const {$/;"	f	class:UserData	typeref:typename:string
 _get_label	debug/Serializable.cpp	/^string Serializable::_get_label() const {$/;"	f	class:Serializable	typeref:typename:string
 _get_label	debug/Serializable.cpp	/^string _get_label(Serializable &s) {$/;"	f	typeref:typename:string
-_get_label	include/json.hpp	/^std::string _get_label(T &_t) {$/;"	f	typeref:typename:std::string
+_get_label	debug/Serializable.cpp	/^string _get_label(Serializable* s) {$/;"	f	typeref:typename:string
+_get_label	debug/Serializable.cpp	/^string _get_label(const Serializable* s) {$/;"	f	typeref:typename:string
+_get_label	include/json.hpp	/^std::string _get_label(T _t) {$/;"	f	typeref:typename:std::string
 _get_label	user/User.cpp	/^string Connection::_get_label() const {$/;"	f	class:Connection	typeref:typename:string
 _get_label	user/User.cpp	/^string User::_get_label() const {$/;"	f	class:User	typeref:typename:string
+_has_label	debug/Serializable.cpp	/^bool _has_label<Serializable*>() {$/;"	f	typeref:typename:bool
 _has_label	debug/Serializable.cpp	/^bool _has_label<Serializable>() {$/;"	f	typeref:typename:bool
+_has_label	debug/Serializable.cpp	/^bool _has_label<const Serializable*>() {$/;"	f	typeref:typename:bool
+_has_label	debug/Serializable.cpp	/^bool _has_label<const Serializable>() {$/;"	f	typeref:typename:bool
 _has_label	include/json.hpp	/^bool _has_label() {$/;"	f	typeref:typename:bool
 _is_debug	server/Server.hpp	/^  bool _is_debug;$/;"	m	class:Server	typeref:typename:bool
 _is_serializable	debug/Serializable.cpp	/^bool _is_serializable<Serializable>() {$/;"	f	typeref:typename:bool
@@ -136,8 +142,8 @@ _json	include/json.hpp	/^std::ostream& _json(std::ostream& os, T* t) {$/;"	f	typ
 _json	include/json.hpp	/^std::ostream& _json(std::ostream& os, const T* t) {$/;"	f	typeref:typename:std::ostream &
 _json	include/json.hpp	/^std::ostream& _json(std::ostream& os, const std::map<std::string, T>& map) {$/;"	f	typeref:typename:std::ostream &
 _json	include/json.hpp	/^std::ostream& _json(std::ostream& os, const std::vector<T>& v) {$/;"	f	typeref:typename:std::ostream &
-_list_element_type	include/debug.hpp	/^std::string _list_element_type(const std::list<T>&) {$/;"	f	typeref:typename:std::string
-_map_key_type	include/debug.hpp	/^std::string _map_key_type(const std::map<K, V>&) {$/;"	f	typeref:typename:std::string
+_list_element_type	include/debug.hpp	/^std::string _list_element_type(const std::list<T*>& li) {$/;"	f	typeref:typename:std::string
+_map_key_type	include/debug.hpp	/^std::string _map_key_type(const std::map<K, V*>& map) {$/;"	f	typeref:typename:std::string
 _map_value_type	include/debug.hpp	/^std::string _map_value_type(const std::map<K, V>&) {$/;"	f	typeref:typename:std::string
 _max_client_number	server/Server.hpp	/^  int _max_client_number;$/;"	m	class:Server	typeref:typename:int
 _serialize	debug/Serializable.cpp	/^string Serializable::_serialize(const int depth) const {$/;"	f	class:Serializable	typeref:typename:string
@@ -146,7 +152,7 @@ _serialize	debug/Serializable.cpp	/^string _serialize(const map<string, const Se
 _serialize	debug/Serializable.cpp	/^string _serialize(const vector<const Serializable*>& vec, const int depth) {$/;"	f	typeref:typename:string
 _server_addr	server/Server.hpp	/^  struct sockaddr_in _server_addr;$/;"	m	class:Server	typeref:struct:sockaddr_in
 _server_socket	server/Server.hpp	/^  int _server_socket;$/;"	m	class:Server	typeref:typename:int
-_vector_element_type	include/debug.hpp	/^std::string _vector_element_type(const std::vector<T>&) {$/;"	f	typeref:typename:std::string
+_vector_element_type	include/debug.hpp	/^std::string _vector_element_type(const std::vector<T*>& vec) {$/;"	f	typeref:typename:std::string
 acceptClient	server/Server.cpp	/^void Server::acceptClient() {$/;"	f	class:Server	typeref:typename:void
 add_channel	user/User.cpp	/^void User::add_channel(const Channel& channel) {$/;"	f	class:User	typeref:typename:void
 add_user	channel/Channel.cpp	/^void Channel::add_user(const User& user) {$/;"	f	class:Channel	typeref:typename:void

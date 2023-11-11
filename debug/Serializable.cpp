@@ -28,21 +28,6 @@ using std::list;
 
 typedef std::pair<string, const Serializable*> KeyValue;
 
-template <>
-bool _is_serializable<Serializable>() {
-	return true;
-}
-
-template <>
-bool _has_label<Serializable>() {
-	return true;
-}
-
-template <>
-string _get_label(Serializable &s) {
-	return s._get_label();
-}
-
 vector<KeyValue> Serializable::_get_children() const {
 	return std::vector<KeyValue>();
 }
@@ -149,3 +134,46 @@ string _serialize(const list<Serializable *>& li, const int depth) {
 	}
 	return ss.str();
 }
+
+// json
+
+template <>
+bool _is_serializable<Serializable>() {
+	return true;
+}
+
+template <>
+bool _has_label<Serializable>() {
+	return true;
+}
+
+template <>
+bool _has_label<const Serializable>() {
+	return true;
+}
+
+template <>
+bool _has_label<const Serializable*>() {
+	return true;
+}
+
+template <>
+bool _has_label<Serializable*>() {
+	return true;
+}
+
+template <>
+string _get_label(Serializable &s) {
+	return typeid(s).name();
+}
+
+template <>
+string _get_label(const Serializable* s) {
+	return typeid(*s).name(); 
+}
+
+template <>
+string _get_label(Serializable* s) {
+	return typeid(*s).name(); 
+}
+

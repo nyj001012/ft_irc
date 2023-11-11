@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef __JSON_HPP
+# define  __JSON_HPP
 # include "../debug/Serializable.hpp"
 # include <algorithm>
 # include <cstddef>
@@ -26,7 +28,7 @@ bool _has_label() {
 }
 
 template <typename T>
-std::string _get_label(T &_t) {
+std::string _get_label(T _t) {
 	(void)_t;
 	return "";
 }
@@ -97,3 +99,4 @@ std::ostream& _json(std::ostream& os, const std::map<std::string, T>& map) {
 	}
 	return os;
 }
+#endif // ! __JSON_HPP
