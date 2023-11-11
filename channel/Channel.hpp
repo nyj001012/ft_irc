@@ -47,9 +47,9 @@ class Channel: public Serializable {
 		};
 	
 	private:
-		std::vector<const User*> users;
 		std::string name;
 		std::string topic;
+		std::vector<const User*> users;
 		const User* operator_user;
 
 		Channel();

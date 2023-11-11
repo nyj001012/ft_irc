@@ -11,7 +11,9 @@
 /* ************************************************************************** */
 
 #include "channel/Channel.hpp"
+#include "data/ChannelData.hpp"
 #include "include/utils.hpp"
+#include "data/UserData.hpp"
 #include "include/debug.hpp"
 #include "server/Server.hpp"
 #include "user/User.hpp"
@@ -22,22 +24,24 @@ using std::cout;
 
 int main(int argc, char *argv[]) {
 
-	(void)argc, (void)argv;
-
-
 	Connection c;
 	c.is_alive = true;
 	c.address = "127.0.0.1";
 	c.port = 8080;
 	c.socket_fd = 10;
 
-	User heshin = User(c, "heshin");
-	Channel ch("42", heshin);
-	
-	heshin.add_channel(ch);
+	User& heshin = UserData::get_storage().create_user(c, "heshin");
+	Channel& joined = ChannelData::get_storage().join_channel("42", heshin);
+	heshin.add_channel(joined);
 
-	cout << ch._serialize(2) << '\n';
-	return 0;
+	for (int i = 0; i < 3; ++i) {
+		cout << ChannelData::get_storage()._serialize(i) << '\n';
+		cout << "---------------------------------------------------" << '\n';
+	}
+	for (int i = 0; i < 3; ++i) {
+		cout << UserData::get_storage()._serialize(i) << '\n';
+		cout << "---------------------------------------------------" << '\n';
+	}
 
   const char *port;
   Server server;

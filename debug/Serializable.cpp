@@ -67,9 +67,8 @@ string Serializable::_serialize(const int depth) const {
 			vector<KeyValue>::const_iterator iter;
 			for (iter = children.begin(); iter != children.end(); ++iter) {
 				ss << '"' + iter->first + "\":" 
-					<< iter->second->_serialize(depth - 1);
-				if (iter + 1 != children.end())
-					ss << ',';
+					<< iter->second->_serialize(depth - 1)
+					<< ',';
 			}
 		}
 		_add_to_serialization(ss, depth);
@@ -128,14 +127,14 @@ string _serialize(const vector<const Serializable*>& vec, const int depth) {
 	return ss.str();
 }
 
-string _serialize(const list<Serializable>& li, const int depth) {
+string _serialize(const list<Serializable *>& li, const int depth) {
 	stringstream ss;
 
 	if (depth > 0 && li.size() > 0) {
 		ss << '[';
-		list<Serializable>::const_iterator iter = li.begin();
+		list<Serializable*>::const_iterator iter = li.begin();
 		while (true) {
-			ss << iter->_serialize(depth);	
+			ss << (*iter)->_serialize(depth);	
 			if (++iter == li.end()) {
 				ss << ']';
 				break;

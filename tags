@@ -20,12 +20,12 @@ COMMAND	include/parse.hpp	/^#define COMMAND /;"	d
 COMMAND_HPP	message/Message.hpp	/^# define COMMAND_HPP$/;"	d
 CXXFLAGS	Makefile	/^CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g$/;"	m
 Channel	channel/Channel.cpp	/^Channel::Channel(): operator_user(NULL) {}$/;"	f	class:Channel
-Channel	channel/Channel.cpp	/^Channel::Channel(const Channel& other) {$/;"	f	class:Channel
+Channel	channel/Channel.cpp	/^Channel::Channel(const Channel& other)$/;"	f	class:Channel
 Channel	channel/Channel.cpp	/^Channel::Channel(const string& name, const User& operator_user)$/;"	f	class:Channel
 Channel	channel/Channel.hpp	/^class Channel: public Serializable {$/;"	c
 ChannelAlreadyExist	data/ChannelData.hpp	/^		struct ChannelAlreadyExist: public std::exception {$/;"	s	class:ChannelData
 ChannelData	data/ChannelData.cpp	/^ChannelData::ChannelData() {}$/;"	f	class:ChannelData
-ChannelData	data/ChannelData.hpp	/^class ChannelData{$/;"	c
+ChannelData	data/ChannelData.hpp	/^class ChannelData: public Serializable {$/;"	c
 ChannelNotExist	data/ChannelData.hpp	/^		struct ChannelNotExist: public std::exception { $/;"	s	class:ChannelData
 Command	message/Message.cpp	/^Command::Command() {}$/;"	f	class:Command
 Command	message/Message.cpp	/^Command::Command(const string& str) {$/;"	f	class:Command
@@ -54,6 +54,7 @@ INCLUDE	Makefile	/^INCLUDE = -I include -I include\/server$/;"	m
 INVITE	message/Message.hpp	/^		INVITE,$/;"	e	enum:Command::Type
 JOIN	message/Message.hpp	/^		JOIN,$/;"	e	enum:Command::Type
 KeyValue	channel/Channel.cpp	/^typedef std::pair<string, const Serializable*> KeyValue;$/;"	t	typeref:typename:std::pair<string,const Serializable * >	file:
+KeyValue	data/UserData.cpp	/^typedef pair<string, const Serializable*> KeyValue;$/;"	t	typeref:typename:pair<string,const Serializable * >	file:
 KeyValue	debug/Serializable.cpp	/^typedef std::pair<string, const Serializable*> KeyValue;$/;"	t	typeref:typename:std::pair<string,const Serializable * >	file:
 KeyValue	user/User.cpp	/^typedef std::pair<string, const Serializable*> KeyValue;$/;"	t	typeref:typename:std::pair<string,const Serializable * >	file:
 MAX_CLIENT_NUM	server/Server.hpp	/^#define MAX_CLIENT_NUM /;"	d
@@ -93,12 +94,14 @@ User	user/User.cpp	/^User::User(const User& other):$/;"	f	class:User
 User	user/User.hpp	/^class User: public Serializable {$/;"	c
 UserAlreadyExist	data/UserData.hpp	/^	struct UserAlreadyExist: public std::exception {$/;"	s	class:UserData
 UserData	data/UserData.cpp	/^UserData::UserData() {}$/;"	f	class:UserData
-UserData	data/UserData.hpp	/^class UserData {$/;"	c
+UserData	data/UserData.hpp	/^class UserData: public Serializable {$/;"	c
 UserNotExist	data/UserData.hpp	/^	struct UserNotExist: public std::exception {$/;"	s	class:UserData
 V4	user/User.hpp	/^		V4,$/;"	e	enum:Connection::__anon77e66f480103
 V6	user/User.hpp	/^		V6$/;"	e	enum:Connection::__anon77e66f480103
 __anon77e66f480103	user/User.hpp	/^	enum {$/;"	g	struct:Connection
 _add_to_serialization	channel/Channel.cpp	/^ostream& Channel::_add_to_serialization(ostream& os, const int depth) const {$/;"	f	class:Channel	typeref:typename:ostream &
+_add_to_serialization	data/ChannelData.cpp	/^ostream& ChannelData::_add_to_serialization(ostream& os, const int depth) const {$/;"	f	class:ChannelData	typeref:typename:ostream &
+_add_to_serialization	data/UserData.cpp	/^ostream& UserData::_add_to_serialization(ostream& os, const int depth) const {$/;"	f	class:UserData	typeref:typename:ostream &
 _add_to_serialization	debug/Serializable.cpp	/^ostream& Serializable::_add_to_serialization(ostream& os, const int _d) const {$/;"	f	class:Serializable	typeref:typename:ostream &
 _add_to_serialization	user/User.cpp	/^ostream& Connection::_add_to_serialization(ostream& os, const int _d) const {$/;"	f	class:Connection	typeref:typename:ostream &
 _add_to_serialization	user/User.cpp	/^ostream& User::_add_to_serialization(ostream& os, const int depth) const {$/;"	f	class:User	typeref:typename:ostream &
@@ -108,6 +111,8 @@ _get_children	channel/Channel.cpp	/^vector<KeyValue> Channel::_get_children() co
 _get_children	debug/Serializable.cpp	/^vector<KeyValue> Serializable::_get_children() const {$/;"	f	class:Serializable	typeref:typename:vector<KeyValue>
 _get_children	user/User.cpp	/^vector<KeyValue> User::_get_children() const {$/;"	f	class:User	typeref:typename:vector<KeyValue>
 _get_label	channel/Channel.cpp	/^string Channel::_get_label() const {$/;"	f	class:Channel	typeref:typename:string
+_get_label	data/ChannelData.cpp	/^string ChannelData::_get_label() const {$/;"	f	class:ChannelData	typeref:typename:string
+_get_label	data/UserData.cpp	/^string UserData::_get_label() const {$/;"	f	class:UserData	typeref:typename:string
 _get_label	debug/Serializable.cpp	/^string Serializable::_get_label() const {$/;"	f	class:Serializable	typeref:typename:string
 _get_label	debug/Serializable.cpp	/^string _get_label(Serializable &s) {$/;"	f	typeref:typename:string
 _get_label	include/json.hpp	/^std::string _get_label(T &_t) {$/;"	f	typeref:typename:std::string
@@ -136,7 +141,7 @@ _map_key_type	include/debug.hpp	/^std::string _map_key_type(const std::map<K, V>
 _map_value_type	include/debug.hpp	/^std::string _map_value_type(const std::map<K, V>&) {$/;"	f	typeref:typename:std::string
 _max_client_number	server/Server.hpp	/^  int _max_client_number;$/;"	m	class:Server	typeref:typename:int
 _serialize	debug/Serializable.cpp	/^string Serializable::_serialize(const int depth) const {$/;"	f	class:Serializable	typeref:typename:string
-_serialize	debug/Serializable.cpp	/^string _serialize(const list<Serializable>& li, const int depth) {$/;"	f	typeref:typename:string
+_serialize	debug/Serializable.cpp	/^string _serialize(const list<Serializable *>& li, const int depth) {$/;"	f	typeref:typename:string
 _serialize	debug/Serializable.cpp	/^string _serialize(const map<string, const Serializable*>& m, const int depth) {$/;"	f	typeref:typename:string
 _serialize	debug/Serializable.cpp	/^string _serialize(const vector<const Serializable*>& vec, const int depth) {$/;"	f	typeref:typename:string
 _server_addr	server/Server.hpp	/^  struct sockaddr_in _server_addr;$/;"	m	class:Server	typeref:struct:sockaddr_in
@@ -145,18 +150,18 @@ _vector_element_type	include/debug.hpp	/^std::string _vector_element_type(const 
 acceptClient	server/Server.cpp	/^void Server::acceptClient() {$/;"	f	class:Server	typeref:typename:void
 add_channel	user/User.cpp	/^void User::add_channel(const Channel& channel) {$/;"	f	class:User	typeref:typename:void
 add_user	channel/Channel.cpp	/^void Channel::add_user(const User& user) {$/;"	f	class:Channel	typeref:typename:void
-add_user	data/UserData.cpp	/^void UserData::add_user(const User& user) {$/;"	f	class:UserData	typeref:typename:void
 address	user/User.hpp	/^	std::string address;$/;"	m	struct:Connection	typeref:typename:std::string
 all	Makefile	/^all:	${NAME}$/;"	t
 all_commands	message/Message.cpp	/^const char *all_commands[] = {$/;"	v	typeref:typename:const char * []
-channel_map	data/ChannelData.hpp	/^		std::map<std::string, std::list<Channel>::iterator> channel_map;$/;"	m	class:ChannelData	typeref:typename:std::map<std::string,std::list<Channel>::iterator>
+channel_map	data/ChannelData.hpp	/^		std::map<std::string, const Channel*> channel_map;$/;"	m	class:ChannelData	typeref:typename:std::map<std::string,const Channel * >
 channels	data/ChannelData.hpp	/^		std::list<Channel> channels;$/;"	m	class:ChannelData	typeref:typename:std::list<Channel>
 clean	Makefile	/^clean:$/;"	t
 closeClient	server/Server.cpp	/^void Server::closeClient(int client_socket) {$/;"	f	class:Server	typeref:typename:void
 closeServer	server/Server.cpp	/^void Server::closeServer() {$/;"	f	class:Server	typeref:typename:void
 command	message/Message.hpp	/^	Command command;$/;"	m	struct:Message	typeref:typename:Command
 connection	user/User.hpp	/^		Connection connection;$/;"	m	class:User	typeref:typename:Connection
-create_channel	data/ChannelData.cpp	/^void ChannelData::create_channel(const string& name, const User& user) {$/;"	f	class:ChannelData	typeref:typename:void
+create_channel	data/ChannelData.cpp	/^Channel& ChannelData::create_channel(const string& name, const User& user) {$/;"	f	class:ChannelData	typeref:typename:Channel &
+create_user	data/UserData.cpp	/^User& UserData::create_user(const Connection connection, const string& nick) {$/;"	f	class:UserData	typeref:typename:User &
 delete_user	data/UserData.cpp	/^void UserData::delete_user(const User& user) {$/;"	f	class:UserData	typeref:typename:void
 fclean	Makefile	/^fclean:	clean$/;"	t
 ft_irc	README.md	/^# ft_irc$/;"	c
@@ -197,7 +202,7 @@ is_equal	user/User.cpp	/^bool Connection::is_equal(const Connection& other) cons
 is_equal	user/User.cpp	/^bool User::is_equal(const User& other) const {$/;"	f	class:User	typeref:typename:bool
 is_joined	user/User.cpp	/^bool User::is_joined(const string& channel_name) const {$/;"	f	class:User	typeref:typename:bool
 is_user_exist	data/UserData.cpp	/^bool UserData::is_user_exist(const string& nickname) const {$/;"	f	class:UserData	typeref:typename:bool
-join_channel	data/ChannelData.cpp	/^void ChannelData::join_channel(const string& name, const User& user) {$/;"	f	class:ChannelData	typeref:typename:void
+join_channel	data/ChannelData.cpp	/^Channel& ChannelData::join_channel(const string& name, const User& user) {$/;"	f	class:ChannelData	typeref:typename:Channel &
 joined_channels	user/User.hpp	/^		std::vector<const Channel*> joined_channels;$/;"	m	class:User	typeref:typename:std::vector<const Channel * >
 leave_channel	data/ChannelData.cpp	/^void ChannelData::leave_channel(const Channel &channel, const User& user) {$/;"	f	class:ChannelData	typeref:typename:void
 main	main.cpp	/^int main(int argc, char *argv[]) {$/;"	f	typeref:typename:int

@@ -15,6 +15,7 @@
 #include "../include/utils.hpp"
 #include "../include/json.hpp"
 #include "../debug/Serializable.hpp"
+#include <algorithm>
 #include <netinet/in.h>
 #include <ostream>
 #include <stdexcept>
@@ -30,7 +31,6 @@ using std::stringstream;
 using std::ostream;
 using std::pair;
 using std::make_pair;
-using std::map;
 
 typedef std::pair<string, const Serializable*> KeyValue;
 
@@ -96,9 +96,10 @@ const string& User::get_hostname() const {
 }
 
 void User::add_channel(const Channel& channel) {
-	if (!is_joined(channel.get_name())) {
+	vector<const Channel*>::iterator found;
+	found = std::find(joined_channels.begin(), joined_channels.end(), &channel);
+	if (found == joined_channels.end())
 		joined_channels.push_back(&channel);	
-	}
 }
 
 void User::remove_channel(const Channel& channel) {
@@ -207,7 +208,6 @@ vector<KeyValue> User::_get_children() const {
 
 ostream& User::_add_to_serialization(ostream& os, const int depth) const {
 
-	os << ',';
 	_json(os, "nickname", ':', nickname, ',');
 	_json(os, "hostname", ':', hostname, ',');
 	if (depth > 0) {

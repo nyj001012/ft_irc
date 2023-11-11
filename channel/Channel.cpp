@@ -32,9 +32,19 @@ Channel::Channel(): operator_user(NULL) {}
 Channel::~Channel() { }
 Channel::Channel(const string& name, const User& operator_user)
 	:name(name),
+	users(vector<const User*>()),
 	operator_user(&operator_user)
 { 
 	users.push_back(&operator_user);
+}
+
+Channel::Channel(const Channel& other)
+	:name(other.name), 
+	topic(other.topic),
+	users(other.users),
+	operator_user(other.operator_user)
+{
+
 }
 
 const string& Channel::get_name() const {
@@ -96,7 +106,6 @@ vector<KeyValue> Channel::_get_children() const {
 }
 
 ostream& Channel::_add_to_serialization(ostream& os, const int depth) const {
-	os << ',';
 	_json(os, "name", ':', name, ',');
 	_json(os, "topic", ':', topic, ',');
 	if (depth > 0) {
@@ -111,10 +120,6 @@ ostream& Channel::_add_to_serialization(ostream& os, const int depth) const {
 
 bool operator==(const Channel& a, const Channel& b) {
 	return a.is_equal(b);
-}
-
-Channel::Channel(const Channel& other) {
-	(void)other;
 }
 
 Channel& Channel::operator=(const Channel& other) {

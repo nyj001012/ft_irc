@@ -36,5 +36,5 @@ bool _is_serializable() {
 
 std::string _serialize(const std::map<std::string, const Serializable*>&, const int);
 std::string _serialize(const std::vector<const Serializable*>&, const int);
-std::string _serialize(const std::list<Serializable>&, const int);
+std::string _serialize(const std::list<Serializable *>&, const int);
 #endif
