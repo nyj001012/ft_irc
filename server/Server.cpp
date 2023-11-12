@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/12 14:06:33 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/12 16:01:39 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,11 +160,10 @@ void Server::runServer() {
         if (i == this->_server_socket)
           this->acceptClient();
         else {
-          char *message = this->receiveMessage(i);
+          std::array<char, BUFFER_SIZE> message = this->receiveMessage(i);
           std::vector<t_token> tokens;
-          if (parseMessageFormat(message, this->_is_debug, tokens))
-            this->sendMessage(i, message);
-          delete[] message;
+          if (parseMessageFormat(message.data(), this->_is_debug, tokens))
+            this->sendMessage(i, message.data());
         }
       }
     }
@@ -192,19 +191,18 @@ void Server::acceptClient() {
  * @param client_socket 클라이언트 소켓
  * @return 클라이언트로부터 받은 메시지
  */
-char *Server::receiveMessage(int client_socket) {
-  char *buffer = new char[BUFFER_SIZE];
+std::array<char, BUFFER_SIZE> Server::receiveMessage(int client_socket) {
+  std::array<char, BUFFER_SIZE> buffer;
 
-  std::memset(buffer, 0, BUFFER_SIZE);
-  ssize_t read_size = read(client_socket, buffer, BUFFER_SIZE);
+  ssize_t read_size = read(client_socket, &buffer, BUFFER_SIZE);
   if (read_size == -1)
     throw std::runtime_error("Error: read() failed");
   if (read_size == 0) {
     this->closeClient(client_socket);
-    return NULL;
+    return buffer;
   }
   if (this->_is_debug)
-    std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer << FB_DEFAULT << std::endl;
+    std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
   return buffer;
 }
 

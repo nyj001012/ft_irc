@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/09 19:29:19 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/12 15:45:33 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <arpa/inet.h>
 #include <iomanip>
 #include <unistd.h>
+#include <array>
 #include "../include/parse.hpp"
 
 #define MAX_CLIENT_NUM 10
@@ -48,7 +49,7 @@ class Server {
   void initializeClientFds();
   void runServer();
   void acceptClient();
-  char *receiveMessage(int client_socket);
+  std::array <char, BUFFER_SIZE>receiveMessage(int client_socket);
   void sendMessage(int client_socket, char *message);
   void closeClient(int client_socket);
   void closeServer();
