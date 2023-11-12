@@ -12,6 +12,7 @@
 
 #ifndef USER_DATA_HPP
 # define USER_DATA_HPP
+# include "../debug/Serializable.hpp"
 # include <exception>
 # include <map>
 # include <string>
@@ -21,15 +22,17 @@
 struct Connection;
 class User;
 
-class UserData {
+class UserData: public Serializable {
 
 	public:
 		static UserData& get_storage();
 		~UserData();
 		bool is_user_exist(const std::string&) const;
 		User& get_user(const std::string&) const;
-		void add_user(const User&);
+		User& create_user(const Connection Connection, const std::string& nick);
 		void delete_user(const User&);
+		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+		virtual std::string _get_label() const;
 
 	struct UserNotExist: public std::exception {
 		virtual const char* what() const throw();

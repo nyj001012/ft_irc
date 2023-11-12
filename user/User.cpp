@@ -6,20 +6,33 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:25:08 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 21:56:35 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
 #include "../channel/Channel.hpp"
 #include "../include/utils.hpp"
+#include "../include/json.hpp"
+#include "../debug/Serializable.hpp"
+#include <algorithm>
 #include <netinet/in.h>
+#include <ostream>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 #include <arpa/inet.h>
+#include <sstream>
 
 using std::string;
 using std::vector;
+using std::ostream;
+using std::stringstream;
+using std::ostream;
+using std::pair;
+using std::make_pair;
+
+typedef std::pair<string, const Serializable*> KeyValue;
 
 Connection::Connection(): is_alive(false) {}
 Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): is_alive(false), socket_fd(socket_fd) {
@@ -83,9 +96,10 @@ const string& User::get_hostname() const {
 }
 
 void User::add_channel(const Channel& channel) {
-	if (!is_joined(channel.get_name())) {
+	vector<const Channel*>::iterator found;
+	found = std::find(joined_channels.begin(), joined_channels.end(), &channel);
+	if (found == joined_channels.end())
 		joined_channels.push_back(&channel);	
-	}
 }
 
 void User::remove_channel(const Channel& channel) {
@@ -152,6 +166,56 @@ bool Connection::is_equal(const Connection& other) const {
 bool operator==(const User& a, const User& b) {
 	return a.is_equal(b);
 }
+
 bool operator==(const Connection& a, const Connection& b) {
 	return a.is_equal(b);
+}
+
+// Serializable
+
+string Connection::_get_label() const {
+	stringstream ss;
+	ss << address << ":" << port;
+	if (is_alive)
+		ss << "(alive)";
+	else 
+		ss << "(not alive)";
+	return ss.str();
+} 
+
+ostream& Connection::_add_to_serialization(ostream& os, const int _d) const {
+	
+	_json(os, "address", ':', address, ',');
+	_json(os, "port", ':', port, ',');
+	_json(os, "is_alive", ':', is_alive, ',');
+	_json(os, "socket_fd", ':', socket_fd);
+	(void)_d;
+	return os;
+}
+
+string User::_get_label() const {
+	if (hostname.empty())
+		return nickname;
+	return nickname + "@" + hostname;
+}
+
+
+vector<KeyValue> User::_get_children() const {
+	vector<KeyValue> v;
+	v.push_back(make_pair("connection", &this->connection));		
+	return v;
+}
+
+ostream& User::_add_to_serialization(ostream& os, const int depth) const {
+
+	_json(os, "nickname", ':', nickname, ',');
+	_json(os, "hostname", ':', hostname, ',');
+	if (depth > 0) {
+		vector<const Serializable*> vec(joined_channels.begin(), joined_channels.end());
+		_json(os, "channel", ':') << ::_serialize(vec, depth - 1);
+	}
+	else {
+		_json(os, "number of joined channels", ':', joined_channels.size());
+	}
+	return os;
 }

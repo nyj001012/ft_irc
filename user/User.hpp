@@ -6,19 +6,21 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:27:18 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/09 21:53:37 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef USER_HPP
 # define USER_HPP
+# include "../debug/Serializable.hpp"
 # include <string>
 # include <sys/socket.h>
 # include <vector>
+# include <ostream>
 
 class Channel;
 
-struct Connection {
+struct Connection: Serializable {
 
 	bool is_alive;
 
@@ -29,13 +31,15 @@ struct Connection {
 	std::string address;
 	int port;
 	int socket_fd;
+	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+	virtual std::string _get_label() const;
 
 	bool is_equal(const Connection&) const;
 	Connection();
 	Connection(const struct sockaddr_storage*, const int socket_fd);
 };
 
-class User {
+class User: public Serializable {
 
 	public:
 		User(const Connection connection, const std::string& nick);
@@ -53,6 +57,10 @@ class User {
 		bool is_joined(const std::string&) const;
 		std::vector<const Channel*> get_all_channels() const;
 		bool is_equal(const User&) const;
+
+	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+	virtual std::string _get_label() const;
+	virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 
 	private:
 		User();

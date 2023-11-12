@@ -12,6 +12,7 @@
 
 #ifndef CHANNEL_DATA_HPP
 # define CHANNEL_DATA_HPP
+# include "../debug/Serializable.hpp"
 # include <exception>
 # include <map>
 # include <string>
@@ -21,15 +22,18 @@
 class Channel;
 class User;
 
-class ChannelData{
+class ChannelData: public Serializable {
 
 	public:
 		static ChannelData& get_storage();
 		~ChannelData();
 		bool is_channel_exist(const std::string&) const;
 		Channel& get_channel(const std::string&) const;
-		void join_channel(const std::string& name, const User&);
+		Channel& join_channel(const std::string& name, const User&);
 		void leave_channel(const Channel& channel, const User&);
+
+		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+		virtual std::string _get_label() const;
 
 		struct ChannelNotExist: public std::exception { 
 			virtual const char* what() const throw();
@@ -41,9 +45,9 @@ class ChannelData{
 
 	private:
 		ChannelData();
-		void create_channel(const std::string& name, const User&);
+		Channel& create_channel(const std::string& name, const User&);
 		void remove_channel(const Channel&);
 		std::list<Channel> channels;
-		std::map<std::string, std::list<Channel>::iterator> channel_map;
+		std::map<std::string, const Channel*> channel_map;
 };
 #endif
