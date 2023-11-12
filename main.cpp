@@ -24,22 +24,7 @@
 using std::cout;
 
 int main(int argc, char *argv[]) {
-
-	Connection c;
-	c.is_alive = true;
-	c.address = "127.0.0.1";
-	c.port = 8080;
-	c.socket_fd = 10;
-
-	User& heshin = UserData::get_storage().create_user(c, "heshin");
-	Channel& joined = ChannelData::get_storage().join_channel("42", heshin);
-	heshin.add_channel(joined);
-
-	Reflector::shared().add(UserData::get_storage());
-	Reflector::shared().add(ChannelData::get_storage());
-	Reflector::shared().update("test");
-
-  const char *port;
+	 const char *port;
   Server server;
 
   if (argc != 2) {
