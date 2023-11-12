@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/06 20:11:44 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/12 16:01:39 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ void Server::setIsDebug(bool is_debug) {
 
 /**
  * 서버를 초기화한다. 서버 소켓을 생성하고, 주소를 바인딩한다.
- * memset() 함수를 이용해 serv_addr 구조체를 0으로 초기화하니 port가 0으로 초기화되어 port를 따로 복사해두었다.
  * @param port 서버의 포트
  */
 void Server::initializeServer(const char *port) {
@@ -109,13 +108,10 @@ void Server::initializeServer(const char *port) {
   if (this->_server_socket == -1)
     throw std::runtime_error("Error: socket() failed");
   fcntl(this->_server_socket, F_SETFL, O_NONBLOCK);
-  // TODO => port backup 삭제
-  char *port_backup = new char[std::strlen(port) + 1];
-  std::strcpy(port_backup, port);
   std::memset(&serv_addr, 0, sizeof(serv_addr));
   serv_addr.sin_family = AF_UNSPEC;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-  serv_addr.sin_port = htons(atoi(port_backup));
+  serv_addr.sin_port = htons(atoi(port));
 
   if (bind(this->_server_socket, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) == -1) {
     this->closeServer();
@@ -123,7 +119,6 @@ void Server::initializeServer(const char *port) {
   }
   if (this->_is_debug)
     std::cout << F_YELLOW << "[DEBUG] Server initialized: " << FB_DEFAULT << std::endl;
-  delete[] port_backup;
   if (listen(this->_server_socket, MAX_CLIENT_NUM) == -1) {
     this->closeServer();
     throw std::runtime_error("Error: listen() failed");
@@ -165,11 +160,10 @@ void Server::runServer() {
         if (i == this->_server_socket)
           this->acceptClient();
         else {
-          char *message = this->receiveMessage(i);
+          std::array<char, BUFFER_SIZE> message = this->receiveMessage(i);
           std::vector<t_token> tokens;
-          if (parseMessageFormat(message, this->_is_debug, tokens))
-            this->sendMessage(i, message);
-          delete[] message;
+          if (parseMessageFormat(message.data(), this->_is_debug, tokens))
+            this->sendMessage(i, message.data());
         }
       }
     }
@@ -197,19 +191,18 @@ void Server::acceptClient() {
  * @param client_socket 클라이언트 소켓
  * @return 클라이언트로부터 받은 메시지
  */
-char *Server::receiveMessage(int client_socket) {
-  char *buffer = new char[BUFFER_SIZE];
+std::array<char, BUFFER_SIZE> Server::receiveMessage(int client_socket) {
+  std::array<char, BUFFER_SIZE> buffer;
 
-  std::memset(buffer, 0, BUFFER_SIZE);
-  ssize_t read_size = read(client_socket, buffer, BUFFER_SIZE);
+  ssize_t read_size = read(client_socket, &buffer, BUFFER_SIZE);
   if (read_size == -1)
     throw std::runtime_error("Error: read() failed");
   if (read_size == 0) {
     this->closeClient(client_socket);
-    return NULL;
+    return buffer;
   }
   if (this->_is_debug)
-    std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer << FB_DEFAULT << std::endl;
+    std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
   return buffer;
 }
 

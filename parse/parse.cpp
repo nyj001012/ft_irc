@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/09 19:35:45 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/12 13:58:29 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,23 +127,9 @@ int parseCommand(std::string command_part, std::vector<t_token> &tokens) {
       if (!std::isalpha(command[i]))
         return FAIL;
     }
-    if (!isExecutableCommand(command))
-      return FAIL;
   }
   tokens.push_back((t_token) {COMMAND, command});
   return parseParams(command_part, tokens);
-}
-
-/**
- * 실행할 수 있는 명령어인지 확인하는 함수. KICK, INVITE, TOPIC, MODE만 실행 가능하다.
- * @param command_part 확인할 명령어 부분. 파라미터 부분을 제외한 명령어 부분이다.
- * @return 실행할 수 있는 명령어면 SUCCESS, 아니면 FAIL
- */
-bool isExecutableCommand(std::string command_part) {
-  if (command_part == "KICK" || command_part == "INVITE"
-      || command_part == "TOPIC" || command_part == "MODE")
-    return true;
-  return false;
 }
 
 /**

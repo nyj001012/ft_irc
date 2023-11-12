@@ -1,4 +1,4 @@
-NAME = ft_irc
+NAME = ircserv
 SRCS = main.cpp \
 	   debug/debug.cpp \
 		 debug/Serializable.cpp \

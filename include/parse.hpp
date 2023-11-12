@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/09 21:57:54 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/12 13:59:12 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token> 
 int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens);
 int parseCommandWithOptions(std::string command, std::vector<t_token> &tokens);
 int parseCommand(std::string command_part, std::vector<t_token> &tokens);
-bool isExecutableCommand(std::string command_part);
 int parseParams(std::string command_part, std::vector<t_token> &tokens);
 int parseTrailing(std::string params, std::vector<t_token> &tokens);
 int parseMiddle(std::string params, std::vector<t_token> &tokens);
