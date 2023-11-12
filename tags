@@ -11,6 +11,9 @@
 !_TAG_PROGRAM_VERSION	5.9.0	//
 ${NAME}	Makefile	/^${NAME}:	${OBJS}$/;"	t
 %.o	Makefile	/^%.o: %.cpp$/;"	t
+0	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	o	array:Channel data(number of channel=1).channels
+0	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	o	array:User Data(number of users=1).users
+42	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	o	object:Channel data(number of channel=1).channel by name
 AlreadyJoined	channel/Channel.hpp	/^		struct AlreadyJoined: std::exception {$/;"	s	class:Channel
 BUFFER_SIZE	server/Server.hpp	/^#define BUFFER_SIZE /;"	d
 CHANNEL_DATA_HPP	data/ChannelData.hpp	/^# define CHANNEL_DATA_HPP$/;"	d
@@ -23,6 +26,7 @@ Channel	channel/Channel.cpp	/^Channel::Channel(): operator_user(NULL) {}$/;"	f	c
 Channel	channel/Channel.cpp	/^Channel::Channel(const Channel& other)$/;"	f	class:Channel
 Channel	channel/Channel.cpp	/^Channel::Channel(const string& name, const User& operator_user)$/;"	f	class:Channel
 Channel	channel/Channel.hpp	/^class Channel: public Serializable {$/;"	c
+Channel data(number of channel=1)	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	o
 ChannelAlreadyExist	data/ChannelData.hpp	/^		struct ChannelAlreadyExist: public std::exception {$/;"	s	class:ChannelData
 ChannelData	data/ChannelData.cpp	/^ChannelData::ChannelData() {}$/;"	f	class:ChannelData
 ChannelData	data/ChannelData.hpp	/^class ChannelData: public Serializable {$/;"	c
@@ -66,13 +70,17 @@ NICK	include/parse.hpp	/^#define NICK /;"	d
 NICK	message/Message.hpp	/^		NICK,$/;"	e	enum:Command::Type
 NoPermission	channel/Channel.hpp	/^		struct NoPermission: std::exception {$/;"	s	class:Channel
 OBJS	Makefile	/^OBJS = ${SRCS:.cpp=.o}$/;"	m
+OUTPUT_FILE	debug/Reflector.cpp	/^#define OUTPUT_FILE /;"	d	file:
 PARAMS	include/parse.hpp	/^#define PARAMS /;"	d
 PART	message/Message.hpp	/^		PART,$/;"	e	enum:Command::Type
 PASS	message/Message.hpp	/^		PASS = 0,$/;"	e	enum:Command::Type
 PRIVMSG	message/Message.hpp	/^		PRIVMSG,$/;"	e	enum:Command::Type
 ParsingFail	message/Message.hpp	/^	struct ParsingFail: public std::exception {$/;"	s	struct:Message
 QUIT	message/Message.hpp	/^		QUIT,$/;"	e	enum:Command::Type
+REFLECTOR_HPP	debug/Reflector.hpp	/^# define REFLECTOR_HPP$/;"	d
 RM	Makefile	/^RM = rm -f$/;"	m
+Reflector	debug/Reflector.cpp	/^Reflector::Reflector(): depth(3) {$/;"	f	class:Reflector
+Reflector	debug/Reflector.hpp	/^class Reflector {$/;"	c
 SERIALIZE_HPP	debug/Serializable.hpp	/^# define SERIALIZE_HPP$/;"	d
 SRCS	Makefile	/^SRCS = main.cpp \\$/;"	m
 SUCCESS	include/parse.hpp	/^#define SUCCESS /;"	d
@@ -92,6 +100,7 @@ User	user/User.cpp	/^User::User() { }$/;"	f	class:User
 User	user/User.cpp	/^User::User(const Connection connection, const string& nick)$/;"	f	class:User
 User	user/User.cpp	/^User::User(const User& other):$/;"	f	class:User
 User	user/User.hpp	/^class User: public Serializable {$/;"	c
+User Data(number of users=1)	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	o
 UserAlreadyExist	data/UserData.hpp	/^	struct UserAlreadyExist: public std::exception {$/;"	s	class:UserData
 UserData	data/UserData.cpp	/^UserData::UserData() {}$/;"	f	class:UserData
 UserData	data/UserData.hpp	/^class UserData: public Serializable {$/;"	c
@@ -154,23 +163,32 @@ _server_addr	server/Server.hpp	/^  struct sockaddr_in _server_addr;$/;"	m	class:
 _server_socket	server/Server.hpp	/^  int _server_socket;$/;"	m	class:Server	typeref:typename:int
 _vector_element_type	include/debug.hpp	/^std::string _vector_element_type(const std::vector<T*>& vec) {$/;"	f	typeref:typename:std::string
 acceptClient	server/Server.cpp	/^void Server::acceptClient() {$/;"	f	class:Server	typeref:typename:void
+add	debug/Reflector.cpp	/^void Reflector::add(const Serializable& target) {$/;"	f	class:Reflector	typeref:typename:void
 add_channel	user/User.cpp	/^void User::add_channel(const Channel& channel) {$/;"	f	class:User	typeref:typename:void
 add_user	channel/Channel.cpp	/^void Channel::add_user(const User& user) {$/;"	f	class:Channel	typeref:typename:void
 address	user/User.hpp	/^	std::string address;$/;"	m	struct:Connection	typeref:typename:std::string
 all	Makefile	/^all:	${NAME}$/;"	t
 all_commands	message/Message.cpp	/^const char *all_commands[] = {$/;"	v	typeref:typename:const char * []
+channel	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:User Data(number of users=1).user for nickname.heshin
+channel	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:User Data(number of users=1).users.0
+channel by name	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	o	object:Channel data(number of channel=1)
 channel_map	data/ChannelData.hpp	/^		std::map<std::string, const Channel*> channel_map;$/;"	m	class:ChannelData	typeref:typename:std::map<std::string,const Channel * >
+channels	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	a	object:Channel data(number of channel=1)
 channels	data/ChannelData.hpp	/^		std::list<Channel> channels;$/;"	m	class:ChannelData	typeref:typename:std::list<Channel>
 clean	Makefile	/^clean:$/;"	t
 closeClient	server/Server.cpp	/^void Server::closeClient(int client_socket) {$/;"	f	class:Server	typeref:typename:void
 closeServer	server/Server.cpp	/^void Server::closeServer() {$/;"	f	class:Server	typeref:typename:void
 command	message/Message.hpp	/^	Command command;$/;"	m	struct:Message	typeref:typename:Command
+connection	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:User Data(number of users=1).user for nickname.heshin
+connection	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:User Data(number of users=1).users.0
 connection	user/User.hpp	/^		Connection connection;$/;"	m	class:User	typeref:typename:Connection
 create_channel	data/ChannelData.cpp	/^Channel& ChannelData::create_channel(const string& name, const User& user) {$/;"	f	class:ChannelData	typeref:typename:Channel &
 create_user	data/UserData.cpp	/^User& UserData::create_user(const Connection connection, const string& nick) {$/;"	f	class:UserData	typeref:typename:User &
 delete_user	data/UserData.cpp	/^void UserData::delete_user(const User& user) {$/;"	f	class:UserData	typeref:typename:void
+depth	debug/Reflector.hpp	/^		int depth;$/;"	m	class:Reflector	typeref:typename:int
 fclean	Makefile	/^fclean:	clean$/;"	t
 ft_irc	README.md	/^# ft_irc$/;"	c
+generate	debug/Reflector.cpp	/^string Reflector::generate() const {$/;"	f	class:Reflector	typeref:typename:string
 getClientFds	server/Server.cpp	/^fd_set Server::getClientFds() const {$/;"	f	class:Server	typeref:typename:fd_set
 getFdMax	server/Server.cpp	/^int Server::getFdMax() const {$/;"	f	class:Server	typeref:typename:int
 getIsDebug	server/Server.cpp	/^bool Server::getIsDebug() const {$/;"	f	class:Server	typeref:typename:bool
@@ -189,10 +207,14 @@ get_nickname	user/User.cpp	/^const string& User::get_nickname() const {$/;"	f	cl
 get_operator	channel/Channel.cpp	/^const User& Channel::get_operator() const {$/;"	f	class:Channel	typeref:typename:const User &
 get_storage	data/ChannelData.cpp	/^ChannelData& ChannelData::get_storage() {$/;"	f	class:ChannelData	typeref:typename:ChannelData &
 get_storage	data/UserData.cpp	/^UserData& UserData::get_storage() {$/;"	f	class:UserData	typeref:typename:UserData &
+get_time_stamp	debug/debug.cpp	/^std::string get_time_stamp() {$/;"	f	typeref:typename:std::string
 get_topic	channel/Channel.cpp	/^const string& Channel::get_topic() const {$/;"	f	class:Channel	typeref:typename:const string &
 get_user	data/UserData.cpp	/^User& UserData::get_user(const string& nickname) const {$/;"	f	class:UserData	typeref:typename:User &
 get_user_names	channel/Channel.cpp	/^vector<string> Channel::get_user_names() const {$/;"	f	class:Channel	typeref:typename:vector<string>
 get_users	channel/Channel.cpp	/^vector<const User*> Channel::get_users() const {$/;"	f	class:Channel	typeref:typename:vector<const User * >
+heshin	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	o	object:User Data(number of users=1).user for nickname
+hostname	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:User Data(number of users=1).user for nickname.heshin
+hostname	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:User Data(number of users=1).users.0
 hostname	user/User.hpp	/^		std::string hostname;$/;"	m	class:User	typeref:typename:std::string
 initializeClientFds	server/Server.cpp	/^void Server::initializeClientFds() {$/;"	f	class:Server	typeref:typename:void
 initializeServer	server/Server.cpp	/^void Server::initializeServer(const char *port) {$/;"	f	class:Server	typeref:typename:void
@@ -212,8 +234,18 @@ join_channel	data/ChannelData.cpp	/^Channel& ChannelData::join_channel(const str
 joined_channels	user/User.hpp	/^		std::vector<const Channel*> joined_channels;$/;"	m	class:User	typeref:typename:std::vector<const Channel * >
 leave_channel	data/ChannelData.cpp	/^void ChannelData::leave_channel(const Channel &channel, const User& user) {$/;"	f	class:ChannelData	typeref:typename:void
 main	main.cpp	/^int main(int argc, char *argv[]) {$/;"	f	typeref:typename:int
+message	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s
+message	debug/Reflector.hpp	/^		std::string message;$/;"	m	class:Reflector	typeref:typename:std::string
 name	channel/Channel.hpp	/^		std::string name;$/;"	m	class:Channel	typeref:typename:std::string
+name	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:Channel data(number of channel=1).channel by name.42
+name	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:Channel data(number of channel=1).channels.0
+nickname	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:User Data(number of users=1).user for nickname.heshin
+nickname	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:User Data(number of users=1).users.0
 nickname	user/User.hpp	/^		std::string nickname;$/;"	m	class:User	typeref:typename:std::string
+number of channels	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	n	object:Channel data(number of channel=1)
+number of users	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	n	object:User Data(number of users=1)
+operator	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:Channel data(number of channel=1).channel by name.42
+operator	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:Channel data(number of channel=1).channels.0
 operator <<	server/Server.cpp	/^std::ostream &operator<<(std::ostream &os, const Server &server) {$/;"	f	typeref:typename:std::ostream &
 operator <<	server/Server.cpp	/^std::ostream &operator<<(std::ostream &os, const fd_set &client_fds) {$/;"	f	typeref:typename:std::ostream &
 operator =	channel/Channel.cpp	/^Channel& Channel::operator=(const Channel& other) {$/;"	f	class:Channel	typeref:typename:Channel &
@@ -223,6 +255,7 @@ operator ==	channel/Channel.cpp	/^bool operator==(const Channel& a, const Channe
 operator ==	user/User.cpp	/^bool operator==(const Connection& a, const Connection& b) {$/;"	f	typeref:typename:bool
 operator ==	user/User.cpp	/^bool operator==(const User& a, const User& b) {$/;"	f	typeref:typename:bool
 operator_user	channel/Channel.hpp	/^		const User* operator_user;$/;"	m	class:Channel	typeref:typename:const User *
+outfile	debug/Reflector.hpp	/^		std::ofstream outfile;$/;"	m	class:Reflector	typeref:typename:std::ofstream
 params	message/Message.hpp	/^	std::vector<std::string> params;$/;"	m	struct:Message	typeref:typename:std::vector<std::string>
 parseCommand	parse/parse.cpp	/^int parseCommand(std::string command_part, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
 parseCommandWithOptions	parse/parse.cpp	/^int parseCommandWithOptions(std::string command, std::vector<t_token> &tokens) {$/;"	f	typeref:typename:int
@@ -250,15 +283,27 @@ setIsDebug	server/Server.cpp	/^void Server::setIsDebug(bool is_debug) {$/;"	f	cl
 setMaxClientNumber	server/Server.cpp	/^void Server::setMaxClientNumber(int max_client_number) {$/;"	f	class:Server	typeref:typename:void
 setServerAddr	server/Server.cpp	/^void Server::setServerAddr(struct sockaddr_in server_addr) {$/;"	f	class:Server	typeref:typename:void
 setServerSocket	server/Server.cpp	/^void Server::setServerSocket(int server_socket) {$/;"	f	class:Server	typeref:typename:void
+set_depth	debug/Reflector.cpp	/^void Reflector::set_depth(const int depth) {$/;"	f	class:Reflector	typeref:typename:void
+shared	debug/Reflector.cpp	/^Reflector& Reflector::shared() {$/;"	f	class:Reflector	typeref:typename:Reflector &
 skipChar	utils/utils.cpp	/^void skipChar(std::string &string, char c) {$/;"	f	typeref:typename:void
 socket_fd	user/User.hpp	/^	int socket_fd;$/;"	m	struct:Connection	typeref:typename:int
 t_token	include/parse.hpp	/^} t_token;$/;"	t	typeref:struct:s_token
+targets	debug/Reflector.hpp	/^		std::vector<std::pair<const Serializable*, std::string> > targets;$/;"	m	class:Reflector	typeref:typename:std::vector<std::pair<const Serializable *,std::string>>
+time	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s
 topic	channel/Channel.hpp	/^		std::string topic;$/;"	m	class:Channel	typeref:typename:std::string
+topic	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:Channel data(number of channel=1).channel by name.42
+topic	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:Channel data(number of channel=1).channels.0
 type	include/parse.hpp	/^  std::string type;$/;"	m	struct:s_token	typeref:typename:std::string
 type	message/Message.hpp	/^	} type;$/;"	m	struct:Command	typeref:enum:Command::Type
 type_string	message/Message.cpp	/^string Command::type_string() const {$/;"	f	class:Command	typeref:typename:string
+update	debug/Reflector.cpp	/^void Reflector::update() {$/;"	f	class:Reflector	typeref:typename:void
+update	debug/Reflector.cpp	/^void Reflector::update(const string& message) {$/;"	f	class:Reflector	typeref:typename:void
+user for nickname	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	o	object:User Data(number of users=1)
 user_nick_map	data/UserData.hpp	/^		std::map<std::string, std::list<User>::iterator> user_nick_map;$/;"	m	class:UserData	typeref:typename:std::map<std::string,std::list<User>::iterator>
 users	channel/Channel.hpp	/^		std::vector<const User*> users;$/;"	m	class:Channel	typeref:typename:std::vector<const User * >
+users	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	a	object:User Data(number of users=1)
+users	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:Channel data(number of channel=1).channel by name.42
+users	data.json	/^{"time":"Sun Nov 12 11:05:32 2023","message":"","User Data(number of users=1)":{"number of users/;"	s	object:Channel data(number of channel=1).channels.0
 users	data/UserData.hpp	/^		std::list<User> users;$/;"	m	class:UserData	typeref:typename:std::list<User>
 value	include/parse.hpp	/^  std::string value;$/;"	m	struct:s_token	typeref:typename:std::string
 what	channel/Channel.cpp	/^const char* Channel::AlreadyJoined::what() const throw() {$/;"	f	class:Channel::AlreadyJoined	typeref:typename:const char *
@@ -271,6 +316,7 @@ what	message/Message.cpp	/^const char* Command::UnSupported::what() const throw(
 what	message/Message.cpp	/^const char* Message::ParsingFail::what() const throw(){$/;"	f	class:Message::ParsingFail	typeref:typename:const char *
 ~Channel	channel/Channel.cpp	/^Channel::~Channel() { }$/;"	f	class:Channel
 ~ChannelData	data/ChannelData.cpp	/^ChannelData::~ChannelData() {$/;"	f	class:ChannelData
+~Reflector	debug/Reflector.cpp	/^Reflector::~Reflector() {$/;"	f	class:Reflector
 ~Server	server/Server.cpp	/^Server::~Server() {$/;"	f	class:Server
 ~User	user/User.cpp	/^User::~User() { }$/;"	f	class:User
 ~UserData	data/UserData.cpp	/^UserData::~UserData() {$/;"	f	class:UserData

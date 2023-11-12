@@ -15,6 +15,7 @@
 #include "include/utils.hpp"
 #include "data/UserData.hpp"
 #include "include/debug.hpp"
+#include "debug/Reflector.hpp"
 #include "server/Server.hpp"
 #include "user/User.hpp"
 #include <cstring>
@@ -34,14 +35,9 @@ int main(int argc, char *argv[]) {
 	Channel& joined = ChannelData::get_storage().join_channel("42", heshin);
 	heshin.add_channel(joined);
 
-	for (int i = 0; i < 3; ++i) {
-		cout << ChannelData::get_storage()._serialize(i) << '\n';
-		cout << "---------------------------------------------------" << '\n';
-	}
-	for (int i = 0; i < 3; ++i) {
-		cout << UserData::get_storage()._serialize(i) << '\n';
-		cout << "---------------------------------------------------" << '\n';
-	}
+	Reflector::shared().add(UserData::get_storage());
+	Reflector::shared().add(ChannelData::get_storage());
+	Reflector::shared().update("test");
 
   const char *port;
   Server server;

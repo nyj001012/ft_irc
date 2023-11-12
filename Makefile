@@ -3,6 +3,7 @@ SRCS = main.cpp \
 	   debug/debug.cpp \
 		 debug/Serializable.cpp \
 		 debug/json.cpp \
+		 debug/Reflector.cpp \
 	   server/Server.cpp \
 	   utils/utils.cpp \
 		 utils/socket_utils.cpp \
