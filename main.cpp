@@ -10,14 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "channel/Channel.hpp"
+#include "data/ChannelData.hpp"
 #include "include/utils.hpp"
+#include "data/UserData.hpp"
 #include "include/debug.hpp"
+#include "debug/Reflector.hpp"
 #include "server/Server.hpp"
+#include "user/User.hpp"
 #include <cstring>
 #include <iterator>
+#include <iostream>
+using std::cout;
 
 int main(int argc, char *argv[]) {
-  const char *port;
+	 const char *port;
   Server server;
 
   if (argc != 2) {
