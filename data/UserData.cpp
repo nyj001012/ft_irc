@@ -77,6 +77,42 @@ void UserData::delete_user(const User& user) {
 	}
 }
 
+bool UserData::is_pedding_user_exist(const Connection& c) const {
+	map<int, UserTask>::const_iterator found = pendding_users.find(c.socket_fd);
+	if (found == pendding_users.end())
+		return false;
+	if (!(found->second.connection == c)) {
+		// TODO: Server error
+		map<int, UserTask>& m = const_cast<map<int, UserTask>&>(pendding_users);
+		m.erase(c.socket_fd);
+		return false;
+	}
+	return true;
+}
+
+bool UserData::is_duplicated(const string& nick_name) const {
+	if (is_user_exist(nick_name))
+		return true;
+	map<int, UserTask>::const_iterator iter;
+	for (iter = pendding_users.begin(); iter != pendding_users.end(); ++iter) {
+		if (iter->second.info.nick_name == nick_name)
+			return true;
+	}
+	return false;
+}
+
+void UserData::add_pendding_user(const UserTask& task) {
+	pendding_users.insert(make_pair(task.connection.socket_fd, task));
+}
+
+const UserTask& UserData::update_task(const UserTask& new_task) {
+	return pendding_users.at(new_task.connection.socket_fd).add_next(new_task);
+}
+
+void UserData::remove_task(const Connection& c) {
+	pendding_users.erase(c.socket_fd);
+}
+
 // Serializable
 
 string UserData::_get_label() const {
@@ -88,6 +124,7 @@ string UserData::_get_label() const {
 ostream& UserData::_add_to_serialization(ostream& os, const int depth) const {
 	
 	_json(os, "number of users", ':', users.size(), ',');
+	_json(os, "number of pedding users", ':', pendding_users.size(), ',');
 	if (depth > 0 && users.size() > 0) {
 		vector<const Serializable *>vec;
 		list<User>::const_iterator iter;
@@ -106,6 +143,15 @@ ostream& UserData::_add_to_serialization(ostream& os, const int depth) const {
 			_json(os, "user for nickname", ':');
 			os << ::_serialize(m, depth - 1);
 		}
+	}
+	if (depth > 0 && pendding_users.size() > 0) {
+		vector<const Serializable *>vec;
+		map<int, UserTask>::const_iterator iter;
+		for (iter = pendding_users.begin(); iter != pendding_users.end(); ++iter) {
+			vec.push_back(&iter->second);
+		}
+		_json(os, "pedding users", ':');
+		os << ::_serialize(vec, depth - 1);
 	}
 	return os;
 }

@@ -68,6 +68,10 @@ const Command::range Command::parameter_range() const {
 	return range;
 }
 
+string Command::_get_label() const {
+	return to_string();	
+}
+
 const char* Command::UnSupported::what() const throw(){
 	return "Unsupported command";
 }

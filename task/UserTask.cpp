@@ -13,14 +13,18 @@
 #include "Task.hpp"
 #include "../irc/IrcCommand.hpp"
 #include <cassert>
+#include <sstream>
+#include <utility>
 
 using std::vector;
 using std::string;
+using std::make_pair;
+typedef std::pair<std::string, const Serializable*> KeyValue;
 
 UserTask::UserTask(const Command command, const vector<string>& params): command(command) {
 	switch (command.type){
 		case Command::PASS:
-			password = params.front();
+			info.password = params.front();
 			break;
 		case Command::NICK:
 			info.nick_name = params.front();
@@ -47,14 +51,42 @@ UserTask& UserTask::add_next(const UserTask& next) {
 			// TODO: throw IrcError	
 
 		}
-		password = next.password;
+		info.password = next.info.password;
 	}
 	else if (next.command == Command::NICK) {
+		string password = info.password;
 		info.nick_name = next.info.nick_name;
+		info.password = password;
 	}
 	else {
+		string nick_name = info.nick_name;
+		string password = info.password;
+		info.nick_name = nick_name;
 		info = next.info;
+		info.password = password;
 	}
 	command = next.command;
 	return *this;
+}
+
+bool UserTask::is_ready() const {
+	return command == Command::USER;	
+}
+
+// Serializable
+string UserTask::_get_label() const {
+	std::stringstream ss;
+	ss << "socket=" << connection.socket_fd;
+	if (!info.nick_name.empty()) {
+		ss << ", nick name=" << info.nick_name;
+	}
+	return ss.str();
+}
+
+vector<KeyValue> UserTask::_get_children() const {
+	vector<KeyValue> vec;
+	vec.push_back(make_pair("connection", &this->connection));
+	vec.push_back(make_pair("last command", &this->command));
+	vec.push_back(make_pair("info", &this->info));
+	return vec;
 }

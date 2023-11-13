@@ -48,6 +48,7 @@ class User: public Serializable {
 			std::string host_name;
 			std::string server_name;
 			std::string real_name;
+			std::string password;
 
 			bool is_equal(const User::Info&) const;
 

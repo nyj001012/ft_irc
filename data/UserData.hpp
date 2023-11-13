@@ -13,6 +13,7 @@
 #ifndef USER_DATA_HPP
 # define USER_DATA_HPP
 # include "../debug/Serializable.hpp"
+# include "../task/Task.hpp"
 # include "../user/User.hpp"
 # include <exception>
 # include <map>
@@ -29,6 +30,13 @@ class UserData: public Serializable {
 		User& get_user(const std::string&) const;
 		User& create_user(const Connection Connection, const User::Info&);
 		void delete_user(const User&);
+
+		bool is_duplicated(const std::string&) const;
+		bool is_pedding_user_exist(const Connection&) const;
+		void add_pendding_user(const UserTask&);
+		const UserTask& update_task(const UserTask&);
+		void remove_task(const Connection&);
+
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::string _get_label() const;
 
@@ -44,5 +52,6 @@ class UserData: public Serializable {
 		UserData();
 		std::list<User> users;
 		std::map<std::string, std::list<User>::iterator> user_nick_map;
+		std::map<int, UserTask> pendding_users;
 };
 #endif

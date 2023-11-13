@@ -12,10 +12,13 @@
 
 #include "Task.hpp"
 #include "../include/utils.hpp"
+#include "../include/json.hpp"
+#include <utility>
 
 using std::string;
 using std::vector;
-
+typedef std::pair<std::string, const Serializable*> KeyValue;
+ 
 int count_number_of_param(const vector<string>&);
 
 Task::Task() {}
@@ -68,6 +71,19 @@ int count_number_of_param(const vector<string>& params) {
 			++count;
 	}
 	return count;
+}
+
+// Serializable
+string Task::_get_label() const {
+	string label = "Command=" + command._get_label();
+	if (!prefix.empty())
+		label += " prefix=" + prefix;
+	return label;
+}
+
+std::ostream& Task::_add_to_serialization(std::ostream& os, const int) const {
+	_json(os, "label", ':', _get_label());
+	return os;
 }
 
 const char* Task::ParsingFail::what() const throw(){

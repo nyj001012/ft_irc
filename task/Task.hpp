@@ -18,12 +18,14 @@
 # include <vector>
 # include <exception>
 
-struct Task {
+struct Task: public Serializable {
 
 	public:
 		static Task create(std::vector<std::string>&);
 		virtual bool has_error() const;
 		const std::string& get_prefix() const;
+		virtual std::string _get_label() const;
+		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 	
 	struct ParsingFail: public std::exception {
 		 virtual const char* what() const throw();
@@ -42,11 +44,13 @@ struct UserTask: public Task {
 		UserTask(const Command command, const std::vector<std::string>&);
 		Connection connection;
 		User::Info info;
+		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
+		virtual std::string _get_label() const;
 
 		UserTask& add_next(const UserTask&);
+		bool is_ready() const;
 
 	protected:
 		Command command;
-		std::string password;
 };
 #endif

@@ -66,6 +66,7 @@ ostream& User::Info::_add_to_serialization(ostream& os, const int depth) const {
 	_json(os, "host", ':', host_name, ',');
 	_json(os, "server", ':', server_name, ',');
 	_json(os, "real name", ':', real_name, ',');
+	_json(os, "password", ':', password, ',');
 	return os;
 }
 

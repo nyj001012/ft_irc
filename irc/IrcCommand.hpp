@@ -12,12 +12,15 @@
 
 #ifndef IRC_COMMAND
 # define IRC_COMMAND
+# include "../debug/Serializable.hpp"
 # include <string>
 # include <utility>
 
-struct Command {
+struct Command: public Serializable {
 
 	typedef std::pair<int, int> range;
+
+	virtual std::string _get_label() const;
 
 	enum Type {
 		Unknown,

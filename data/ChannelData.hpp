@@ -13,6 +13,7 @@
 #ifndef CHANNEL_DATA_HPP
 # define CHANNEL_DATA_HPP
 # include "../debug/Serializable.hpp"
+# include "../task/Task.hpp"
 # include <exception>
 # include <map>
 # include <string>
