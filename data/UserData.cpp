@@ -51,8 +51,8 @@ User& UserData::get_user(const string& nickname) const {
 	return *found->second;
 }
 
-User& UserData::create_user(const Connection connection, const string& nick) {
-	users.push_back(User(connection, nick));	
+User& UserData::create_user(const Connection connection, const User::Info& info) {
+	users.push_back(User(connection, info));	
 	list<User>::iterator iter = users.end();
 	--iter;	
 	pair<string, list<User>::iterator> p = make_pair(iter->get_nickname(), iter);

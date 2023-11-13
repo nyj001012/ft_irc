@@ -1,4 +1,4 @@
 *.o
 *.json
-tags/
+tags
 ircserv

@@ -20,7 +20,6 @@
 #include <arpa/inet.h>
 #include <iomanip>
 #include <unistd.h>
-#include <array>
 #include "../include/parse.hpp"
 
 #define MAX_CLIENT_NUM 10
@@ -49,7 +48,7 @@ class Server {
   void initializeClientFds();
   void runServer();
   void acceptClient();
-  std::array <char, BUFFER_SIZE>receiveMessage(int client_socket);
+	char *receiveMessage(int client_socket);
   void sendMessage(int client_socket, char *message);
   void closeClient(int client_socket);
   void closeServer();

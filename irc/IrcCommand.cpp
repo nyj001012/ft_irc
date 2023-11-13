@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Message.cpp                                        :+:      :+:    :+:   */
+/*   IrcCommand.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:12:53 by heshin           ###   ########.fr       */
+/*   Created: 2023/11/13 04:28:24 by heshin            #+#    #+#             */
+/*   Updated: 2023/11/13 04:28:24 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Message.hpp"
-#include "../include/utils.hpp"
-# define CMD_STRINGIFY(name) # name
+#include "IrcCommand.hpp"
+#define CMD_STRINGIFY(name) # name
 
 using std::string;
-using std::vector;
+using std::make_pair;
 
 const char *all_commands[] = {
 	CMD_STRINGIFY(Command::NICK),
@@ -32,11 +31,11 @@ const char *all_commands[] = {
 	CMD_STRINGIFY(Command::TOPIC),
 	CMD_STRINGIFY(Command::INVITE),
 	CMD_STRINGIFY(Command::PRIVMSG),
-	//PING,
-	//PONG
+	//CMD_STRINGIFY(Command::PING),
+	//CMD_STRINGIFY(Command::PONG),
 };
 
-Command::Command() {}
+Command::Command(): type(Unknown){ }
 
 Command::Command(const string& str) {
 	for (size_t i = 0; i < sizeof(all_commands) / sizeof(all_commands[0]); ++i) {
@@ -48,15 +47,44 @@ Command::Command(const string& str) {
 	throw Command::UnSupported();
 }
 
-string Command::type_string() const {
+const char* Command::to_string() const {
+	if (type == Unknown) {
+		throw Command::UnSupported();
+	}
 	return all_commands[type];
 }
 
-const char* Message::ParsingFail::what() const throw(){
-	return "Fail to parse message";
+const Command::range Command::parameter_range() const {
+	Command::range range;
+	switch (type) {
+		case PASS:
+			range = make_pair(1, 1);
+			break;
+		case NICK:
+			range = make_pair(1, 2);
+		default:
+			break;
+	}
+	return range;
 }
 
 const char* Command::UnSupported::what() const throw(){
 	return "Unsupported command";
+}
+
+bool operator==(const Command& command, const Command::Type& type) {
+	return command.type == type;
+}
+
+bool operator==(const Command::Type& type, const Command& command) {
+	return command.type == type;
+}
+
+bool operator!=(const Command& command, const Command::Type& type) {
+	return !(command == type);
+}
+
+bool operator!=(const Command::Type& type, const Command& command) {
+	return !(command == type);
 }
 #undef CMD_STRINGIFY

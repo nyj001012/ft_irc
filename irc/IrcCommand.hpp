@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Message.hpp                                        :+:      :+:    :+:   */
+/*   IrcCommand.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/03 00:14:43 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:12:35 by heshin           ###   ########.fr       */
+/*   Created: 2023/11/13 04:26:45 by heshin            #+#    #+#             */
+/*   Updated: 2023/11/13 04:26:45 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COMMAND_HPP
-# define COMMAND_HPP
+#ifndef IRC_COMMAND
+# define IRC_COMMAND
 # include <string>
-# include <vector>
-# include <exception>
+# include <utility>
 
 struct Command {
-	enum Type{
+
+	typedef std::pair<int, int> range;
+
+	enum Type {
+		Unknown,
 		PASS = 0,
 		USER,
 		NICK,
@@ -29,26 +32,20 @@ struct Command {
 		INVITE,
 		PRIVMSG,
 		//PING,
-		//PONG
+		//PONG,
 	} type;
 
-	Command(const std::string&);
 	Command();
-
-	std::string type_string() const;
+	Command(const std::string&);
+	const std::pair<int, int> parameter_range() const;
+	const char* to_string() const;
 	struct UnSupported: public std::exception {
 		virtual const char* what() const throw();
 	};
 };
 
-struct Message {
-
-	Command command;
-	std::string prefix;
-	std::vector<std::string> params;
-
-	struct ParsingFail: public std::exception {
-		 virtual const char* what() const throw();
-	};
-};
+bool operator==(const Command&, const Command::Type&);
+bool operator==(const Command::Type&, const Command&);
+bool operator!=(const Command&, const Command::Type&);
+bool operator!=(const Command::Type&, const Command&);
 #endif

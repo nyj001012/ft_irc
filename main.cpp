@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "task/Task.hpp"
 #include "channel/Channel.hpp"
 #include "data/ChannelData.hpp"
 #include "include/utils.hpp"
@@ -21,9 +22,19 @@
 #include <cstring>
 #include <iterator>
 #include <iostream>
+
 using std::cout;
+using std::vector;
+using std::string;
 
 int main(int argc, char *argv[]) {
+
+	vector<string> vec;
+	vec.push_back(":hello world");
+	Task task = Task::create(vec); 
+	cout << "prefix " << task.get_prefix() << std::endl;
+
+	return 0;
 	 const char *port;
   Server server;
 

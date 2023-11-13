@@ -160,11 +160,12 @@ void Server::runServer() {
         if (i == this->_server_socket)
           this->acceptClient();
         else {
-          std::array<char, BUFFER_SIZE> message = this->receiveMessage(i);
-          std::vector<t_token> tokens;
-          if (parseMessageFormat(message.data(), this->_is_debug, tokens))
-            this->sendMessage(i, message.data());
-        }
+					char *message = this->receiveMessage(i);
+					std::vector<t_token> tokens;
+					if (parseMessageFormat(message, this->_is_debug, tokens))
+						this->sendMessage(i, message);
+					delete[] message;
+				}
       }
     }
   }
@@ -191,20 +192,21 @@ void Server::acceptClient() {
  * @param client_socket 클라이언트 소켓
  * @return 클라이언트로부터 받은 메시지
  */
-std::array<char, BUFFER_SIZE> Server::receiveMessage(int client_socket) {
-  std::array<char, BUFFER_SIZE> buffer;
+char *Server::receiveMessage(int client_socket) {
+   char *buffer = new char[BUFFER_SIZE];
 
-  ssize_t read_size = read(client_socket, &buffer, BUFFER_SIZE);
-  if (read_size == -1)
-    throw std::runtime_error("Error: read() failed");
-  if (read_size == 0) {
-    this->closeClient(client_socket);
-    return buffer;
-  }
-  if (this->_is_debug)
-    std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
-  return buffer;
-}
+   std::memset(buffer, 0, BUFFER_SIZE);
+   ssize_t read_size = read(client_socket, buffer, BUFFER_SIZE);
+   if (read_size == -1)
+     throw std::runtime_error("Error: read() failed");
+   if (read_size == 0) {
+     this->closeClient(client_socket);
+     return NULL;
+   }
+   if (this->_is_debug)
+     std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer << FB_DEFAULT << std::endl;
+   return buffer;
+ }
 
 /**
  * 클라이언트 소켓을 닫고, fd_set에서 제거한다.

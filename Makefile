@@ -7,12 +7,14 @@ SRCS = main.cpp \
 	   server/Server.cpp \
 	   utils/utils.cpp \
 		 utils/socket_utils.cpp \
-		 message/Message.cpp \
+		 irc/IrcCommand.cpp \
 		 user/User.cpp \
 		 channel/Channel.cpp \
 		 data/UserData.cpp \
 		 data/ChannelData.cpp \
-		 parse/parse.cpp 
+		 parse/parse.cpp \
+		 task/Task.cpp \
+		 task/UserTask.cpp 
 OBJS = ${SRCS:.cpp=.o}
 INCLUDE = -I include -I include/server
 
