@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 21:53:37 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:37:12 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ struct Connection: Serializable {
 	std::string address;
 	int port;
 	int socket_fd;
+	std::string password;
 	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 	virtual std::string _get_label() const;
 
@@ -48,7 +49,6 @@ class User: public Serializable {
 			std::string host_name;
 			std::string server_name;
 			std::string real_name;
-			std::string password;
 
 			bool is_equal(const User::Info&) const;
 
@@ -58,7 +58,7 @@ class User: public Serializable {
 
 		User(const Connection connection, const Info&);
 		User(const User&);
-		~User();
+		virtual ~User();
 		
 		bool is_available() const;
 		const std::string& get_nickname() const;

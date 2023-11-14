@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   serialize.hpp                                      :+:      :+:    :+:   */
+/*   Serializable.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 21:57:10 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 21:57:11 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:36:58 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Serializable {
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::string _get_label() const;
+		virtual ~Serializable();
 };
 
 template <typename T>

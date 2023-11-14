@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 17:50:03 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:25:34 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:37:28 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Channel: public Serializable {
 	public:
 		Channel(const std::string& name, const User& operator_user);
 		Channel(const Channel&);
-		~Channel();
+		virtual ~Channel();
 		const std::string& get_name() const;
 		const std::string& get_topic() const;
 		const User& get_operator() const;

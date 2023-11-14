@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   UserTask.cpp                                     :+:      :+:    :+:   */
+/*   UserTask.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 23:48:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/13 23:48:09 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:38:56 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef std::pair<std::string, const Serializable*> KeyValue;
 UserTask::UserTask(const Command command, const vector<string>& params): command(command) {
 	switch (command.type){
 		case Command::PASS:
-			info.password = params.front();
+			connection.password = params.front();
 			break;
 		case Command::NICK:
 			info.nick_name = params.front();
@@ -51,19 +51,15 @@ UserTask& UserTask::add_next(const UserTask& next) {
 			// TODO: throw IrcError	
 
 		}
-		info.password = next.info.password;
+		connection.password = next.connection.password;
 	}
 	else if (next.command == Command::NICK) {
-		string password = info.password;
 		info.nick_name = next.info.nick_name;
-		info.password = password;
 	}
 	else {
 		string nick_name = info.nick_name;
-		string password = info.password;
 		info.nick_name = nick_name;
 		info = next.info;
-		info.password = password;
 	}
 	command = next.command;
 	return *this;

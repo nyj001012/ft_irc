@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 21:02:20 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:14:26 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:39:55 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class ChannelData: public Serializable {
 
 	public:
 		static ChannelData& get_storage();
-		~ChannelData();
+		virtual ~ChannelData();
 		bool is_channel_exist(const std::string&) const;
 		Channel& get_channel(const std::string&) const;
 		Channel& join_channel(const std::string& name, const User&);

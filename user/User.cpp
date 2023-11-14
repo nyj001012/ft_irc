@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 21:56:35 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:34:38 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ using std::make_pair;
 typedef std::pair<string, const Serializable*> KeyValue;
 
 Connection::Connection(): is_alive(false) {}
-Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): is_alive(false), socket_fd(socket_fd) {
+Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): 
+	is_alive(false), socket_fd(socket_fd), password() {
 	char buffer[INET6_ADDRSTRLEN];
 	switch (addr->ss_family) {
 		case (AF_INET):
@@ -57,17 +58,6 @@ Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd)
 	} 
 	else 
 		return;
-}
-
-ostream& User::Info::_add_to_serialization(ostream& os, const int depth) const {
-	(void)depth;
-	_json(os, "nick", ':', nick_name, ',');
-	_json(os, "user", ':', user_name, ',');
-	_json(os, "host", ':', host_name, ',');
-	_json(os, "server", ':', server_name, ',');
-	_json(os, "real name", ':', real_name, ',');
-	_json(os, "password", ':', password, ',');
-	return os;
 }
 
 bool User::Info::is_equal(const User::Info& other) const {
@@ -207,7 +197,8 @@ ostream& Connection::_add_to_serialization(ostream& os, const int _d) const {
 	_json(os, "address", ':', address, ',');
 	_json(os, "port", ':', port, ',');
 	_json(os, "is_alive", ':', is_alive, ',');
-	_json(os, "socket_fd", ':', socket_fd);
+	_json(os, "socket_fd", ':', socket_fd, ',');
+	_json(os, "password", ':', password);
 	(void)_d;
 	return os;
 }
@@ -227,6 +218,16 @@ vector<KeyValue> User::_get_children() const {
 	v.push_back(make_pair("info", &this->info));
 	v.push_back(make_pair("connection", &this->connection));		
 	return v;
+}
+
+ostream& User::Info::_add_to_serialization(ostream& os, const int depth) const {
+	(void)depth;
+	_json(os, "nick", ':', nick_name, ',');
+	_json(os, "user", ':', user_name, ',');
+	_json(os, "host", ':', host_name, ',');
+	_json(os, "server", ':', server_name, ',');
+	_json(os, "real name", ':', real_name, ',');
+	return os;
 }
 
 ostream& User::_add_to_serialization(ostream& os, const int depth) const {

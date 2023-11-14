@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 03:41:50 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:14:01 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:39:48 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class UserData: public Serializable {
 
 	public:
 		static UserData& get_storage();
-		~UserData();
+		virtual ~UserData();
 		bool is_user_exist(const std::string&) const;
 		User& get_user(const std::string&) const;
 		User& create_user(const Connection Connection, const User::Info&);
