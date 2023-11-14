@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 23:48:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 01:38:56 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 03:59:47 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ using std::string;
 using std::make_pair;
 typedef std::pair<std::string, const Serializable*> KeyValue;
 
-UserTask::UserTask(const Command command, const vector<string>& params): command(command) {
+UserTask::UserTask(const Task& parent, const vector<string>& params): Task(parent) {
 	switch (command.type){
 		case Command::PASS:
 			connection.password = params.front();

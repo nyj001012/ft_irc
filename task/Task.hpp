@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:14:43 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/13 04:18:48 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 04:02:03 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 struct Task: public Serializable {
 
 	public:
-		static Task create(std::vector<std::string>&);
+		static Task* create(std::vector<std::string>&);
 		virtual bool has_error() const;
 		const std::string& get_prefix() const;
 		virtual std::string _get_label() const;
@@ -33,6 +33,7 @@ struct Task: public Serializable {
 
 	protected:
 		Task();
+		Task& operator=(const Task&);
 		Command command;
 		Task& set_prefix(const std::string&);
 		std::string prefix;
@@ -41,16 +42,14 @@ struct Task: public Serializable {
 struct UserTask: public Task {
 
 	public:
-		UserTask(const Command command, const std::vector<std::string>&);
+		UserTask(const Task& parent, const std::vector<std::string>&);
 		Connection connection;
 		User::Info info;
+
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::string _get_label() const;
 
 		UserTask& add_next(const UserTask&);
 		bool is_ready() const;
-
-	protected:
-		Command command;
 };
 #endif

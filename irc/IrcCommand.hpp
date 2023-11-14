@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/* PASS ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   IrcCommand.hpp                                     :+:      :+:    :+:   */
@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:26:45 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/13 04:26:45 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 03:21:41 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ struct Command: public Serializable {
 	virtual std::string _get_label() const;
 
 	enum Type {
-		Unknown,
 		PASS = 0,
 		USER,
 		NICK,
@@ -36,6 +35,7 @@ struct Command: public Serializable {
 		PRIVMSG,
 		//PING,
 		//PONG,
+		Unknown,
 	} type;
 
 	Command();

@@ -6,13 +6,14 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:12:53 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 04:01:37 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Task.hpp"
 #include "../include/utils.hpp"
 #include "../include/json.hpp"
+#include "../irc/IrcError.hpp"
 #include <utility>
 
 using std::string;
@@ -22,30 +23,38 @@ typedef std::pair<std::string, const Serializable*> KeyValue;
 int count_number_of_param(const vector<string>&);
 
 Task::Task() {}
+Task& Task::operator=(const Task& other) {
+	command = other.command;
+	return *this;
+}
 
-Task Task::create(std::vector<std::string>& tokens) {
-	string prefix;
+Task* Task::create(std::vector<std::string>& tokens) {
+	Task base;
 	if (tokens.front()[0] == ':') {
-		prefix = tokens.front();
+		base.prefix = tokens.front();
 		tokens.erase(tokens.begin());
 	}
-	Command command(tokens.front());
+	base.command = Command(tokens.front());
 	tokens.erase(tokens.begin());
 	int count = count_number_of_param(tokens);
-	Command::range range = command.parameter_range();
-	if (count < range.first || count > range.second) {
+	Command::range range = base.command.parameter_range();
+	if (count < range.first) {
+		throw IrcError(IrcError::ERR_NEEDMOREPARAMS); 
+	}
+	else if (count > range.second) {
 		// TODO: Throw IrcError
 	}
 
-	Task task;
-	switch (command.type) {
-		case Command::PASS:
-			task = UserTask(command, tokens);
+	switch (base.command.type) {
+		case Command::PASS: 
+		case Command::NICK: 
+		case Command::USER:
+			return new UserTask(base, tokens);
 			break;
 		default:
 			break;
 	}
-	return task;
+	return NULL;
 }
 
 

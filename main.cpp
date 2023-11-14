@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:39:21 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 15:20:34 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/15 03:57:32 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "server/Server.hpp"
 #include "user/User.hpp"
 #include <cstring>
+#include <exception>
 #include <iterator>
 #include <iostream>
 
@@ -30,9 +31,18 @@ using std::string;
 int main(int argc, char *argv[]) {
 
 	vector<string> vec;
-	vec.push_back(":hello world");
-	Task task = Task::create(vec); 
-	cout << "prefix " << task.get_prefix() << std::endl;
+	vec.push_back(":hello");
+	vec.push_back("PASS");
+	vec.push_back("secret");
+	try {
+		Task* task = Task::create(vec); 
+		cout << "prefix " << task->get_prefix() << std::endl;
+		cout << task->_serialize(1) << std::endl;
+		delete task;
+	}
+	catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
 
 	return 0;
 	 const char *port;
