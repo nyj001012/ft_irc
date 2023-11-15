@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 09:58:17 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/12 09:58:17 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/16 01:24:12 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,11 @@ void Reflector::set_depth(const int depth) {
 }
 
 void Reflector::update() {
+
+	vector<pair<const Serializable*, string> >::iterator iter;
+	for (iter = targets.begin(); iter != targets.end(); ++iter) {
+		iter->second = iter->first->_serialize(depth);
+	}
 	outfile.open(OUTPUT_FILE, std::ios::out | std::ios::trunc);
 	if (!outfile.good())
 		return ;

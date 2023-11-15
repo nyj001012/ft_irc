@@ -6,11 +6,12 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:28:24 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 03:09:08 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/16 01:03:21 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcCommand.hpp"
+#include "../include/json.hpp"
 #define CMD_STRINGIFY(name) # name
 
 using std::string;
@@ -69,6 +70,10 @@ string Command::_get_label() const {
 
 const char* Command::UnSupported::what() const throw(){
 	return "Unsupported command";
+}
+std::ostream& Command::_add_to_serialization(std::ostream& os,const int) const {
+	_json(os, to_string());
+	return os;
 }
 
 bool operator==(const Command& command, const Command::Type& type) {

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 13:19:44 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:14:15 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/16 00:56:28 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ bool UserData::is_pedding_user_exist(const Connection& c) const {
 	map<int, UserTask>::const_iterator found = pendding_users.find(c.socket_fd);
 	if (found == pendding_users.end())
 		return false;
-	if (!(found->second.connection == c)) {
+	if (!(found->second.get_connection() == c)) {
 		// TODO: Server error
 		map<int, UserTask>& m = const_cast<map<int, UserTask>&>(pendding_users);
 		m.erase(c.socket_fd);
@@ -102,11 +102,11 @@ bool UserData::is_duplicated(const string& nick_name) const {
 }
 
 void UserData::add_pendding_user(const UserTask& task) {
-	pendding_users.insert(make_pair(task.connection.socket_fd, task));
+	pendding_users.insert(make_pair(task.get_connection().socket_fd, task));
 }
 
 const UserTask& UserData::update_task(const UserTask& new_task) {
-	return pendding_users.at(new_task.connection.socket_fd).add_next(new_task);
+	return pendding_users.at(new_task.get_connection().socket_fd).add_next(new_task);
 }
 
 void UserData::remove_task(const Connection& c) {

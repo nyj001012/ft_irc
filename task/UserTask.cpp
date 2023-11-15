@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 23:48:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 03:59:47 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/16 01:11:57 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ UserTask& UserTask::add_next(const UserTask& next) {
 	}
 	else {
 		string nick_name = info.nick_name;
-		info.nick_name = nick_name;
 		info = next.info;
+		info.nick_name = nick_name;
 	}
 	command = next.command;
 	return *this;

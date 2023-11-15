@@ -15,7 +15,9 @@ SRCS = main.cpp \
 		 data/ChannelData.cpp \
 		 parse/parse.cpp \
 		 task/Task.cpp \
-		 task/UserTask.cpp 
+		 task/UserTask.cpp \
+		 handler/RequestHandler.cpp
+
 OBJS = ${SRCS:.cpp=.o}
 INCLUDE = -I include -I include/server
 

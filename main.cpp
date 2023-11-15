@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:39:21 by yena              #+#    #+#             */
-/*   Updated: 2023/11/15 03:57:32 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/16 01:18:30 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "debug/Reflector.hpp"
 #include "server/Server.hpp"
 #include "user/User.hpp"
+#include "handler/RequestHandler.hpp"
 #include <cstring>
 #include <exception>
 #include <iterator>
@@ -30,20 +31,47 @@ using std::string;
 
 int main(int argc, char *argv[]) {
 
-	vector<string> vec;
-	vec.push_back(":hello");
-	vec.push_back("PASS");
-	vec.push_back("secret");
+	Connection con;
+	con.address = "127.0.0.1";
+	con.is_alive = true;
+	con.socket_fd = 11;
+	con.port = 8080;
+	RequestHandler handler;
+	Reflector::shared().add(UserData::get_storage());
+
 	try {
-		Task* task = Task::create(vec); 
-		cout << "prefix " << task->get_prefix() << std::endl;
-		cout << task->_serialize(1) << std::endl;
-		delete task;
+		vector<string> vec;
+		vec.push_back("PASS");
+		vec.push_back("secret");
+		handler.get_request(vec, con);
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	}
 
+	try {
+		vector<string> vec;
+		vec.push_back("NICK");
+		vec.push_back("heshin");
+		handler.get_request(vec, con);
+	}
+	catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
+
+	try {
+		vector<string> vec;
+		vec.push_back("USER");
+		vec.push_back("username test");
+		vec.push_back("hostname test");
+		vec.push_back("servername test");
+		vec.push_back("realname test");
+		handler.get_request(vec, con);
+	}
+	catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
+	Reflector::shared().update();
 	return 0;
 	 const char *port;
   Server server;

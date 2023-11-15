@@ -1,19 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Processor.hpp                                      :+:      :+:    :+:   */
+/*   RequestHandler.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 02:33:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 02:34:37 by heshin           ###   ########.fr       */
+/*   Created: 2023/11/15 23:26:09 by heshin            #+#    #+#             */
+/*   Updated: 2023/11/16 00:45:07 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PROCESSOR_HPP
-# define PROCESSOR_HPP
+#ifndef EXECUTOR_HPP
+# define EXECUTOR_HPP
+# include "../task/Task.hpp"
+# include <string>
+# include <vector>
 
-class Processor {
+struct Connection;
 
+class RequestHandler {
+	
+	public:
+		RequestHandler(); 
+		void get_request(std::vector<std::string>&, const Connection&);
+	private:
+		void execute(const UserTask&);
 };
 #endif

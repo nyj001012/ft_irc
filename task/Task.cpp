@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 04:01:37 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/16 00:55:52 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 using std::string;
 using std::vector;
+using std::auto_ptr;
 typedef std::pair<std::string, const Serializable*> KeyValue;
  
 int count_number_of_param(const vector<string>&);
@@ -28,8 +29,9 @@ Task& Task::operator=(const Task& other) {
 	return *this;
 }
 
-Task* Task::create(std::vector<std::string>& tokens) {
+auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& connection) {
 	Task base;
+	base.connection = connection;
 	if (tokens.front()[0] == ':') {
 		base.prefix = tokens.front();
 		tokens.erase(tokens.begin());
@@ -49,12 +51,12 @@ Task* Task::create(std::vector<std::string>& tokens) {
 		case Command::PASS: 
 		case Command::NICK: 
 		case Command::USER:
-			return new UserTask(base, tokens);
+			return auto_ptr<Task>(new UserTask(base, tokens));
 			break;
 		default:
 			break;
 	}
-	return NULL;
+	throw Command::UnSupported();
 }
 
 
@@ -64,6 +66,14 @@ bool Task::has_error() const {
 
 const string& Task::get_prefix() const {
 	return prefix;
+}
+
+const Command Task::get_command() const {
+	return command;
+}
+
+const Connection& Task::get_connection() const {
+	return connection;
 }
 
 Task& Task::set_prefix(const string& p) {
