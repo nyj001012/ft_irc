@@ -1,29 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RequestHandler.hpp                                 :+:      :+:    :+:   */
+/*   IrcUtil.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 23:26:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 04:18:46 by heshin           ###   ########.fr       */
+/*   Created: 2023/11/18 01:26:23 by heshin            #+#    #+#             */
+/*   Updated: 2023/11/18 02:20:16 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXECUTOR_HPP
-# define EXECUTOR_HPP
-# include "../task/Task.hpp"
-# include <string>
-# include <vector>
+#include "../include/Irc.hpp"
+#include <cstring>
+#include <ctype.h>
 
-struct Connection;
+bool IRC::is_letter(const char c) {
+ return isalpha(c) != 0;
+}
 
-class RequestHandler {
-	
-	public:
-		RequestHandler(); 
-		void get_request(std::vector<std::string>&, const Connection&);
-	private:
-		void execute(const UserTask&);
-};
-#endif
+bool IRC::is_digit(const char c) {
+ return isdigit(c) != 0;
+}
+
+bool IRC::is_special(const char c) {
+ return strchr("[,],\\`_^{|}", c) != NULL;
+}

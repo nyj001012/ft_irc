@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 01:46:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 03:04:25 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/18 02:22:49 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,49 +14,53 @@
 #include <string>
 #define ERROR_STRINGIFY(name) # name
 
-typedef IrcError::Code Code;
+typedef IRC::Error Error;
+typedef Error::Code Code;
 using std::string;
 
 const char *all_errors[] = {
 	ERROR_STRINGIFY(ERR_NEEDMOREPARAMS),
 	ERROR_STRINGIFY(ERR_ALREADYREGISTRED),
+	ERROR_STRINGIFY(ERR_NONICKNAMEGIVEN),
+	ERROR_STRINGIFY(ERR_ERRONEUSNICKNAME),
+	ERROR_STRINGIFY(ERR_NICKCOLLISION)
 };
 
-IrcError::IrcError(): code(UnKnown) {}
-IrcError::~IrcError() _NOEXCEPT{}
-IrcError::IrcError(const Code code): code(code) {}
+Error::Error(): code(UnKnown) {}
+Error::~Error() _NOEXCEPT{}
+Error::Error(const Code code): code(code) {}
 
-string IrcError::_get_label() const {
+string Error::_get_label() const {
 	return string("code: ") + to_string();
 }
 
-const char* IrcError::what() const throw() {
+const char* Error::what() const throw() {
 	return to_string();
 }
 
-const char* IrcError::to_string() const {
+const char* Error::to_string() const {
 	if (code == UnKnown) {
 		throw UnKnownError();
 	}
 	return all_errors[code];
 }
 
-bool operator==(const Code c, const IrcError& e) {
+bool operator==(const Code c, const Error& e) {
 	return e.code == c;
 }
 
-bool operator==(const IrcError& e, const Code c) {
+bool operator==(const Error& e, const Code c) {
 	return e.code == c;
 }
 
-bool operator!=(const IrcError& e, const Code c) {
+bool operator!=(const Error& e, const Code c) {
 	return !(e == c);
 }
 
-bool operator!=(const Code c, const IrcError& e) {
+bool operator!=(const Code c, const Error& e) {
 	return !(e == c);
 }
 
-const char* IrcError::UnKnownError::what() const throw() {
+const char* Error::UnKnownError::what() const throw() {
 	return "UnKnownError";
 }

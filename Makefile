@@ -9,6 +9,7 @@ SRCS = main.cpp \
 		 utils/socket_utils.cpp \
 		 irc/IrcCommand.cpp \
 		 irc/IrcError.cpp \
+		 irc/IrcUtil.cpp \
 		 user/User.cpp \
 		 channel/Channel.cpp \
 		 data/UserData.cpp \

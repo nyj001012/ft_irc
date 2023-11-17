@@ -6,18 +6,20 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:14:43 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/16 00:55:25 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/18 02:27:42 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TASK_HPP
 # define TASK_HPP
-# include "../irc/IrcCommand.hpp"
+# include "../include/Irc.hpp"
 # include "../user/User.hpp"
 # include <string>
 # include <vector>
 # include <exception>
 # include <memory>
+
+using IRC::Command;
 
 struct Task: public Serializable {
 
@@ -46,13 +48,14 @@ struct Task: public Serializable {
 struct UserTask: public Task {
 
 	public:
+		static bool is_valid_nickname(const std::string&);
+
 		UserTask(const Task& parent, const std::vector<std::string>&);
 		User::Info info;
+		UserTask& add_next(const UserTask&);
 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::string _get_label() const;
 
-		UserTask& add_next(const UserTask&);
-		bool is_ready() const;
 };
 #endif

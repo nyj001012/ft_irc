@@ -6,12 +6,14 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 23:48:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/16 01:11:57 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/18 02:30:39 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Task.hpp"
-#include "../irc/IrcCommand.hpp"
+#include "../include/Irc.hpp"
+#include <_ctype.h>
+#include <ctype.h>
 #include <cassert>
 #include <sstream>
 #include <utility>
@@ -19,7 +21,23 @@
 using std::vector;
 using std::string;
 using std::make_pair;
+using IRC::Command;
 typedef std::pair<std::string, const Serializable*> KeyValue;
+
+bool UserTask::is_valid_nickname(const string& nick) {
+
+	if (nick.length() < 1 || nick.length() > 9)
+		return false;
+	const char c = nick[0];
+	if (!isalpha(c) && !IRC::is_special(c))
+		return false;
+	for (size_t i = 1; i < nick.length(); ++i) {
+		if(c != '-' && !IRC::is_satisfy_any<
+				IRC::is_letter, IRC::is_special, IRC::is_digit>(c))
+			return false;
+	}
+	return true;
+}
 
 UserTask::UserTask(const Task& parent, const vector<string>& params): Task(parent) {
 	switch (command.type){
@@ -54,6 +72,8 @@ UserTask& UserTask::add_next(const UserTask& next) {
 		connection.password = next.connection.password;
 	}
 	else if (next.command == Command::NICK) {
+		if (!is_valid_nickname(next.info.nick_name))
+			throw IRC::Error(IRC::Error::ERR_ERRONEUSNICKNAME);
 		info.nick_name = next.info.nick_name;
 	}
 	else {
@@ -63,10 +83,6 @@ UserTask& UserTask::add_next(const UserTask& next) {
 	}
 	command = next.command;
 	return *this;
-}
-
-bool UserTask::is_ready() const {
-	return command == Command::USER;	
 }
 
 // Serializable

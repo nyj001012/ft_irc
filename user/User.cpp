@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 01:34:38 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/18 03:55:38 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,10 @@ bool User::is_available() const {
 
 const string& User::get_nickname() const {
 	return info.nick_name;
+}
+
+const Connection& User::get_connection() const {
+	return connection;
 }
 
 void User::add_channel(const Channel& channel) {
@@ -226,7 +230,7 @@ ostream& User::Info::_add_to_serialization(ostream& os, const int depth) const {
 	_json(os, "user", ':', user_name, ',');
 	_json(os, "host", ':', host_name, ',');
 	_json(os, "server", ':', server_name, ',');
-	_json(os, "real name", ':', real_name, ',');
+	_json(os, "real name", ':', real_name);
 	return os;
 }
 

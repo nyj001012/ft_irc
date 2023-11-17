@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 03:41:50 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 01:39:48 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/18 03:57:45 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ class UserData: public Serializable {
 		static UserData& get_storage();
 		virtual ~UserData();
 		bool is_user_exist(const std::string&) const;
+		bool is_user_exist(const Connection&) const;
 		User& get_user(const std::string&) const;
+		User& get_user(const Connection&) const;
 		User& create_user(const Connection Connection, const User::Info&);
 		void delete_user(const User&);
 
@@ -52,6 +54,7 @@ class UserData: public Serializable {
 		UserData();
 		std::list<User> users;
 		std::map<std::string, std::list<User>::iterator> user_nick_map;
+		std::map<int, std::list<User>::iterator> user_socket_map;
 		std::map<int, UserTask> pendding_users;
 };
 #endif

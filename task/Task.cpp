@@ -6,22 +6,25 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/16 00:55:52 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/18 04:20:49 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Task.hpp"
 #include "../include/utils.hpp"
 #include "../include/json.hpp"
-#include "../irc/IrcError.hpp"
+#include "../include/Irc.hpp"
 #include <utility>
 
 using std::string;
 using std::vector;
 using std::auto_ptr;
+using IRC::Command;
+using IRC::Error;
 typedef std::pair<std::string, const Serializable*> KeyValue;
  
 int count_number_of_param(const vector<string>&);
+void trim_last_param(vector<string>& params);
 
 Task::Task() {}
 Task& Task::operator=(const Task& other) {
@@ -38,13 +41,17 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 	}
 	base.command = Command(tokens.front());
 	tokens.erase(tokens.begin());
+	trim_last_param(tokens);
 	int count = count_number_of_param(tokens);
 	Command::range range = base.command.parameter_range();
 	if (count < range.first) {
-		throw IrcError(IrcError::ERR_NEEDMOREPARAMS); 
+		if (base.command == Command::NICK)
+			throw Error(Error::ERR_NONICKNAMEGIVEN);
+		else
+			throw Error(Error::ERR_NEEDMOREPARAMS); 
 	}
 	else if (count > range.second) {
-		// TODO: Throw IrcError
+		// TODO: Throw Error
 	}
 
 	switch (base.command.type) {
@@ -90,6 +97,25 @@ int count_number_of_param(const vector<string>& params) {
 			++count;
 	}
 	return count;
+}
+
+void trim_last_param(vector<string>& params) {
+	if (params.size() < 1)
+		return ;
+	int found = -1;
+	for (size_t i = 0; i < params.size(); ++i) {
+		if (params[i].front() == ':') {
+			found = i;
+			break;
+		}
+	}
+	if (found == -1)
+		return ;
+	params[found].erase(0, 1);
+	for (size_t i = found + 1; i< params.size(); ++i) {
+		params[found] += params[i];	
+	}
+	params.resize(found + 1);
 }
 
 // Serializable

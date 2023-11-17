@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:28:24 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/16 01:03:21 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/18 01:33:05 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 
 using std::string;
 using std::make_pair;
+
+typedef IRC::Command Command;
 
 const char *all_commands[] = {
 	CMD_STRINGIFY(PASS),
