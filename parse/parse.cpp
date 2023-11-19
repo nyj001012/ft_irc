@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/19 13:50:12 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/19 15:03:12 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,13 @@ int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token> 
   bool result;
   if (command.empty() || command[command.length() - 1] != '\n')
     result = FAIL;
-  command.erase(command.length() - 1);
+  command.erase(command.length() - 1); // '\n' 제거
+  command.erase(command.length() - 2); // '\r' 제거
   if (command[0] == ':')
     result = parseCommandWithOptions(command, tokens);
   else
     result = parseCommand(command, tokens);
+  reorderTrailing(tokens);
   if (is_debug)
     printTokens(tokens);
   return result;
@@ -80,27 +82,25 @@ int parseCommandWithOptions(std::string command, std::vector<t_token> &tokens) {
  */
 int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens) {
   size_t user_pos = user_and_host.find('!');
+  size_t host_pos = user_and_host.find('@');
   if (user_pos != std::string::npos) { // user가 있는 경우
-    std::string user = user_and_host.substr(0, user_pos);
-    if (user_and_host[user_pos + 1] == '\0' || user_and_host[user_pos + 1] == '@' || user.empty())
+    if (user_pos == 0 || user_pos == user_and_host.length() - 1)
       return FAIL;
+    std::string user = user_and_host.substr(user_pos + 1);
+    if (host_pos != std::string::npos) // user와 host 모두 있는 경우
+      user = user.substr(0, host_pos - user_pos - 1);
     tokens.push_back((t_token) {NICK, user_and_host.substr(0, user_pos)});
     tokens.push_back((t_token) {USER, user});
   }
-  size_t host_pos = user_and_host.find('@');
   if (host_pos != std::string::npos) { // host가 있는 경우
-    std::string host = user_and_host.substr(host_pos + 1);
-    if (user_and_host[host_pos + 1] == '\0' || host.empty())
+    if (host_pos == 0 || host_pos == user_and_host.length() - 1)
       return FAIL;
-    if (tokens.empty())
-      tokens.push_back((t_token) {
-          HOST,
-          user_and_host.substr(0, host_pos)
-      });
-    tokens.push_back((t_token) {HOST, host});
+    if (user_pos == std::string::npos) // user 없이 host만 있는 경우
+      tokens.push_back((t_token) {NICK, user_and_host.substr(0, host_pos)});
+    tokens.push_back((t_token) {HOST, user_and_host.substr(host_pos + 1)});
   }
   if (user_pos == std::string::npos && host_pos == std::string::npos) // user, host가 없는 경우
-    tokens.insert(tokens.begin(), (t_token) {SERVERNAME, user_and_host});
+    tokens.insert(tokens.begin(), (t_token) {NICK, user_and_host});
   return SUCCESS;
 }
 
@@ -188,6 +188,21 @@ int parseMiddle(std::string params, std::vector<t_token> &tokens) {
   }
   tokens.push_back((t_token) {MIDDLE, params});
   return SUCCESS;
+}
+
+/**
+ * trailing이 middle보다 앞에 오도록 순서를 바꾸는 함수
+ * @param tokens 파싱된 토큰들이 저장된 벡터
+ */
+void reorderTrailing(std::vector<t_token> &tokens) {
+  for (size_t i = 0; i < tokens.size(); i++) {
+    if (tokens[i].type == TRAILING) {
+      t_token trailing = tokens[i];
+      tokens.erase(tokens.begin() + i);
+      tokens.push_back(trailing);
+      break;
+    }
+  }
 }
 
 /**
