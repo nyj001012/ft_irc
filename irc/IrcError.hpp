@@ -28,7 +28,7 @@ namespace IRC {
 		} code;
 
 		Error();
-		virtual ~Error() _NOEXCEPT;
+		virtual ~Error() throw();
 		Error(const Code);
 		const char* to_string() const;
 		virtual std::string _get_label() const;

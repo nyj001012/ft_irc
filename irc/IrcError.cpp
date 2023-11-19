@@ -27,7 +27,7 @@ const char *all_errors[] = {
 };
 
 Error::Error(): code(UnKnown) {}
-Error::~Error() _NOEXCEPT{}
+Error::~Error() throw(){}
 Error::Error(const Code code): code(code) {}
 
 string Error::_get_label() const {

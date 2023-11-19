@@ -12,6 +12,7 @@
 
 #include "RequestHandler.hpp"
 #include "../include/Irc.hpp"
+#include "../debug/Reflector.hpp"
 #include "../data/UserData.hpp"
 #include "../user/User.hpp"
 #include <iostream>
@@ -37,6 +38,7 @@ void RequestHandler::get_request(vector<string>& req, const Connection& connecti
 	if (user_task != NULL) {
 		try {
 			execute(*user_task);		
+			Reflector::shared().update();
 		}
 		catch (std::exception& e) {
 			std::cerr << e.what() << std::endl;

@@ -104,7 +104,7 @@ void trim_last_param(vector<string>& params) {
 		return ;
 	int found = -1;
 	for (size_t i = 0; i < params.size(); ++i) {
-		if (params[i].front() == ':') {
+		if (params[i][0] == ':') {
 			found = i;
 			break;
 		}

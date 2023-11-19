@@ -14,6 +14,7 @@
 #define FT_IRC_SERVER_INITIALIZE_HPP_
 
 #include "../include/common.hpp"
+#include "../handler/RequestHandler.hpp"
 #include <sys/socket.h>
 #include <sys/fcntl.h>
 #include <netinet/in.h>
@@ -60,6 +61,7 @@ class Server {
   int _fd_max;
   struct sockaddr_in _server_addr;
   bool _is_debug;
+	RequestHandler handler;
 };
 
 std::ostream &operator<<(std::ostream &os, const Server &server);

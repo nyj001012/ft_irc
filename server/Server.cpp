@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "../user/User.hpp"
 #include <cstring>
 #include <cstdlib>
 
@@ -162,8 +163,13 @@ void Server::runServer() {
         else {
 					char *message = this->receiveMessage(i);
 					std::vector<t_token> tokens;
-					if (parseMessageFormat(message, this->_is_debug, tokens))
+					if (parseMessageFormat(message, this->_is_debug, tokens)) {
 						this->sendMessage(i, message);
+						std::vector<std::string> vec = split_string(std::string(message));
+						Connection connection;	
+						connection.socket_fd = i;
+						handler.get_request(vec, connection);
+					}
 					delete[] message;
 				}
       }
