@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/12 13:58:29 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/19 13:50:12 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,13 @@ int parseUserAndHost(std::string user_and_host, std::vector<t_token> &tokens) {
       return FAIL;
     if (tokens.empty())
       tokens.push_back((t_token) {
-          NICK,
+          HOST,
           user_and_host.substr(0, host_pos)
       });
     tokens.push_back((t_token) {HOST, host});
   }
   if (user_pos == std::string::npos && host_pos == std::string::npos) // user, host가 없는 경우
-    tokens.insert(tokens.begin(), (t_token) {NICK, user_and_host});
+    tokens.insert(tokens.begin(), (t_token) {SERVERNAME, user_and_host});
   return SUCCESS;
 }
 
@@ -165,7 +165,7 @@ int parseTrailing(std::string params, std::vector<t_token> &tokens) {
     if (params[i] == '\0' || params[i] == '\r' || params[i] == '\n')
       return FAIL;
   }
-  tokens.push_back((t_token) {PARAMS, params.substr(1)});
+  tokens.push_back((t_token) {TRAILING, params.substr(1)});
   return SUCCESS;
 }
 
@@ -186,7 +186,7 @@ int parseMiddle(std::string params, std::vector<t_token> &tokens) {
     if (params[i] == '\0' || params[i] == '\r' || params[i] == '\n' || params[i] == ' ')
       return FAIL;
   }
-  tokens.push_back((t_token) {PARAMS, params});
+  tokens.push_back((t_token) {MIDDLE, params});
   return SUCCESS;
 }
 

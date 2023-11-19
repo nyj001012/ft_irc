@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/12 13:59:12 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/19 13:43:37 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,13 @@
 /*----------------------------------*
  * Token Type                       *
  *----------------------------------*/
+#define SERVERNAME "servername"
 #define NICK "nick"
 #define USER "user"
 #define HOST "host"
 #define COMMAND "command"
-#define PARAMS "params"
+#define MIDDLE "middle"
+#define TRAILING "trailing"
 
 /*----------------------------------*
  * Token Structure                  *
