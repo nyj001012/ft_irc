@@ -7,6 +7,7 @@ SRCS = main.cpp \
 	   server/Server.cpp \
 	   utils/utils.cpp \
 		 utils/socket_utils.cpp \
+		 utils/string_utils.cpp \
 		 irc/IrcCommand.cpp \
 		 irc/IrcError.cpp \
 		 irc/IrcUtil.cpp \

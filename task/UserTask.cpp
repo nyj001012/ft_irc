@@ -12,7 +12,6 @@
 
 #include "Task.hpp"
 #include "../include/Irc.hpp"
-#include <_ctype.h>
 #include <ctype.h>
 #include <cassert>
 #include <sstream>
