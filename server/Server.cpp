@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/12 16:01:39 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/19 14:28:01 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,10 +160,10 @@ void Server::runServer() {
         if (i == this->_server_socket)
           this->acceptClient();
         else {
-          std::array<char, BUFFER_SIZE> message = this->receiveMessage(i);
+          std::string message = this->receiveMessage(i);
           std::vector<t_token> tokens;
-          if (parseMessageFormat(message.data(), this->_is_debug, tokens))
-            this->sendMessage(i, message.data());
+          if (parseMessageFormat(message, this->_is_debug, tokens))
+            this->sendMessage(i, message);
         }
       }
     }
@@ -191,19 +191,28 @@ void Server::acceptClient() {
  * @param client_socket 클라이언트 소켓
  * @return 클라이언트로부터 받은 메시지
  */
-std::array<char, BUFFER_SIZE> Server::receiveMessage(int client_socket) {
-  std::array<char, BUFFER_SIZE> buffer;
-
-  ssize_t read_size = read(client_socket, &buffer, BUFFER_SIZE);
+std::string Server::receiveMessage(int client_socket) {
+  std::vector<char> buffer(BUFFER_SIZE);
+  ssize_t read_size = read(client_socket, &buffer[0], BUFFER_SIZE);
   if (read_size == -1)
     throw std::runtime_error("Error: read() failed");
   if (read_size == 0) {
     this->closeClient(client_socket);
-    return buffer;
+    return "";
+  }
+  if (read_size < BUFFER_SIZE - 2) {
+    buffer.resize(read_size + 2);
+    buffer[read_size] = '\r';
+    buffer[read_size + 1] = '\n';
+  }
+  else {
+    buffer.resize(BUFFER_SIZE);
+    buffer[BUFFER_SIZE - 2] = '\r';
+    buffer[BUFFER_SIZE - 1] = '\n';
   }
   if (this->_is_debug)
     std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
-  return buffer;
+  return std::string(buffer.begin(), buffer.end());
 }
 
 /**
@@ -222,8 +231,8 @@ void Server::closeClient(int client_socket) {
  * @param client_socket 메시지를 보낼 클라이언트 소켓
  * @param message 보낼 메시지
  */
-void Server::sendMessage(int client_socket, char *message) {
-  ssize_t write_size = write(client_socket, message, std::strlen(message));
+void Server::sendMessage(int client_socket, std::string message) {
+  ssize_t write_size = write(client_socket, message.data(), message.length());
   if (write_size == -1)
     throw std::runtime_error("Error: write() failed");
 }

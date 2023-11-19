@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/12 13:59:12 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/19 13:52:24 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,13 @@
 /*----------------------------------*
  * Token Type                       *
  *----------------------------------*/
+#define SERVERNAME "servername"
 #define NICK "nick"
 #define USER "user"
 #define HOST "host"
 #define COMMAND "command"
-#define PARAMS "params"
+#define MIDDLE "middle"
+#define TRAILING "trailing"
 
 /*----------------------------------*
  * Token Structure                  *
@@ -51,6 +53,7 @@ int parseCommand(std::string command_part, std::vector<t_token> &tokens);
 int parseParams(std::string command_part, std::vector<t_token> &tokens);
 int parseTrailing(std::string params, std::vector<t_token> &tokens);
 int parseMiddle(std::string params, std::vector<t_token> &tokens);
+void reorderTrailing(std::vector<t_token> &tokens);
 void printTokens(std::vector<t_token> tokens);
 size_t getLongestTokenType(std::vector<t_token> tokens);
 size_t getLongestTokenValue(std::vector<t_token> tokens);
