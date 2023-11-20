@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/19 15:13:29 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/20 20:30:53 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,6 @@ void Server::initializeClientFds()
 void Server::runServer() {
   struct timeval tv = {TIMEOUT_SEC, 0};
 
-  while (true) {
     fd_set read_fds = this->_client_fds;
     if (this->_is_debug) {
       std::cout << F_YELLOW << "[DEBUG] Server running..." << FB_DEFAULT << std::endl;
@@ -177,7 +176,7 @@ void Server::runServer() {
     if (ready_descriptors == -1)
       throw std::runtime_error("Error: select() failed");
     if (ready_descriptors == 0)
-      continue;
+      return;
     for (int i = 0; i <= this->_fd_max; i++) {
       if (FD_ISSET(i, &read_fds)) {
         if (i == this->_server_socket)
@@ -195,7 +194,6 @@ void Server::runServer() {
 				}
       }
     }
-  }
 }
 
 /**
