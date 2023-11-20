@@ -49,8 +49,8 @@ class Server {
   void initializeClientFds();
   void runServer();
   void acceptClient();
-	char *receiveMessage(int client_socket);
-  void sendMessage(int client_socket, char *message);
+	std::string receiveMessage(int client_socket);
+  void sendMessage(int client_socket, std::string& message);
   void closeClient(int client_socket);
   void closeServer();
 
@@ -62,6 +62,7 @@ class Server {
   struct sockaddr_in _server_addr;
   bool _is_debug;
 	RequestHandler handler;
+};
 std::ostream& operator<<(std::ostream& os, const Server& server);
 std::ostream& operator<<(std::ostream& os, const fd_set& client_fds);
 

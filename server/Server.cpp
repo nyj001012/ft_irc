@@ -183,20 +183,20 @@ void Server::runServer() {
         if (i == this->_server_socket)
           this->acceptClient();
         else {
-					char *message = this->receiveMessage(i);
+					std::string message = this->receiveMessage(i);
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(message, this->_is_debug, tokens)) {
 						this->sendMessage(i, message);
-						std::vector<std::string> vec = split_string(std::string(message));
+						std::vector<std::string> vec = split_string(message);
 						Connection connection;	
 						connection.socket_fd = i;
 						handler.get_request(vec, connection);
 					}
-					delete[] message;
 				}
       }
     }
   }
+}
 
 /**
  * 클라이언트의 연결 요청을 수락하고, 클라이언트 소켓을 fd_set에 추가한다.
@@ -266,7 +266,7 @@ void Server::closeClient(int client_socket)
  * @param client_socket 메시지를 보낼 클라이언트 소켓
  * @param message 보낼 메시지
  */
-void Server::sendMessage(int client_socket, std::string message)
+void Server::sendMessage(int client_socket, std::string& message)
 {
 	ssize_t write_size = write(client_socket, message.data(), message.length());
 	if (write_size == -1)
