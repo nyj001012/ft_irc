@@ -14,7 +14,8 @@
 #include "../include/Irc.hpp"
 #include "../debug/Reflector.hpp"
 #include "../data/UserData.hpp"
-#include "../user/User.hpp"
+#include "../data/ChannelData.hpp"
+#include "../include/utils.hpp"
 #include <iostream>
 
 using std::string;
@@ -34,15 +35,37 @@ void RequestHandler::get_request(vector<string>& req, const Connection& connecti
 	catch(Error &e) {
 		std::cerr << e.what() << std::endl;
 	}
-	UserTask* user_task = dynamic_cast<UserTask*>(task.get());
-	if (user_task != NULL) {
-		try {
+	try {
+		UserTask* user_task = dynamic_cast<UserTask*>(task.get());
+		if (user_task != NULL) {
 			execute(*user_task);		
-			Reflector::shared().update();
 		}
-		catch (std::exception& e) {
-			std::cerr << e.what() << std::endl;
+		ChannelTask* channel_task = dynamic_cast<ChannelTask*>(task.get());
+		if (channel_task != NULL) {
+			execute(*channel_task);
 		}
+	}
+	catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
+	Reflector::shared().update();
+}
+
+void RequestHandler::execute(const ChannelTask& task) {
+	ChannelData& data = ChannelData::get_storage();
+	User& user = UserData::get_storage().get_user(task.get_connection());
+	switch (task.get_command().type) {
+		case Command::JOIN:
+			for (size_t i = 0; i < task.params.size(); ++i) {
+				vector<string> name_key = split_string(task.params[i]);
+				if (name_key.size() == 2)
+					user.add_channel(data.join_channel(name_key[0], name_key[1], user));
+				else 
+					user.add_channel(data.join_channel(name_key[0], user));
+			}
+			break;
+		default:
+			throw Command::UnSupported();
 	}
 }
 

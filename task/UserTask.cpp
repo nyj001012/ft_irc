@@ -95,9 +95,7 @@ string UserTask::_get_label() const {
 }
 
 vector<KeyValue> UserTask::_get_children() const {
-	vector<KeyValue> vec;
-	vec.push_back(make_pair("connection", &this->connection));
-	vec.push_back(make_pair("last command", &this->command));
+	vector<KeyValue> vec = Task::_get_children();
 	vec.push_back(make_pair("info", &this->info));
 	return vec;
 }

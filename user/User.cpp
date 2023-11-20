@@ -34,7 +34,7 @@ using std::make_pair;
 
 typedef std::pair<string, const Serializable*> KeyValue;
 
-Connection::Connection(): is_alive(false) {}
+Connection::Connection(): is_alive(true) {}
 Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): 
 	is_alive(false), socket_fd(socket_fd), password() {
 	char buffer[INET6_ADDRSTRLEN];
@@ -188,7 +188,7 @@ bool operator==(const User::Info& a, const User::Info& b) {
 
 string Connection::_get_label() const {
 	stringstream ss;
-	ss << address << ":" << port;
+	ss << "socket=" << socket_fd;
 	if (is_alive)
 		ss << "(alive)";
 	else 

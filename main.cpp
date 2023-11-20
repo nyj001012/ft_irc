@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
 {
 	RequestHandler handler;
 	Reflector::shared().add(UserData::get_storage());
+	Reflector::shared().add(ChannelData::get_storage());
 	const char* port;
 	Server server;
 

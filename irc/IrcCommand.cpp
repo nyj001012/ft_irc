@@ -12,6 +12,7 @@
 
 #include "IrcCommand.hpp"
 #include "../include/json.hpp"
+#include <climits>
 #define CMD_STRINGIFY(name) # name
 
 using std::string;
@@ -60,6 +61,10 @@ const Command::range Command::parameter_range() const {
 			break;
 		case NICK:
 			range = make_pair(1, 2);
+			break;
+		case JOIN:
+			range = make_pair(1, INT_MAX);
+			break;
 		default:
 			break;
 	}

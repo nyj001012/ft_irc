@@ -30,6 +30,7 @@ struct Task: public Serializable {
 		const Command get_command() const;	
 		const Connection& get_connection() const;
 		virtual std::string _get_label() const;
+		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 	
 	struct ParsingFail: public std::exception {
@@ -58,4 +59,15 @@ struct UserTask: public Task {
 		virtual std::string _get_label() const;
 
 };
+
+struct ChannelTask: public Task {
+
+	public:
+
+		ChannelTask(const Task& parent, const std::vector<std::string>&);
+		virtual std::string _get_label() const;
+		std::vector<std::string> params; 
+		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+};
+
 #endif

@@ -25,5 +25,6 @@ class RequestHandler {
 		void get_request(std::vector<std::string>&, const Connection&);
 	private:
 		void execute(const UserTask&);
+		void execute(const ChannelTask&);
 };
 #endif

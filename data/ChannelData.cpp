@@ -59,6 +59,12 @@ Channel& ChannelData::join_channel(const string& name, const User& user) {
 	}
 }
 
+Channel& ChannelData::join_channel(const string& name, const string& key, const User& user) {
+	//TODO: check key
+	(void)key;
+	return join_channel(name, user);
+}
+
 void ChannelData::leave_channel(const Channel &channel, const User& user) {
 	Channel& channel_ref = const_cast<Channel&>(channel);
 	channel_ref.remove_user(user);
@@ -91,8 +97,9 @@ string ChannelData::_get_label() const {
 
 ostream& ChannelData::_add_to_serialization(ostream& os, const int depth) const {
 
-	_json(os, "number of channels", ':', channels.size(), ',');
+	_json(os, "number of channels", ':', channels.size());
 	if (depth > 0 && channels.size() > 0) {
+		os << ',';
 		vector<const Serializable*> vec;
 		list<Channel>::const_iterator iter;
 		for (iter = channels.begin(); iter != channels.end(); ++iter) {

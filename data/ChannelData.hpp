@@ -30,7 +30,8 @@ class ChannelData: public Serializable {
 		virtual ~ChannelData();
 		bool is_channel_exist(const std::string&) const;
 		Channel& get_channel(const std::string&) const;
-		Channel& join_channel(const std::string& name, const User&);
+		Channel& join_channel(const std::string&, const User&);
+		Channel& join_channel(const std::string&, const std::string&, const User&);
 		void leave_channel(const Channel& channel, const User&);
 
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 

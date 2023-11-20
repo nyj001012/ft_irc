@@ -21,6 +21,8 @@ using std::vector;
 using std::auto_ptr;
 using IRC::Command;
 using IRC::Error;
+using std::pair;
+using std::make_pair;
 typedef std::pair<std::string, const Serializable*> KeyValue;
  
 int count_number_of_param(const vector<string>&);
@@ -60,6 +62,8 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 		case Command::USER:
 			return auto_ptr<Task>(new UserTask(base, tokens));
 			break;
+		case Command::JOIN:
+			return auto_ptr<Task>(new ChannelTask(base, tokens));
 		default:
 			break;
 	}
@@ -124,6 +128,13 @@ string Task::_get_label() const {
 	if (!prefix.empty())
 		label += " prefix=" + prefix;
 	return label;
+}
+
+vector<pair<string, const Serializable*> > Task::_get_children() const {
+	vector<pair<string, const Serializable*> > vec;
+	vec.push_back(make_pair("command", &this->command));
+	vec.push_back(make_pair("connection", &this->connection));
+	return vec;
 }
 
 std::ostream& Task::_add_to_serialization(std::ostream& os, const int) const {

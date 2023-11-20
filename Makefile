@@ -18,6 +18,7 @@ SRCS = main.cpp \
 		 parse/parse.cpp \
 		 task/Task.cpp \
 		 task/UserTask.cpp \
+		 task/ChannelTask.cpp \
 		 handler/RequestHandler.cpp
 
 OBJS = ${SRCS:.cpp=.o}
