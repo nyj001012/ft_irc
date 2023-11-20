@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/12 15:45:33 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/19 15:13:37 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,7 @@ class Server {
   struct sockaddr_in _server_addr;
   bool _is_debug;
 	RequestHandler handler;
-};
-
-std::ostream &operator<<(std::ostream &os, const Server &server);
-std::ostream &operator<<(std::ostream &os, const fd_set &client_fds);
+std::ostream& operator<<(std::ostream& os, const Server& server);
+std::ostream& operator<<(std::ostream& os, const fd_set& client_fds);
 
 #endif //FT_IRC_SERVER_INITIALIZE_HPP_
