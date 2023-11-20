@@ -1,3 +1,4 @@
 *.o
-tags/
-ft_irc
+*.json
+tags
+ircserv

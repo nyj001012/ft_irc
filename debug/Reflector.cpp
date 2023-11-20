@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 09:58:17 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/12 09:58:17 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/16 01:24:12 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ using std::stringstream;
 using std::pair;
 using std::make_pair;
 
-Reflector::Reflector(): depth(3) {
+Reflector::Reflector(): depth(3), is_debug(true) {
 	try {
 		outfile.open(OUTPUT_FILE, std::ios::out | std::ios::trunc);
 		outfile.close();
@@ -38,6 +38,10 @@ Reflector::Reflector(): depth(3) {
 	if (!outfile.good()) {
 		cerr << "Fail to open " << OUTPUT_FILE << std::endl;
 	}
+}
+
+void Reflector::set_debug(bool value) {
+	is_debug = value;
 }
 
 Reflector::~Reflector() {
@@ -54,6 +58,12 @@ void Reflector::set_depth(const int depth) {
 }
 
 void Reflector::update() {
+	if (!is_debug)
+		return;
+	vector<pair<const Serializable*, string> >::iterator iter;
+	for (iter = targets.begin(); iter != targets.end(); ++iter) {
+		iter->second = iter->first->_serialize(depth);
+	}
 	outfile.open(OUTPUT_FILE, std::ios::out | std::ios::trunc);
 	if (!outfile.good())
 		return ;
@@ -63,6 +73,8 @@ void Reflector::update() {
 }
 
 void Reflector::update(const string& message) {
+	if(!is_debug)
+		return;
 	this->message = message;	
 	update();
 }

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 21:56:35 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/18 03:55:38 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ using std::make_pair;
 typedef std::pair<string, const Serializable*> KeyValue;
 
 Connection::Connection(): is_alive(false) {}
-Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): is_alive(false), socket_fd(socket_fd) {
+Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): 
+	is_alive(false), socket_fd(socket_fd), password() {
 	char buffer[INET6_ADDRSTRLEN];
 	switch (addr->ss_family) {
 		case (AF_INET):
@@ -59,40 +60,49 @@ Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd)
 		return;
 }
 
+bool User::Info::is_equal(const User::Info& other) const {
+	if (nick_name != other.nick_name)
+		return false;
+	if (user_name != other.user_name)
+		return false;
+	if (host_name != other.host_name)
+		return false;
+	if (server_name != other.server_name)
+		return false;
+	if (real_name != other.real_name)
+		return false;
+	return true;
+}
+
 User::User() { }
-User::User(const Connection connection, const string& nick)
-	:connection(connection), nickname(nick), hostname("") { }
+User::User(const Connection connection, const Info& info)
+	:connection(connection), info(info){ }
 
 User::~User() { }
 
-User::User(const User& other):
-	connection(other.connection),
-	nickname(other.nickname),
-	hostname(other.hostname),
-	joined_channels(other.joined_channels)
+User::User(const User& other)
 {
-	
+	*this = other;	
 }
 
 User& User::operator=(const User& other) {
 	
 	connection = other.connection;
-	nickname = other.nickname;
-	hostname = other.hostname;
+	info = other.info;
 	joined_channels = other.joined_channels;
 	return *this;
 }
 
 bool User::is_available() const {
-	return nickname.length() > 0 && connection.is_alive;
+	return connection.is_alive;
 }
 
 const string& User::get_nickname() const {
-	return nickname;
+	return info.nick_name;
 }
 
-const string& User::get_hostname() const {
-	return hostname;
+const Connection& User::get_connection() const {
+	return connection;
 }
 
 void User::add_channel(const Channel& channel) {
@@ -142,8 +152,7 @@ vector<const Channel*> User::get_all_channels() const {
 bool User::is_equal(const User& other) const {
 	if (!(connection.is_equal(other.connection)))
 		return false;
-	if (nickname != other.nickname || 
-			hostname != other.hostname)
+	if (!(info == other.info))
 		return false;
 	return true;
 }
@@ -171,6 +180,10 @@ bool operator==(const Connection& a, const Connection& b) {
 	return a.is_equal(b);
 }
 
+bool operator==(const User::Info& a, const User::Info& b) {
+	return a.is_equal(b);
+}
+
 // Serializable
 
 string Connection::_get_label() const {
@@ -188,28 +201,41 @@ ostream& Connection::_add_to_serialization(ostream& os, const int _d) const {
 	_json(os, "address", ':', address, ',');
 	_json(os, "port", ':', port, ',');
 	_json(os, "is_alive", ':', is_alive, ',');
-	_json(os, "socket_fd", ':', socket_fd);
+	_json(os, "socket_fd", ':', socket_fd, ',');
+	_json(os, "password", ':', password);
 	(void)_d;
 	return os;
 }
 
-string User::_get_label() const {
-	if (hostname.empty())
-		return nickname;
-	return nickname + "@" + hostname;
+string User::Info::_get_label() const {
+	if (host_name.empty())
+		return nick_name;
+	return nick_name + "@" + host_name;
 }
 
+string User::_get_label() const {
+	return info._get_label();
+}
 
 vector<KeyValue> User::_get_children() const {
 	vector<KeyValue> v;
+	v.push_back(make_pair("info", &this->info));
 	v.push_back(make_pair("connection", &this->connection));		
 	return v;
 }
 
+ostream& User::Info::_add_to_serialization(ostream& os, const int depth) const {
+	(void)depth;
+	_json(os, "nick", ':', nick_name, ',');
+	_json(os, "user", ':', user_name, ',');
+	_json(os, "host", ':', host_name, ',');
+	_json(os, "server", ':', server_name, ',');
+	_json(os, "real name", ':', real_name);
+	return os;
+}
+
 ostream& User::_add_to_serialization(ostream& os, const int depth) const {
 
-	_json(os, "nickname", ':', nickname, ',');
-	_json(os, "hostname", ':', hostname, ',');
 	if (depth > 0) {
 		vector<const Serializable*> vec(joined_channels.begin(), joined_channels.end());
 		_json(os, "channel", ':') << ::_serialize(vec, depth - 1);

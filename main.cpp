@@ -6,10 +6,11 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:39:21 by yena              #+#    #+#             */
-/*   Updated: 2023/11/01 15:20:34 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/18 04:27:52 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "task/Task.hpp"
 #include "channel/Channel.hpp"
 #include "data/ChannelData.hpp"
 #include "include/utils.hpp"
@@ -18,13 +19,24 @@
 #include "debug/Reflector.hpp"
 #include "server/Server.hpp"
 #include "user/User.hpp"
+#include "handler/RequestHandler.hpp"
 #include <cstring>
+#include <exception>
 #include <iterator>
 #include <iostream>
+#include <sstream>
+
 using std::cout;
+using std::vector;
+using std::string;
+
+void add_user(const string& nick, const string& password, const string& ip_addr, RequestHandler& handler);
 
 int main(int argc, char *argv[]) {
-	 const char *port;
+
+	RequestHandler handler;
+	Reflector::shared().add(UserData::get_storage());
+	const char *port;
   Server server;
 
   if (argc != 2) {
@@ -32,15 +44,17 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   port = argv[1];
-  if (!std::strcmp(argv[1], "DEBUG")) {
-    port = (getPortInDebugMode()).c_str();
-    server.setIsDebug(true);
-  }
-  if (!isValidPort(port)) {
-    printError("Error: Invalid port number: " + static_cast<std::string>(port));
-    return 1;
-  }
-  try {
+	if (!std::strcmp(argv[1], "DEBUG")) {
+		port = (getPortInDebugMode()).c_str();
+		server.setIsDebug(true);
+	}
+	else 
+		server.setIsDebug(false);
+	if (!isValidPort(port)) {
+		printError("Error: Invalid port number: " + static_cast<std::string>(port));
+		return 1;
+	}
+	try {
     server.initializeServer(port);
     server.initializeClientFds();
     server.runServer();

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 21:53:37 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:37:12 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ struct Connection: Serializable {
 	std::string address;
 	int port;
 	int socket_fd;
+	std::string password;
 	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 	virtual std::string _get_label() const;
 
@@ -42,13 +43,25 @@ struct Connection: Serializable {
 class User: public Serializable {
 
 	public:
-		User(const Connection connection, const std::string& nick);
+		struct Info: public Serializable {
+			std::string nick_name;
+			std::string user_name;
+			std::string host_name;
+			std::string server_name;
+			std::string real_name;
+
+			bool is_equal(const User::Info&) const;
+
+			virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+			virtual std::string _get_label() const;
+		};
+
+		User(const Connection connection, const Info&);
 		User(const User&);
-		~User();
+		virtual ~User();
 		
 		bool is_available() const;
 		const std::string& get_nickname() const;
-		const std::string& get_hostname() const;
 		const Connection& get_connection() const;
 
 		void add_channel(const Channel&);
@@ -66,11 +79,11 @@ class User: public Serializable {
 		User();
 		User& operator=(const User&);
 		Connection connection;
-		std::string nickname;
-		std::string hostname;
+		Info info;
 		std::vector<const Channel*> joined_channels;
 };
 
 bool operator==(const User&, const User&);
 bool operator==(const Connection&, const Connection&);
+bool operator==(const User::Info&, const User::Info&);
 #endif

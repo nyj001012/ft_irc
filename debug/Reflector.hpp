@@ -27,6 +27,7 @@ class Reflector {
 		void update(const std::string&);
 		void update();
 		void set_depth(const int);
+		void set_debug(bool);
 
 	private:
 		Reflector();
@@ -35,5 +36,6 @@ class Reflector {
 		std::string message;
 		std::vector<std::pair<const Serializable*, std::string> > targets;
 		std::string generate() const;
+		bool is_debug;
 };
 #endif

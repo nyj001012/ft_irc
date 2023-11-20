@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 14:34:06 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/10 14:34:06 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/15 01:41:01 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ using std::map;
 using std::list;
 
 typedef std::pair<string, const Serializable*> KeyValue;
+
+Serializable::~Serializable() {}
 
 vector<KeyValue> Serializable::_get_children() const {
 	return std::vector<KeyValue>();
@@ -73,7 +75,7 @@ string _serialize(const map<string, const Serializable*>& m, const int depth) {
 	stringstream ss;
 	if (depth > 0 && m.size() > 0) {
 		ss << '{';
-		typename std::map<std::string, const Serializable*>::const_iterator iter = m.begin();
+		std::map<std::string, const Serializable*>::const_iterator iter = m.begin();
 		while (true) {
 			ss << '"' << iter->first << '"' << ':';
 			ss << iter->second->_serialize(depth);

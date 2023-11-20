@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "../user/User.hpp"
 #include <cstring>
 #include <cstdlib>
 
@@ -163,40 +164,39 @@ void Server::initializeClientFds()
  * 이벤트가 발생했다면 acceptClient() 또는 receiveMessage() 함수를 호출한다.
  * 이벤트가 발생하지 않았다면 다시 select() 함수를 호출한다.
  */
-void Server::runServer()
-{
-	struct timeval tv = { TIMEOUT_SEC, 0 };
+void Server::runServer() {
+  struct timeval tv = {TIMEOUT_SEC, 0};
 
-	while (true)
-	{
-		fd_set read_fds = this->_client_fds;
-		if (this->_is_debug)
-		{
-			std::cout << F_YELLOW << "[DEBUG] Server running..." << FB_DEFAULT << std::endl;
-			std::cout << *this << std::endl;
-		}
-		int ready_descriptors = select(this->_fd_max + 1, &read_fds, NULL, NULL, &tv);
-		if (ready_descriptors == -1)
-			throw std::runtime_error("Error: select() failed");
-		if (ready_descriptors == 0)
-			continue;
-		for (int i = 0; i <= this->_fd_max; i++)
-		{
-			if (FD_ISSET(i, &read_fds))
-			{
-				if (i == this->_server_socket)
-					this->acceptClient();
-				else
-				{
-					std::string message = this->receiveMessage(i);
+  while (true) {
+    fd_set read_fds = this->_client_fds;
+    if (this->_is_debug) {
+      std::cout << F_YELLOW << "[DEBUG] Server running..." << FB_DEFAULT << std::endl;
+      std::cout << *this << std::endl;
+    }
+    int ready_descriptors = select(this->_fd_max + 1, &read_fds, NULL, NULL, &tv);
+    if (ready_descriptors == -1)
+      throw std::runtime_error("Error: select() failed");
+    if (ready_descriptors == 0)
+      continue;
+    for (int i = 0; i <= this->_fd_max; i++) {
+      if (FD_ISSET(i, &read_fds)) {
+        if (i == this->_server_socket)
+          this->acceptClient();
+        else {
+					char *message = this->receiveMessage(i);
 					std::vector<t_token> tokens;
-					if (parseMessageFormat(message, this->_is_debug, tokens))
+					if (parseMessageFormat(message, this->_is_debug, tokens)) {
 						this->sendMessage(i, message);
+						std::vector<std::string> vec = split_string(std::string(message));
+						Connection connection;	
+						connection.socket_fd = i;
+						handler.get_request(vec, connection);
+					}
+					delete[] message;
 				}
-			}
-		}
-	}
-}
+      }
+    }
+  }
 
 /**
  * 클라이언트의 연결 요청을 수락하고, 클라이언트 소켓을 fd_set에 추가한다.
@@ -220,6 +220,7 @@ void Server::acceptClient()
  * @param client_socket 클라이언트 소켓
  * @return 클라이언트로부터 받은 메시지
  */
+
 std::string Server::receiveMessage(int client_socket)
 {
 	std::vector<char> buffer(BUFFER_SIZE);
@@ -247,7 +248,7 @@ std::string Server::receiveMessage(int client_socket)
 		std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
 	return std::string(buffer.begin(), buffer.end());
 }
-
+  
 /**
  * 클라이언트 소켓을 닫고, fd_set에서 제거한다.
  * @param client_socket
