@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/12 15:45:33 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/19 15:13:37 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ class Server {
   void initializeClientFds();
   void runServer();
   void acceptClient();
-	char *receiveMessage(int client_socket);
-  void sendMessage(int client_socket, char *message);
+	std::string receiveMessage(int client_socket);
+  void sendMessage(int client_socket, std::string& message);
   void closeClient(int client_socket);
   void closeServer();
 
@@ -63,8 +63,7 @@ class Server {
   bool _is_debug;
 	RequestHandler handler;
 };
-
-std::ostream &operator<<(std::ostream &os, const Server &server);
-std::ostream &operator<<(std::ostream &os, const fd_set &client_fds);
+std::ostream& operator<<(std::ostream& os, const Server& server);
+std::ostream& operator<<(std::ostream& os, const fd_set& client_fds);
 
 #endif //FT_IRC_SERVER_INITIALIZE_HPP_
