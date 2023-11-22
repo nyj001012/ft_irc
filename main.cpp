@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 20:39:21 by yena              #+#    #+#             */
-/*   Updated: 2023/11/20 20:34:50 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/22 14:21:02 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,35 +39,38 @@ int main(int argc, char* argv[])
 	const char* port;
 	Server server;
 
-	if (argc != 3)
+	if (argc == 3 || (argc == 2 && !std::strcmp(argv[1], "DEBUG")))
+	{
+		port = argv[1];
+		if (!std::strcmp(argv[1], "DEBUG"))
+		{
+			port = (getPortInDebugMode()).c_str();
+			server.setIsDebug(true);
+		}
+		else
+			server.setIsDebug(false);
+		if (!isValidPort(port))
+		{
+			printError("Error: Invalid port number: " + static_cast<std::string>(port));
+			return 1;
+		}
+		server.initializeServer(port);
+		server.initializeClientFds();
+		while (true)
+		{
+			try
+			{
+				server.runServer();
+			}
+			catch (std::exception& e)
+			{
+				printError(e.what());
+			}
+		}
+	}
+	else
 	{
 		printError("Invalid arguments: Usage: ./ircserv <port> <password>");
 		return 1;
-	}
-	port = argv[1];
-	if (!std::strcmp(argv[1], "DEBUG"))
-	{
-		port = (getPortInDebugMode()).c_str();
-		server.setIsDebug(true);
-	}
-	else
-		server.setIsDebug(false);
-	if (!isValidPort(port))
-	{
-		printError("Error: Invalid port number: " + static_cast<std::string>(port));
-		return 1;
-	}
-	server.initializeServer(port);
-	server.initializeClientFds();
-	while (true)
-	{
-		try
-		{
-			server.runServer();
-		}
-		catch (std::exception& e)
-		{
-			printError(e.what());
-		}
 	}
 }
