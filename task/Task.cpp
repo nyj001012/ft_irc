@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 04:20:49 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 01:26:39 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,10 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 
 bool Task::has_error() const {
 	return true;
+}
+
+vector<string> Task::get_reply() const {
+	return vector<string>();
 }
 
 const string& Task::get_prefix() const {

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 01:37:12 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 01:01:00 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ class User: public Serializable {
 			std::string host_name;
 			std::string server_name;
 			std::string real_name;
+
+			std::string get_id() const;
 
 			bool is_equal(const User::Info&) const;
 

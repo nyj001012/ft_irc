@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 04:18:30 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 02:16:49 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ using IRC::Error;
 using IRC::Command;
 
 RequestHandler::RequestHandler() {}
-void RequestHandler::get_request(vector<string>& req, const Connection& connection) {
+vector<string> RequestHandler::get_request(vector<string>& req, const Connection& connection) {
 
 	auto_ptr<Task> task;
+	vector<string> reply;
 	try {
 		task = Task::create(req, connection);	
 	}
@@ -38,24 +39,29 @@ void RequestHandler::get_request(vector<string>& req, const Connection& connecti
 	try {
 		UserTask* user_task = dynamic_cast<UserTask*>(task.get());
 		if (user_task != NULL) {
-			execute(*user_task);		
+			reply = execute(*user_task);
 		}
 		ChannelTask* channel_task = dynamic_cast<ChannelTask*>(task.get());
 		if (channel_task != NULL) {
-			execute(*channel_task);
+			reply = execute(*channel_task);
 		}
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	}
 	Reflector::shared().update();
+	return reply;
 }
 
-void RequestHandler::execute(const ChannelTask& task) {
+vector<string> RequestHandler::execute(const ChannelTask& task) {
 	ChannelData& data = ChannelData::get_storage();
 	User& user = UserData::get_storage().get_user(task.get_connection());
 	switch (task.get_command().type) {
 		case Command::JOIN:
+			if (task.params.size() == 1 && task.params[0] == "0") {
+				data.leave_all_joined_channels(user);
+				break;
+			}
 			for (size_t i = 0; i < task.params.size(); ++i) {
 				vector<string> name_key = split_string(task.params[i]);
 				if (name_key.size() == 2)
@@ -67,9 +73,10 @@ void RequestHandler::execute(const ChannelTask& task) {
 		default:
 			throw Command::UnSupported();
 	}
+	return vector<string>();
 }
 
-void RequestHandler::execute(const UserTask& task) {
+vector<string> RequestHandler::execute(const UserTask& task) {
 	UserData& data = UserData::get_storage();
 	switch (task.get_command().type) {
 		case Command::PASS:
@@ -93,19 +100,20 @@ void RequestHandler::execute(const UserTask& task) {
 						throw Error(Error::ERR_ALREADYREGISTRED);
 					else {
 						// throw error?
-						return;
+						break;
 					}	
 				}
-				const UserTask& updated = data.update_task(task);
+				const UserTask updated = data.update_task(task);
 				if (updated.info.nick_name.empty()) {
 					// throw error?
-					return ;
+					break;
 				}
 				data.create_user(updated.get_connection(),updated.info);
 				data.remove_task(updated.get_connection());
-				break;
+				return updated.get_reply();
 			}
 		default:
 			throw Command::UnSupported();
 	}
+	return vector<string>();
 }

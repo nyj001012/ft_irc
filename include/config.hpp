@@ -1,30 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RequestHandler.hpp                                 :+:      :+:    :+:   */
+/*   config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 23:26:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 02:15:20 by heshin           ###   ########.fr       */
+/*   Created: 2023/11/23 01:37:38 by heshin            #+#    #+#             */
+/*   Updated: 2023/11/23 01:48:11 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXECUTOR_HPP
-# define EXECUTOR_HPP
-# include "../task/Task.hpp"
+#ifndef CONFIG_HPP
+# define CONFIG_HPP
 # include <string>
-# include <vector>
 
-struct Connection;
+static std::string SERVER_NAME = "ft_irc.42.kr";
+static std::string WELCOM_MESSAGE = "Welcome!";
 
-class RequestHandler {
-	
-	public:
-		RequestHandler(); 
-		std::vector<std::string> get_request(std::vector<std::string>&, const Connection&);
-	private:
-		std::vector<std::string> execute(const UserTask&);
-		std::vector<std::string> execute(const ChannelTask&);
-};
 #endif

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 21:02:30 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:14:36 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 00:47:28 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ using std::map;
 using std::stringstream;
 using std::vector;
 using std::ostream;
+using IRC::Error;
 
 ChannelData::ChannelData() {}
 ChannelData::~ChannelData() {
@@ -47,22 +48,33 @@ Channel& ChannelData::get_channel(const string& name) const {
 	return *const_cast<Channel *>(found->second);
 }
 
-Channel& ChannelData::join_channel(const string& name, const User& user) {
+Channel& ChannelData::join_channel(const string& name, const string& key, const User& user) {
+
 	map<string, const Channel*>::const_iterator found = channel_map.find(name);
 	if (found == channel_map.end()) {
-		return create_channel(name, user);	
+		Channel& new_channel = create_channel(name, user);	
+		if (!key.empty())
+			new_channel.set_key(key, user);
+		return new_channel;
 	}
 	else {
-		Channel *ptr = const_cast<Channel *>(found->second);
-		ptr->add_user(user);
-		return *ptr;
+		Channel& channel= *const_cast<Channel *>(found->second);
+		if (channel.get_key() != key)
+			throw Error(Error::ERR_BADCHANNELKEY);
+		channel.add_user(user);
+		return channel;
 	}
 }
 
-Channel& ChannelData::join_channel(const string& name, const string& key, const User& user) {
-	//TODO: check key
-	(void)key;
-	return join_channel(name, user);
+Channel& ChannelData::join_channel(const string& name, const User& user) {
+	return join_channel(name, string(), user);
+}
+
+void ChannelData::leave_all_joined_channels(const User& user) {
+	vector<const Channel*> channels = user.get_all_channels();
+	for (size_t i = 0; i < channels.size(); ++i) {
+		leave_channel(*channels[i], user);
+	}
 }
 
 void ChannelData::leave_channel(const Channel &channel, const User& user) {

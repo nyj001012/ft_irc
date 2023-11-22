@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 21:02:20 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 01:39:55 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 00:48:13 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ class ChannelData: public Serializable {
 		Channel& get_channel(const std::string&) const;
 		Channel& join_channel(const std::string&, const User&);
 		Channel& join_channel(const std::string&, const std::string&, const User&);
-		void leave_channel(const Channel& channel, const User&);
+		void leave_channel(const Channel&, const User&);
+		void leave_all_joined_channels(const User&);
 
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::string _get_label() const;

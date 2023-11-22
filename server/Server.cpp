@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   initialize_server.cpp                              :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/20 20:30:53 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/23 02:20:41 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,10 @@ void Server::runServer() {
 						std::vector<std::string> vec = split_string(message);
 						Connection connection;	
 						connection.socket_fd = i;
-						handler.get_request(vec, connection);
+						std::vector<std::string> reply = handler.get_request(vec, connection);
+						for (size_t i = 0; i < reply.size(); ++i) {
+							sendMessage(connection.socket_fd, reply[i]);
+						}
 					}
 				}
       }

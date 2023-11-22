@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 03:55:38 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 01:10:32 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,9 @@ Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd)
 	} 
 	else 
 		return;
+}
+string User::Info::get_id() const {
+	return nick_name + '!' + user_name + '@' + host_name;
 }
 
 bool User::Info::is_equal(const User::Info& other) const {

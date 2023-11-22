@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 00:26:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/21 00:26:59 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 02:04:07 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 
 bool is_valid_channel_name(const string&) {
 	return true;
+}
+
+vector<string> ChannelTask::get_reply() const {
+	return vector<string>();
 }
 
 // Serialize

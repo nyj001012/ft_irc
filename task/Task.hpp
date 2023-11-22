@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:14:43 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 02:27:42 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 01:32:19 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ struct Task: public Serializable {
 
 	public:
 		static std::auto_ptr<Task> create(std::vector<std::string>&, const Connection&);
-		virtual bool has_error() const;
 		const std::string& get_prefix() const;
 		const Command get_command() const;	
 		const Connection& get_connection() const;
+		virtual bool has_error() const;
+		virtual std::vector<std::string> get_reply() const;
+
 		virtual std::string _get_label() const;
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
@@ -54,6 +56,7 @@ struct UserTask: public Task {
 		UserTask(const Task& parent, const std::vector<std::string>&);
 		User::Info info;
 		UserTask& add_next(const UserTask&);
+		virtual std::vector<std::string> get_reply() const;
 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::string _get_label() const;
@@ -67,6 +70,8 @@ struct ChannelTask: public Task {
 		ChannelTask(const Task& parent, const std::vector<std::string>&);
 		virtual std::string _get_label() const;
 		std::vector<std::string> params; 
+		virtual std::vector<std::string> get_reply() const;
+
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 };
 

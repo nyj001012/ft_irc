@@ -10,6 +10,7 @@ SRCS = main.cpp \
 		 utils/string_utils.cpp \
 		 irc/IrcCommand.cpp \
 		 irc/IrcError.cpp \
+		 irc/IrcReply.cpp \
 		 irc/IrcUtil.cpp \
 		 user/User.cpp \
 		 channel/Channel.cpp \
