@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:23:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 02:22:34 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/22 23:35:32 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@ namespace IRC {
 			ERR_ALREADYREGISTRED,
 			ERR_NONICKNAMEGIVEN,
 			ERR_ERRONEUSNICKNAME,
-			ERR_NICKNAMEINUSE
+			ERR_NICKNAMEINUSE,
+			ERR_CHANOPRIVSNEEDED,
+			ERR_BADCHANNELKEY,
 		} code;
 
 		Error();

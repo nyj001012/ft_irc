@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 17:50:03 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 01:37:28 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/22 23:34:05 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,20 @@ class User;
 class Channel: public Serializable {
 
 	public:
-		Channel(const std::string& name, const User& operator_user);
+		Channel(const std::string&, const User&);
 		Channel(const Channel&);
 		virtual ~Channel();
 		const std::string& get_name() const;
 		const std::string& get_topic() const;
 		const User& get_operator() const;
+		void set_key(const std::string&, const User&);
 		std::vector<const User*> get_users() const;
 		std::vector<std::string> get_user_names() const;
 		bool is_equal(const Channel&) const;
 		void add_user(const User&);
+		void add_user(const User&, const std::string&);
 		void remove_user(const User&);
+		bool is_allowed_to_join(const User&);
 
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
@@ -49,6 +52,7 @@ class Channel: public Serializable {
 	private:
 		std::string name;
 		std::string topic;
+		std::string key;
 		std::vector<const User*> users;
 		const User* operator_user;
 

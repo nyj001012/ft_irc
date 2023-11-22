@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 21:02:30 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:14:36 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/22 23:32:06 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,24 @@ Channel& ChannelData::get_channel(const string& name) const {
 	return *const_cast<Channel *>(found->second);
 }
 
-Channel& ChannelData::join_channel(const string& name, const User& user) {
+Channel& ChannelData::join_channel(const string& name, const string& key, const User& user) {
+
 	map<string, const Channel*>::const_iterator found = channel_map.find(name);
 	if (found == channel_map.end()) {
-		return create_channel(name, user);	
+		Channel& new_channel = create_channel(name, user);	
+		if (!key.empty())
+			new_channel.set_key(key, user);
+		return new_channel;
 	}
 	else {
 		Channel *ptr = const_cast<Channel *>(found->second);
 		ptr->add_user(user);
 		return *ptr;
 	}
+}
+
+Channel& ChannelData::join_channel(const string& name, const User& user) {
+	return join_channel(name, string(), user);
 }
 
 void ChannelData::leave_channel(const Channel &channel, const User& user) {

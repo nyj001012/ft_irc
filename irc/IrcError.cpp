@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 01:46:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 02:22:49 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/22 23:35:48 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ const char *all_errors[] = {
 	ERROR_STRINGIFY(ERR_ALREADYREGISTRED),
 	ERROR_STRINGIFY(ERR_NONICKNAMEGIVEN),
 	ERROR_STRINGIFY(ERR_ERRONEUSNICKNAME),
-	ERROR_STRINGIFY(ERR_NICKCOLLISION)
+	ERROR_STRINGIFY(ERR_NICKCOLLISION),
+	ERROR_STRINGIFY(ERR_CHANOPRIVSNEEDED),
+	ERROR_STRINGIFY(ERR_BADCHANNELKEY),
 };
 
 Error::Error(): code(UnKnown) {}

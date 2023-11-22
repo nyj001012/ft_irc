@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 18:42:07 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/09 19:25:53 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/22 23:38:27 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "../user/User.hpp"
 #include "../include/json.hpp"
 #include "../debug/Serializable.hpp"
+#include "../include/Irc.hpp"
 #include <algorithm>
 #include <ostream>
 #include <iterator>
@@ -27,11 +28,13 @@ using std::stringstream;
 using std::make_pair;
 
 typedef std::pair<string, const Serializable*> KeyValue;
+typedef IRC::Error Error;
 
 Channel::Channel(): operator_user(NULL) {}
 Channel::~Channel() { }
 Channel::Channel(const string& name, const User& operator_user)
 	:name(name),
+	key(string()),
 	users(vector<const User*>()),
 	operator_user(&operator_user)
 { 
@@ -43,8 +46,12 @@ Channel::Channel(const Channel& other)
 	topic(other.topic),
 	users(other.users),
 	operator_user(other.operator_user)
-{
+{ }
 
+void Channel::set_key(const string& new_key, const User& user) {
+	if (&user != operator_user) 
+		throw Error(Error::ERR_CHANOPRIVSNEEDED);
+	key = new_key;
 }
 
 const string& Channel::get_name() const {
@@ -72,7 +79,14 @@ vector<string> Channel::get_user_names() const {
 	}
 	return vec;
 }
+
 void Channel::add_user(const User& user) {
+	add_user(user, string());
+}
+
+void Channel::add_user(const User& user, const string& key) {
+	if (this->key != key)
+		throw Error(Error::ERR_BADCHANNELKEY);
 	users.push_back(&user);
 }
 
