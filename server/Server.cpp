@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   initialize_server.cpp                              :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/22 13:38:33 by yena             ###   ########.fr       */
+/*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
+/*   Updated: 2023/11/25 18:31:26 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ Server::Server()
 	_server_socket = 0;
 	_fd_max = 0;
 	std::memset(&_server_addr, 0, sizeof(_server_addr));
-	std::memset(&_client_fds, 0, sizeof(_client_fds));
+	std::memset(&_read_fds, 0, sizeof(_read_fds));
+	std::memset(&_write_fds, 0, sizeof(_write_fds));
+	std::memset(&_read_fds_backup, 0, sizeof(_read_fds_backup));
+	std::memset(&_write_fds_backup, 0, sizeof(_write_fds_backup));
 }
 
 Server::Server(const Server& server)
@@ -30,7 +33,10 @@ Server::Server(const Server& server)
 	{
 		_max_client_number = server._max_client_number;
 		_server_socket = server._server_socket;
-		_client_fds = server._client_fds;
+		_read_fds = server._read_fds;
+		_write_fds = server._write_fds;
+		_read_fds_backup = server._read_fds_backup;
+		_write_fds_backup = server._write_fds_backup;
 		_fd_max = server._fd_max;
 		_server_addr = server._server_addr;
 		_is_debug = server._is_debug;
@@ -43,7 +49,10 @@ Server& Server::operator=(const Server& server)
 	{
 		_max_client_number = server._max_client_number;
 		_server_socket = server._server_socket;
-		_client_fds = server._client_fds;
+		_read_fds = server._read_fds;
+		_write_fds = server._write_fds;
+		_read_fds_backup = server._read_fds_backup;
+		_write_fds_backup = server._write_fds_backup;
 		_fd_max = server._fd_max;
 		_server_addr = server._server_addr;
 		_is_debug = server._is_debug;
@@ -66,9 +75,24 @@ int Server::getServerSocket() const
 	return this->_server_socket;
 }
 
-fd_set Server::getClientFds() const
+fd_set Server::getReadFds() const
 {
-	return this->_client_fds;
+	return this->_read_fds;
+}
+
+fd_set Server::getWriteFds() const
+{
+	return this->_write_fds;
+}
+
+fd_set Server::getReadFdsBackup() const
+{
+	return this->_read_fds_backup;
+}
+
+fd_set Server::getWriteFdsBackup() const
+{
+	return this->_write_fds_backup;
 }
 
 int Server::getFdMax() const
@@ -96,9 +120,24 @@ void Server::setServerSocket(int server_socket)
 	this->_server_socket = server_socket;
 }
 
-void Server::setClientFds(fd_set client_fds)
+void Server::setReadFds(fd_set fds)
 {
-	this->_client_fds = client_fds;
+	this->_read_fds = fds;
+}
+
+void Server::setWriteFds(fd_set fds)
+{
+	this->_write_fds = fds;
+}
+
+void Server::setReadFdsBackup(fd_set fds)
+{
+	this->_read_fds_backup = fds;
+}
+
+void Server::setWriteFdsBackup(fd_set fds)
+{
+	this->_write_fds_backup = fds;
 }
 
 void Server::setFdMax(int fd_max)
@@ -153,8 +192,11 @@ void Server::initializeServer(const char* port)
  */
 void Server::initializeClientFds()
 {
-	FD_ZERO(&this->_client_fds);
-	FD_SET(this->_server_socket, &this->_client_fds);
+	FD_ZERO(&this->_read_fds);
+	FD_ZERO(&this->_write_fds);
+	FD_ZERO(&this->_read_fds_backup);
+	FD_ZERO(&this->_write_fds_backup);
+	FD_SET(this->_server_socket, &this->_read_fds);
 	this->setFdMax(this->_server_socket);
 }
 
@@ -168,20 +210,20 @@ void Server::runServer()
 {
 	struct timeval tv = { TIMEOUT_SEC, 0 };
 
-	fd_set read_fds = this->_client_fds;
+	_read_fds_backup = _read_fds;
 	if (this->_is_debug)
 	{
 		std::cout << F_YELLOW << "[DEBUG] Server running..." << FB_DEFAULT << std::endl;
 		std::cout << *this << std::endl;
 	}
-	int ready_descriptors = select(this->_fd_max + 1, &read_fds, NULL, NULL, &tv);
+	int ready_descriptors = select(this->_fd_max + 1, &_read_fds_backup, NULL, NULL, &tv);
 	if (ready_descriptors == -1)
 		throw std::runtime_error("Error: select() failed");
 	if (ready_descriptors == 0)
 		return;
 	for (int i = 0; i <= this->_fd_max; i++)
 	{
-		if (FD_ISSET(i, &read_fds))
+		if (FD_ISSET(i, &_read_fds_backup))
 		{
 			if (i == this->_server_socket)
 				this->acceptClient();
@@ -212,7 +254,7 @@ void Server::acceptClient()
 	int client_socket = accept(this->_server_socket, &client_addr, &client_addr_len);
 	if (client_socket == -1)
 		throw std::runtime_error("Error: accept() failed");
-	FD_SET(client_socket, &this->_client_fds);
+	FD_SET(client_socket, &this->_read_fds_backup);
 	if (client_socket > this->_fd_max)
 		this->_fd_max = client_socket;
 	if (this->_is_debug)
@@ -250,23 +292,28 @@ std::string Server::receiveMessage(int client_socket)
 	}
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
+	FD_SET(client_socket, &this->_read_fds);
 	return std::string(buffer.begin(), buffer.end());
 }
 
 /**
- * 클라이언트 소켓을 닫고, fd_set에서 제거한다.
+ * 클라이언트 소켓을 닫고, fd_set에서 읽기용, 쓰기용 fd를 모두 제거한다.
  * @param client_socket
  */
 void Server::closeClient(int client_socket)
 {
-	close(client_socket);
-	FD_CLR(client_socket, &this->_client_fds);
+	if (client_socket == this->_server_socket)
+		return;
+	if (client_socket > 0)
+		close(client_socket);
+	FD_CLR(client_socket, &this->_read_fds);
+	FD_CLR(client_socket, &this->_write_fds);
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] Client closed: " << client_socket << FB_DEFAULT << std::endl;
 }
 
 /**
- * 클라이언트에게 메시지를 보낸다.
+ * 클라이언트에게 메시지를 보낸다. 메시지를 모두 보내면 읽기용 fd는 fd_set에서 제거하고, 쓰기용 fd는 fd_set에 추가한다.
  * @param client_socket 메시지를 보낼 클라이언트 소켓
  * @param message 보낼 메시지
  */
@@ -275,6 +322,11 @@ void Server::sendMessage(int client_socket, std::string& message)
 	ssize_t write_size = write(client_socket, message.data(), message.length());
 	if (write_size == -1)
 		throw std::runtime_error("Error: write() failed");
+	if (write_size == static_cast<ssize_t >(message.length()))
+	{
+		FD_CLR(client_socket, &this->_read_fds);
+		FD_SET(client_socket, &this->_write_fds);
+	}
 }
 
 /**
@@ -285,12 +337,12 @@ void Server::closeServer()
 	close(this->_server_socket);
 }
 
-std::ostream& operator<<(std::ostream& os, const fd_set& client_fds)
+std::ostream& operator<<(std::ostream& os, const fd_set& fds)
 {
 	os << "[ ";
 	for (int i = 0; i < FD_SETSIZE; i++)
 	{
-		if (FD_ISSET(i, &client_fds))
+		if (FD_ISSET(i, &fds))
 		{
 			os << i << " ";
 		}
@@ -304,10 +356,11 @@ std::ostream& operator<<(std::ostream& os, const Server& server)
 	struct sockaddr_in server_addr = server.getServerAddr();
 
 	os << F_YELLOW << "[DEBUG] Server: " << FB_DEFAULT << std::endl;
-	os << "=> Server socket    : " << server.getServerSocket() << std::endl;
-	os << "=> Server address   : " << inet_ntoa(server_addr.sin_addr) << std::endl;
-	os << "=> Server port      : " << ntohs(server_addr.sin_port) << std::endl;
-	os << "=> Max Client Number: " << server.getMaxClientNumber() << std::endl;
-	os << "=> Client fds       : " << server.getClientFds() << std::endl;
+	os << "=> Server socket         : " << server.getServerSocket() << std::endl;
+	os << "=> Server address        : " << inet_ntoa(server_addr.sin_addr) << std::endl;
+	os << "=> Server port           : " << ntohs(server_addr.sin_port) << std::endl;
+	os << "=> Max Client Number     : " << server.getMaxClientNumber() << std::endl;
+	os << "=> Client fds for recv() : " << server.getReadFds() << std::endl;
+	os << "=> Client fds for send() : " << server.getWriteFds() << std::endl;
 	return os;
 }
