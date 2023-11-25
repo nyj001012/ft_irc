@@ -16,21 +16,30 @@
 # include <exception>
 
 namespace IRC {
-	struct Reply: public Serializable, std::exception {
+	struct Reply: public Serializable {
 
 		enum Code {
 			UnKnown = -1,
 			RPL_WELCOME,
+			RPL_NAMREPLY,
+			RPL_ENDOFNAMES,
+			RPL_TOPIC,
 		} code;
 
+		std::string prefix;
+		std::vector<std::string> params;
 		Reply();
 		virtual ~Reply() throw();
-		Reply(const Code);
-		const char* to_string() const;
+		Reply(const Code, const std::string& prefix);
+		Reply(const Code, const std::string& prefix, const std::vector<std::string>& params);
+		std::string to_string() const;
+		std::string get() const;
 		virtual std::string _get_label() const;
-		virtual const char* what() const throw();
 
 		struct UnKnownError: public std::exception { 
+			virtual const char* what() const throw();
+		};
+		struct InvalidNumbersOfParam: public std::exception { 
 			virtual const char* what() const throw();
 		};
 	};

@@ -46,13 +46,6 @@ Command::Command(const string& str) {
 	throw Command::UnSupported();
 }
 
-const char* Command::to_string() const {
-	if (type == Unknown) {
-		throw Command::UnSupported();
-	}
-	return all_commands[type];
-}
-
 const Command::range Command::parameter_range() const {
 	Command::range range;
 	switch (type) {
@@ -72,14 +65,18 @@ const Command::range Command::parameter_range() const {
 }
 
 string Command::_get_label() const {
-	return to_string();	
+	if (type == Unknown) {
+		throw Command::UnSupported();
+	}
+	return all_commands[type];
 }
 
 const char* Command::UnSupported::what() const throw(){
 	return "Unsupported command";
 }
+
 std::ostream& Command::_add_to_serialization(std::ostream& os,const int) const {
-	_json(os, to_string());
+	_json(os, _get_label());
 	return os;
 }
 

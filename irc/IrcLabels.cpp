@@ -1,30 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RequestHandler.hpp                                 :+:      :+:    :+:   */
+/*   IrcLabels.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 23:26:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 02:15:20 by heshin           ###   ########.fr       */
+/*   Created: 2023/11/25 23:42:18 by heshin            #+#    #+#             */
+/*   Updated: 2023/11/25 23:42:18 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXECUTOR_HPP
-# define EXECUTOR_HPP
-# include "../task/Task.hpp"
-# include <string>
-# include <vector>
+#include "IrcLabels.hpp"
 
-struct Connection;
+using IRC::ChannelLabel;
 
-class RequestHandler {
-	
-	public:
-		RequestHandler(); 
-		std::vector<std::string> get_request(std::vector<std::string>&, const Connection&);
-	private:
-		std::vector<std::string> execute(const UserTask&);
-		std::vector<std::string> execute(ChannelTask&);
-};
-#endif
+const char* ChannelLabel::NOT_ALLOWED_CHARS = "\32\7,";

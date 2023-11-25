@@ -27,6 +27,7 @@ class Channel: public Serializable {
 		virtual ~Channel();
 		const std::string& get_name() const;
 		const std::string& get_topic() const;
+		int get_number_of_users() const;
 		const User& get_operator() const;
 		void set_key(const std::string&, const User&);
 		const std::string& get_key() const;

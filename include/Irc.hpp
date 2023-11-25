@@ -53,4 +53,5 @@ namespace IRC {
 #include "../irc/IrcError.hpp"
 #include "../irc/IrcCommand.hpp"
 #include "../irc/IrcReply.hpp"
+#include "../irc/IrcLabels.hpp"
 #endif

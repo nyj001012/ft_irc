@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RequestHandler.hpp                                 :+:      :+:    :+:   */
+/*   IrcLabels.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 23:26:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 02:15:20 by heshin           ###   ########.fr       */
+/*   Created: 2023/11/25 23:34:22 by heshin            #+#    #+#             */
+/*   Updated: 2023/11/25 23:34:22 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXECUTOR_HPP
-# define EXECUTOR_HPP
-# include "../task/Task.hpp"
-# include <string>
-# include <vector>
+#ifndef IRC_LABELS_HPP
+# define IRC_LABELS_HPP
+# include <cstddef>
 
-struct Connection;
+namespace IRC {
 
-class RequestHandler {
-	
-	public:
-		RequestHandler(); 
-		std::vector<std::string> get_request(std::vector<std::string>&, const Connection&);
-	private:
-		std::vector<std::string> execute(const UserTask&);
-		std::vector<std::string> execute(ChannelTask&);
+	struct ChannelLabel {
+		public:
+			static const size_t NAME_MAX_LENGTH = 50;
+			static const char LOCAL_CHANNEL_PREFIX = '&';
+			static const char* NOT_ALLOWED_CHARS;
+	};
 };
+
 #endif

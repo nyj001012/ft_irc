@@ -108,6 +108,10 @@ const Connection& User::get_connection() const {
 	return connection;
 }
 
+const User::Info& User::get_info() const {
+	return info;
+}
+
 void User::add_channel(const Channel& channel) {
 	vector<const Channel*>::iterator found;
 	found = std::find(joined_channels.begin(), joined_channels.end(), &channel);

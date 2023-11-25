@@ -26,6 +26,7 @@ const char *all_errors[] = {
 	ERROR_STRINGIFY(ERR_NICKCOLLISION),
 	ERROR_STRINGIFY(ERR_CHANOPRIVSNEEDED),
 	ERROR_STRINGIFY(ERR_BADCHANNELKEY),
+	ERROR_STRINGIFY(ERR_NOSUCHCHANNEL),
 };
 
 Error::Error(): code(UnKnown) {}
@@ -33,16 +34,12 @@ Error::~Error() throw(){}
 Error::Error(const Code code): code(code) {}
 
 string Error::_get_label() const {
-	return string("code: ") + to_string();
+	return string("code: ") + all_errors[code];
 }
 
 const char* Error::what() const throw() {
-	return to_string();
-}
-
-const char* Error::to_string() const {
 	if (code == UnKnown) {
-		throw UnKnownError();
+		return "UnKnwon";
 	}
 	return all_errors[code];
 }

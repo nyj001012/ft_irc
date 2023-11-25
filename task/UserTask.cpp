@@ -13,6 +13,7 @@
 #include "Task.hpp"
 #include "../include/Irc.hpp"
 #include "../include/config.hpp"
+#include "../include/utils.hpp"
 #include <ctype.h>
 #include <cassert>
 #include <sstream>
@@ -55,7 +56,7 @@ UserTask::UserTask(const Task& parent, const vector<string>& params): Task(paren
 			info.real_name = params[3];
 			break;
 		default:
-			assert(command.to_string());
+			assert(Command::UnSupported().what());
 	}
 }
 
@@ -91,10 +92,8 @@ vector<string> UserTask::get_reply() const {
 	if (command != Command::USER)
 		return vec;	
 
-	string prefix = ':' + SERVER_NAME;
-
-	vec.push_back(prefix + ' '+ Reply(Reply::RPL_WELCOME).to_string() 
-			+ " :" + WELCOM_MESSAGE + ' '+ info.get_id());
+	vector<string> params = strs_to_vector(WELCOM_MESSAGE + ' '+ info.get_id());
+	vec.push_back(Reply(Reply::RPL_WELCOME, SERVER_NAME, params).to_string());
 	return vec;
 }
 

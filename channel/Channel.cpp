@@ -70,6 +70,10 @@ vector<const User*> Channel::get_users() const {
 	return users;
 }
 
+int Channel::get_number_of_users() const {
+	return users.size();
+}
+
 const User& Channel::get_operator() const {
 	return *operator_user;
 }

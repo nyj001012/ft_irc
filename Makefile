@@ -12,6 +12,7 @@ SRCS = main.cpp \
 		 irc/IrcError.cpp \
 		 irc/IrcReply.cpp \
 		 irc/IrcUtil.cpp \
+		 irc/IrcLabels.cpp \
 		 user/User.cpp \
 		 channel/Channel.cpp \
 		 data/UserData.cpp \

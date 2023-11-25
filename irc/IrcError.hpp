@@ -27,12 +27,12 @@ namespace IRC {
 			ERR_NICKNAMEINUSE,
 			ERR_CHANOPRIVSNEEDED,
 			ERR_BADCHANNELKEY,
+			ERR_NOSUCHCHANNEL,
 		} code;
 
 		Error();
 		virtual ~Error() throw();
 		Error(const Code);
-		const char* to_string() const;
 		virtual std::string _get_label() const;
 		virtual const char* what() const throw();
 

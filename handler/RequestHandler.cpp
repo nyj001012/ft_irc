@@ -50,10 +50,13 @@ vector<string> RequestHandler::get_request(vector<string>& req, const Connection
 		std::cerr << e.what() << std::endl;
 	}
 	Reflector::shared().update();
+	for (size_t i = 0; i < reply.size(); ++i) {
+		reply[i] += "\r\n";
+	}
 	return reply;
 }
 
-vector<string> RequestHandler::execute(const ChannelTask& task) {
+vector<string> RequestHandler::execute(ChannelTask& task) {
 	ChannelData& data = ChannelData::get_storage();
 	User& user = UserData::get_storage().get_user(task.get_connection());
 	switch (task.get_command().type) {
@@ -64,16 +67,22 @@ vector<string> RequestHandler::execute(const ChannelTask& task) {
 			}
 			for (size_t i = 0; i < task.params.size(); ++i) {
 				vector<string> name_key = split_string(task.params[i]);
-				if (name_key.size() == 2)
-					user.add_channel(data.join_channel(name_key[0], name_key[1], user));
-				else 
-					user.add_channel(data.join_channel(name_key[0], user));
+				try {
+					const Channel& joined = (name_key.size() == 2 ? 
+							data.join_channel(name_key[0], name_key[1], user):
+							data.join_channel(name_key[0], user));
+					user.add_channel(joined);
+					task.add_channel_to_reply(joined);
+				}
+				catch (IRC::Error& e) {
+					// TODO: Send error
+				}
 			}
 			break;
 		default:
 			throw Command::UnSupported();
 	}
-	return vector<string>();
+	return task.get_reply();
 }
 
 vector<string> RequestHandler::execute(const UserTask& task) {

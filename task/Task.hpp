@@ -71,8 +71,11 @@ struct ChannelTask: public Task {
 		virtual std::string _get_label() const;
 		std::vector<std::string> params; 
 		virtual std::vector<std::string> get_reply() const;
-
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+		void add_channel_to_reply(const Channel&);
+
+	private:
+		std::vector<const Channel*> channels_to_reply;
 };
 
 #endif
