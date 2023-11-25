@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 19:48:17 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 19:53:19 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,17 +281,9 @@ std::string Server::receiveMessage(int client_socket)
 		return "";
 	}
 	if (read_size < BUFFER_SIZE - 2)
-	{
 		buffer.resize(read_size + 2);
-		buffer[read_size] = '\r';
-		buffer[read_size + 1] = '\n';
-	}
 	else
-	{
 		buffer.resize(BUFFER_SIZE);
-		buffer[BUFFER_SIZE - 2] = '\r';
-		buffer[BUFFER_SIZE - 1] = '\n';
-	}
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
 	FD_SET(client_socket, &this->_read_fds);
