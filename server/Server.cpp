@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 20:59:23 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 22:04:16 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,17 +186,6 @@ void Server::initializeServer(const char* port)
 		throw std::runtime_error("Error: listen() failed");
 	}
 	this->_server_addr = serv_addr;
-}
-
-/**
- * 클라이언트에 할당할 fd_set을 초기화한다. 서버 소켓을 fd_set에 추가한다.
- */
-void Server::initializeClientFds()
-{
-	FD_ZERO(&this->_read_fds);
-	FD_ZERO(&this->_write_fds);
-	FD_ZERO(&this->_read_fds_backup);
-	FD_ZERO(&this->_write_fds_backup);
 	FD_SET(this->_server_socket, &this->_read_fds);
 	this->setFdMax(this->_server_socket);
 }
@@ -221,10 +210,15 @@ void Server::runServer()
 	int ready_descriptors = select(this->_fd_max + 1, &_read_fds_backup, &_write_fds_backup, NULL, &tv);
 	if (ready_descriptors == -1)
 		throw std::runtime_error("Error: select() failed");
-	if (ready_descriptors == 0)
-		return;
 	for (int i = 0; i <= this->_fd_max; i++)
 	{
+		if (FD_ISSET(i, &_write_fds_backup))
+		{
+			std::vector<char> write_vector = _connections[i].getWriteBuffer();
+			std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
+			this->sendMessage(i, write_buffer);
+			_connections[i].clearWriteBuffer();
+		}
 		if (FD_ISSET(i, &_read_fds_backup))
 		{
 			if (i == this->_server_socket)
@@ -240,11 +234,11 @@ void Server::runServer()
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
-						this->sendMessage(i, message);
 						std::vector<std::string> vec = split_string(message);
 						handler.get_request(vec, _connections[i]);
 					}
-					_connections[i].clearWriteBuffer();
+					else
+						_connections[i].clearWriteBuffer();
 				}
 			}
 		}
@@ -262,7 +256,6 @@ void Server::acceptClient()
 	if (client_socket == -1)
 		throw std::runtime_error("Error: accept() failed");
 	FD_SET(client_socket, &this->_read_fds);
-	FD_SET(client_socket, &this->_write_fds);
 	if (client_socket > this->_fd_max)
 		this->_fd_max = client_socket;
 	Connection connection;
@@ -345,7 +338,6 @@ void Server::sendMessage(int client_socket, std::string& message)
 		throw std::runtime_error("Error: write() failed");
 	if (write_size == static_cast<ssize_t >(message.length()))
 	{
-		FD_CLR(client_socket, &this->_read_fds);
 		FD_SET(client_socket, &this->_write_fds);
 	}
 }
@@ -377,11 +369,10 @@ std::ostream& operator<<(std::ostream& os, const Server& server)
 	struct sockaddr_in server_addr = server.getServerAddr();
 
 	os << F_YELLOW << "[DEBUG] Server: " << FB_DEFAULT << std::endl;
-	os << "=> Server socket     : " << server.getServerSocket() << std::endl;
-	os << "=> Server address    : " << inet_ntoa(server_addr.sin_addr) << std::endl;
-	os << "=> Server port       : " << ntohs(server_addr.sin_port) << std::endl;
-	os << "=> Max Client Number : " << server.getMaxClientNumber() << std::endl;
-	os << "=> FD_SET for recv() : " << server.getReadFds() << std::endl;
-	os << "=> FD_SET for send() : " << server.getWriteFds() << std::endl;
+	os << "=> Server socket       : " << server.getServerSocket() << std::endl;
+	os << "=> Server address      : " << inet_ntoa(server_addr.sin_addr) << std::endl;
+	os << "=> Server port         : " << ntohs(server_addr.sin_port) << std::endl;
+	os << "=> Max Client Number   : " << server.getMaxClientNumber() << std::endl;
+	os << "=> Server & Client Fds : " << server.getReadFds() << std::endl;
 	return os;
 }

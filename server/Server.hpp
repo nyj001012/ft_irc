@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 20:09:24 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 21:52:52 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ public:
 	void setServerAddr(struct sockaddr_in server_addr);
 	void setIsDebug(bool is_debug);
 	void initializeServer(const char* port);
-	void initializeClientFds();
 	void runServer();
 	void acceptClient();
 	void saveLineToBuffer(Connection &connection, std::string message);
