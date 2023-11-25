@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 18:31:26 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 19:44:51 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,12 +211,13 @@ void Server::runServer()
 	struct timeval tv = { TIMEOUT_SEC, 0 };
 
 	_read_fds_backup = _read_fds;
+	_write_fds_backup = _write_fds;
 	if (this->_is_debug)
 	{
 		std::cout << F_YELLOW << "[DEBUG] Server running..." << FB_DEFAULT << std::endl;
 		std::cout << *this << std::endl;
 	}
-	int ready_descriptors = select(this->_fd_max + 1, &_read_fds_backup, NULL, NULL, &tv);
+	int ready_descriptors = select(this->_fd_max + 1, &_read_fds_backup, &_write_fds_backup, NULL, &tv);
 	if (ready_descriptors == -1)
 		throw std::runtime_error("Error: select() failed");
 	if (ready_descriptors == 0)
@@ -254,7 +255,8 @@ void Server::acceptClient()
 	int client_socket = accept(this->_server_socket, &client_addr, &client_addr_len);
 	if (client_socket == -1)
 		throw std::runtime_error("Error: accept() failed");
-	FD_SET(client_socket, &this->_read_fds_backup);
+	FD_SET(client_socket, &this->_read_fds);
+	FD_SET(client_socket, &this->_write_fds);
 	if (client_socket > this->_fd_max)
 		this->_fd_max = client_socket;
 	if (this->_is_debug)
