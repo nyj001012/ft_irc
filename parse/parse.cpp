@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/19 15:13:42 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 21:58:08 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token>&
 	bool result;
 	if (command.empty() || command[command.length() - 1] != '\n')
 		result = FAIL;
-	command.erase(command.length() - 1); // '\n' 제거
-	command.erase(command.length() - 2); // '\r' 제거
-	if (command[0] == ':')
-		result = parseCommandWithOptions(command, tokens);
+	size_t crlf_pos = command.find("\r\n");
+	std::string trimmed_command = command.substr(0, crlf_pos);
+	if (trimmed_command[0] == ':')
+		result = parseCommandWithOptions(trimmed_command, tokens);
 	else
-		result = parseCommand(command, tokens);
+		result = parseCommand(trimmed_command, tokens);
 	reorderTrailing(tokens);
 	if (is_debug)
 		printTokens(tokens);
