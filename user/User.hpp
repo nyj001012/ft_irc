@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/25 20:18:22 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 20:36:41 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,10 @@ public:
 
 	std::vector<char> getWriteBuffer();
 	std::vector<char> getReadBuffer();
+	void setWriteBuffer(std::vector<char>);
+	void setReadBuffer(std::vector<char>);
+	void clearWriteBuffer();
+	void clearReadBuffer();
 
 private:
 	std::vector<char> _write_buffer;

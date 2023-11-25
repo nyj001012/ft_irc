@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/25 20:20:27 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 20:36:54 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,26 @@ std::vector<char> Connection::getReadBuffer()
 std::vector<char> Connection::getWriteBuffer()
 {
 	return _write_buffer;
+}
+
+void Connection::setReadBuffer(std::vector<char> buffer)
+{
+	_read_buffer = buffer;
+}
+
+void Connection::setWriteBuffer(std::vector<char> buffer)
+{
+	_write_buffer = buffer;
+}
+
+void Connection::clearReadBuffer()
+{
+	_read_buffer.clear();
+}
+
+void Connection::clearWriteBuffer()
+{
+	_write_buffer.clear();
 }
 
 User::User() { }
