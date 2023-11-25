@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 22:04:16 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 22:40:13 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,13 +212,6 @@ void Server::runServer()
 		throw std::runtime_error("Error: select() failed");
 	for (int i = 0; i <= this->_fd_max; i++)
 	{
-		if (FD_ISSET(i, &_write_fds_backup))
-		{
-			std::vector<char> write_vector = _connections[i].getWriteBuffer();
-			std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
-			this->sendMessage(i, write_buffer);
-			_connections[i].clearWriteBuffer();
-		}
 		if (FD_ISSET(i, &_read_fds_backup))
 		{
 			if (i == this->_server_socket)
@@ -227,18 +220,18 @@ void Server::runServer()
 			{
 				std::string message = this->receiveMessage(i);
 				this->saveLineToBuffer(_connections[i], message);
-				std::vector<char> write_vector = _connections[i].getWriteBuffer();
-				std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
-				if (!write_buffer.empty())
+				while (_connections[i].getWriteBuffer().size())
 				{
+					std::vector<char> write_vector = _connections[i].getWriteBuffer();
+					std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
 						std::vector<std::string> vec = split_string(message);
 						handler.get_request(vec, _connections[i]);
 					}
-					else
-						_connections[i].clearWriteBuffer();
+					_connections[i].clearWriteBuffer();
+					this->saveLineToBuffer(_connections[i], "");
 				}
 			}
 		}
@@ -271,15 +264,29 @@ void Server::saveLineToBuffer(Connection& connection, std::string message)
 	std::vector<char> write_vector = connection.getWriteBuffer();
 	std::string read_buffer = std::string(read_vector.begin(), read_vector.end());
 	std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
-	std::string new_read_data = read_buffer + message;
-	size_t crlf_pos = new_read_data.find("\r\n");
-	if (crlf_pos != std::string::npos)
+	if (message.empty())
 	{
-		std::string new_write_data = new_read_data.substr(0, crlf_pos + 2);
-		new_read_data = new_read_data.substr(crlf_pos + 2);
-		connection.setWriteBuffer(std::vector<char>(new_write_data.begin(), new_write_data.end()));
+		size_t crlf_pos = read_buffer.find("\r\n");
+		if (crlf_pos != std::string::npos)
+		{
+			std::string new_write_data = read_buffer.substr(0, crlf_pos + 2);
+			std::string new_read_data = read_buffer.substr(crlf_pos + 2);
+			connection.setWriteBuffer(std::vector<char>(new_write_data.begin(), new_write_data.end()));
+			connection.setReadBuffer(std::vector<char>(new_read_data.begin(), new_read_data.end()));
+		}
 	}
-	connection.setReadBuffer(std::vector<char>(new_read_data.begin(), new_read_data.end()));
+	else
+	{
+		std::string new_read_data = read_buffer + message;
+		size_t crlf_pos = new_read_data.find("\r\n");
+		if (crlf_pos != std::string::npos)
+		{
+			std::string new_write_data = new_read_data.substr(0, crlf_pos + 2);
+			new_read_data = new_read_data.substr(crlf_pos + 2);
+			connection.setWriteBuffer(std::vector<char>(new_write_data.begin(), new_write_data.end()));
+		}
+		connection.setReadBuffer(std::vector<char>(new_read_data.begin(), new_read_data.end()));
+	}
 }
 
 /**
