@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 21:58:08 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 22:49:46 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,8 +238,6 @@ void printTokens(std::vector<t_token> tokens)
 	size_t type_length = getLongestTokenType(tokens);
 	size_t value_length = getLongestTokenValue(tokens);
 
-	type_length = type_length > 4 ? type_length : 4;
-	value_length = value_length > 5 ? value_length : 5;
 	std::cout << F_BLACK_W_WHITE << "| " << std::setw(type_length) << "TYPE" << " | ";
 	std::cout << std::setw(value_length) << "VALUE" << " |" << FB_DEFAULT << std::endl;
 	for (size_t i = 0; i < tokens.size(); i++)
@@ -256,7 +254,7 @@ void printTokens(std::vector<t_token> tokens)
  */
 size_t getLongestTokenType(std::vector<t_token> tokens)
 {
-	size_t type_length = 0;
+	size_t type_length = 4;
 	for (size_t i = 0; i < tokens.size(); i++)
 	{
 		if (tokens[i].type.length() > type_length)
@@ -272,7 +270,7 @@ size_t getLongestTokenType(std::vector<t_token> tokens)
  */
 size_t getLongestTokenValue(std::vector<t_token> tokens)
 {
-	size_t value_length = 0;
+	size_t value_length = 5;
 	for (size_t i = 0; i < tokens.size(); i++)
 	{
 		if (tokens[i].value.length() > value_length)
