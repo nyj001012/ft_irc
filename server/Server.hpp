@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 18:29:38 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 20:09:24 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ private:
 	fd_set _write_fds;
 	fd_set _read_fds_backup;
 	fd_set _write_fds_backup;
+	std::map<int, Connection> _connections;
 };
 std::ostream& operator<<(std::ostream& os, const Server& server);
 std::ostream& operator<<(std::ostream& os, const fd_set& fds);

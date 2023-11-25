@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/15 01:37:12 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/25 20:18:22 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class Channel;
 
 struct Connection: Serializable {
 
+public:
 	bool is_alive;
 
 	enum {
@@ -32,12 +33,19 @@ struct Connection: Serializable {
 	int port;
 	int socket_fd;
 	std::string password;
-	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const;
 	virtual std::string _get_label() const;
 
 	bool is_equal(const Connection&) const;
 	Connection();
 	Connection(const struct sockaddr_storage*, const int socket_fd);
+
+	std::vector<char> getWriteBuffer();
+	std::vector<char> getReadBuffer();
+
+private:
+	std::vector<char> _write_buffer;
+	std::vector<char> _read_buffer;
 };
 
 class User: public Serializable {
@@ -52,14 +60,14 @@ class User: public Serializable {
 
 			bool is_equal(const User::Info&) const;
 
-			virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+			virtual std::ostream& _add_to_serialization(std::ostream&, const int) const;
 			virtual std::string _get_label() const;
 		};
 
 		User(const Connection connection, const Info&);
 		User(const User&);
 		virtual ~User();
-		
+
 		bool is_available() const;
 		const std::string& get_nickname() const;
 		const Connection& get_connection() const;
@@ -71,7 +79,7 @@ class User: public Serializable {
 		std::vector<const Channel*> get_all_channels() const;
 		bool is_equal(const User&) const;
 
-	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
+	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const;
 	virtual std::string _get_label() const;
 	virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 

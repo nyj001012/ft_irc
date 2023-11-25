@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 03:55:38 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/25 20:20:27 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,16 @@ bool User::Info::is_equal(const User::Info& other) const {
 	if (real_name != other.real_name)
 		return false;
 	return true;
+}
+
+std::vector<char> Connection::getReadBuffer()
+{
+	return _read_buffer;
+}
+
+std::vector<char> Connection::getWriteBuffer()
+{
+	return _write_buffer;
 }
 
 User::User() { }

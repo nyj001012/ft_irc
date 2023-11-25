@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 19:53:19 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 20:25:55 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ Server::Server()
 	std::memset(&_write_fds, 0, sizeof(_write_fds));
 	std::memset(&_read_fds_backup, 0, sizeof(_read_fds_backup));
 	std::memset(&_write_fds_backup, 0, sizeof(_write_fds_backup));
+	_is_debug = false;
+	_buffer = std::vector<char>(BUFFER_SIZE);
 }
 
 Server::Server(const Server& server)
@@ -231,15 +233,18 @@ void Server::runServer()
 			else
 			{
 				std::string message = this->receiveMessage(i);
-				std::vector<t_token> tokens;
-				if (parseMessageFormat(message, this->_is_debug, tokens))
+				if (message.find("\r\n") != std::string::npos)
 				{
-					this->sendMessage(i, message);
-					std::vector<std::string> vec = split_string(message);
-					Connection connection;
-					connection.socket_fd = i;
-					handler.get_request(vec, connection);
+					std::vector<t_token> tokens;
+					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
+					{
+						this->sendMessage(i, message);
+						std::vector<std::string> vec = split_string(message);
+						handler.get_request(vec, connection);
+					}
 				}
+				else
+					save_to_read_buffer(i, message);
 			}
 		}
 	}
@@ -259,6 +264,9 @@ void Server::acceptClient()
 	FD_SET(client_socket, &this->_write_fds);
 	if (client_socket > this->_fd_max)
 		this->_fd_max = client_socket;
+	Connection connection;
+	connection.socket_fd = client_socket;
+	_connections.insert(std::make_pair(client_socket, connection));
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] New client connected: " << client_socket << FB_DEFAULT << std::endl;
 }
@@ -302,6 +310,7 @@ void Server::closeClient(int client_socket)
 		close(client_socket);
 	FD_CLR(client_socket, &this->_read_fds);
 	FD_CLR(client_socket, &this->_write_fds);
+	_connections.erase(client_socket);
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] Client closed: " << client_socket << FB_DEFAULT << std::endl;
 }
