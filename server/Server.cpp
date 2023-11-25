@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 20:25:55 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 20:59:23 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ Server::Server()
 	std::memset(&_read_fds_backup, 0, sizeof(_read_fds_backup));
 	std::memset(&_write_fds_backup, 0, sizeof(_write_fds_backup));
 	_is_debug = false;
-	_buffer = std::vector<char>(BUFFER_SIZE);
 }
 
 Server::Server(const Server& server)
@@ -233,18 +232,20 @@ void Server::runServer()
 			else
 			{
 				std::string message = this->receiveMessage(i);
-				if (message.find("\r\n") != std::string::npos)
+				this->saveLineToBuffer(_connections[i], message);
+				std::vector<char> write_vector = _connections[i].getWriteBuffer();
+				std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
+				if (!write_buffer.empty())
 				{
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
 						this->sendMessage(i, message);
 						std::vector<std::string> vec = split_string(message);
-						handler.get_request(vec, connection);
+						handler.get_request(vec, _connections[i]);
 					}
+					_connections[i].clearWriteBuffer();
 				}
-				else
-					save_to_read_buffer(i, message);
 			}
 		}
 	}
@@ -271,6 +272,23 @@ void Server::acceptClient()
 		std::cout << F_YELLOW << "[DEBUG] New client connected: " << client_socket << FB_DEFAULT << std::endl;
 }
 
+void Server::saveLineToBuffer(Connection& connection, std::string message)
+{
+	std::vector<char> read_vector = connection.getReadBuffer();
+	std::vector<char> write_vector = connection.getWriteBuffer();
+	std::string read_buffer = std::string(read_vector.begin(), read_vector.end());
+	std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
+	std::string new_read_data = read_buffer + message;
+	size_t crlf_pos = new_read_data.find("\r\n");
+	if (crlf_pos != std::string::npos)
+	{
+		std::string new_write_data = new_read_data.substr(0, crlf_pos + 2);
+		new_read_data = new_read_data.substr(crlf_pos + 2);
+		connection.setWriteBuffer(std::vector<char>(new_write_data.begin(), new_write_data.end()));
+	}
+	connection.setReadBuffer(std::vector<char>(new_read_data.begin(), new_read_data.end()));
+}
+
 /**
  * 클라이언트로부터 메시지를 받아온다. 사용 후에 메모리를 해제해야 한다.
  * @param client_socket 클라이언트 소켓
@@ -289,7 +307,7 @@ std::string Server::receiveMessage(int client_socket)
 		return "";
 	}
 	if (read_size < BUFFER_SIZE - 2)
-		buffer.resize(read_size + 2);
+		buffer.resize(read_size);
 	else
 		buffer.resize(BUFFER_SIZE);
 	if (this->_is_debug)

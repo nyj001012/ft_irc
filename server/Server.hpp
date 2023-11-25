@@ -56,6 +56,7 @@ public:
 	void initializeClientFds();
 	void runServer();
 	void acceptClient();
+	void saveLineToBuffer(Connection &connection, std::string message);
 	std::string receiveMessage(int client_socket);
 	void sendMessage(int client_socket, std::string& message);
 	void closeClient(int client_socket);
