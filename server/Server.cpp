@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 19:44:51 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/25 19:48:17 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,11 +358,11 @@ std::ostream& operator<<(std::ostream& os, const Server& server)
 	struct sockaddr_in server_addr = server.getServerAddr();
 
 	os << F_YELLOW << "[DEBUG] Server: " << FB_DEFAULT << std::endl;
-	os << "=> Server socket         : " << server.getServerSocket() << std::endl;
-	os << "=> Server address        : " << inet_ntoa(server_addr.sin_addr) << std::endl;
-	os << "=> Server port           : " << ntohs(server_addr.sin_port) << std::endl;
-	os << "=> Max Client Number     : " << server.getMaxClientNumber() << std::endl;
-	os << "=> Client fds for recv() : " << server.getReadFds() << std::endl;
-	os << "=> Client fds for send() : " << server.getWriteFds() << std::endl;
+	os << "=> Server socket     : " << server.getServerSocket() << std::endl;
+	os << "=> Server address    : " << inet_ntoa(server_addr.sin_addr) << std::endl;
+	os << "=> Server port       : " << ntohs(server_addr.sin_port) << std::endl;
+	os << "=> Max Client Number : " << server.getMaxClientNumber() << std::endl;
+	os << "=> FD_SET for recv() : " << server.getReadFds() << std::endl;
+	os << "=> FD_SET for send() : " << server.getWriteFds() << std::endl;
 	return os;
 }
