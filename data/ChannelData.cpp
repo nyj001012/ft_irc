@@ -80,7 +80,6 @@ void ChannelData::leave_all_joined_channels(const User& user) {
 void ChannelData::leave_channel(const Channel &channel, const User& user) {
 	Channel& channel_ref = const_cast<Channel&>(channel);
 	channel_ref.remove_user(user);
-	//TODO: Check channel close
 }
 
 Channel& ChannelData::create_channel(const string& name, const User& user) {

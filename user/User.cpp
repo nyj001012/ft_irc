@@ -173,9 +173,8 @@ bool Connection::is_equal(const Connection& other) const {
 		return false;
 	if (port != other.port)
 		return false;
-	if (socket_fd != other.socket_fd) {
-		throw std::runtime_error("Different socket_fd for same connection");
-	}
+	if (socket_fd != other.socket_fd)
+		return false;
 	return true;
 }
 

@@ -76,7 +76,7 @@ const char* Command::UnSupported::what() const throw(){
 }
 
 std::ostream& Command::_add_to_serialization(std::ostream& os,const int) const {
-	_json(os, _get_label());
+	_json(os, "type", ':', _get_label());
 	return os;
 }
 

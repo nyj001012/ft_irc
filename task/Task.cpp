@@ -63,6 +63,7 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 			return auto_ptr<Task>(new UserTask(base, tokens));
 			break;
 		case Command::JOIN:
+		case Command::PART:
 			return auto_ptr<Task>(new ChannelTask(base, tokens));
 		default:
 			break;

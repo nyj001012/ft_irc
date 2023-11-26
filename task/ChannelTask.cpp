@@ -32,24 +32,31 @@ bool is_valid_channel_name(const string&);
 void add_channel_join_reply(const Channel&, const User&, vector<string>&);
 
 ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): Task(parent) {
-	if (params.size() == 1 && params[0] == "0")
-		return ;
-	if (command == Command::JOIN) {
-		params = split_string(raw_params[0], ',');
-		for (size_t i = 0; i < params.size(); ++i) {
-			if (!is_valid_channel_name(params[i]))
-				throw Error(Error::ERR_NOSUCHCHANNEL);
-		}
-		if (raw_params.size() > 1) {
-			vector<string> keys = split_string(raw_params[1], ',');
-			if (keys.size() > params.size()) {
-				//TODO: error
-				keys.resize(params.size());
+	switch (command.type) {
+		case Command::JOIN:
+		case Command::PART: 
+			if (command == Command::JOIN && 
+					params.size() == 1 && params[0] == "0")
+				return ;
+			params = split_string(raw_params[0], ',');
+			for (size_t i = 0; i < params.size(); ++i) {
+				if (!is_valid_channel_name(params[i]))
+					throw Error(Error::ERR_NOSUCHCHANNEL);
 			}
-			for (size_t i = 0; i < keys.size(); ++i) {
-				params[i] += ' ' + keys[i];
+			if (command == Command::JOIN && raw_params.size() > 1) {
+				vector<string> keys = split_string(raw_params[1], ',');
+				if (keys.size() > params.size()) 
+					keys.resize(params.size()); //TODO: error
+				for (size_t i = 0; i < keys.size(); ++i) {
+					params[i] += ' ' + keys[i];
+				}
 			}
-		}
+			else if (command == Command::PART && raw_params.size() > 2) {
+				params.push_back(raw_params[1]);
+			}
+			break;
+		default:
+			throw Command::UnSupported();
 	}
 }
 
@@ -70,6 +77,9 @@ bool is_valid_channel_name(const string& name) {
 }
 
 vector<string> ChannelTask::get_reply() const {
+	if (has_error()) {
+		// TODO: add errors to other reply
+	}
 	vector<string> vec;
 	const User& user = UserData::get_storage().get_user(connection);
 
@@ -77,6 +87,22 @@ vector<string> ChannelTask::get_reply() const {
 		vector<const Channel*>::const_iterator iter;
 		for (iter = channels_to_reply.begin(); iter != channels_to_reply.end(); ++iter) {
 			add_channel_join_reply(**iter, user, vec);
+		}
+	}
+	else if (command == Command::PART) {
+		string reason;
+		size_t number_of_channels = params.size();
+		if (params.size() > 1 && 
+				params.back()[0] != IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX) {
+			reason = params.back();
+			number_of_channels -= 1;
+		}
+		const string user_id = ":" + user.get_info().get_id();
+		for (size_t i = 0; i < number_of_channels; ++i) {
+			string reply = user_id + " PART " + channels_to_reply[i]->get_name();
+			if (!reason.empty())
+				reply += ":" + reason;
+			vec.push_back(reply);
 		}
 	}
 	return vec;
@@ -97,6 +123,14 @@ void add_channel_join_reply(const Channel& channel, const User& user, vector<str
 	vec.push_back(Reply(Reply::RPL_NAMREPLY, SERVER_NAME, name_params).to_string());
 	vec.push_back(Reply(Reply::RPL_ENDOFNAMES, SERVER_NAME, 
 				strs_to_vector(user.get_nickname(), channel.get_name())).to_string());
+}
+
+void ChannelTask::add_error(const Error& error) {
+	errors.push_back(error);
+}
+
+bool ChannelTask::has_error() const {
+	return !errors.empty();
 }
 
 // Serialize

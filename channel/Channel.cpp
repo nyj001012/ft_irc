@@ -97,7 +97,8 @@ void Channel::remove_user(const User& user) {
 	if (found == users.end())
 		return ;
 	users.erase(found);
-	//TODO: Check operator
+	if (&user == operator_user && !users.empty()) 
+		operator_user = users[0];	
 }
 
 bool Channel::is_equal(const Channel& other) const {

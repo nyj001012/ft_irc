@@ -28,6 +28,7 @@ namespace IRC {
 			ERR_CHANOPRIVSNEEDED,
 			ERR_BADCHANNELKEY,
 			ERR_NOSUCHCHANNEL,
+			ERR_NOTONCHANNEL,
 		} code;
 
 		Error();

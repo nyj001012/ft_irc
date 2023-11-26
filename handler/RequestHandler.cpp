@@ -12,6 +12,7 @@
 
 #include "RequestHandler.hpp"
 #include "../include/Irc.hpp"
+#include "../channel/Channel.hpp"
 #include "../debug/Reflector.hpp"
 #include "../data/UserData.hpp"
 #include "../data/ChannelData.hpp"
@@ -74,15 +75,48 @@ vector<string> RequestHandler::execute(ChannelTask& task) {
 					user.add_channel(joined);
 					task.add_channel_to_reply(joined);
 				}
-				catch (IRC::Error& e) {
-					// TODO: Send error
+				catch (Error& e) {
+					// TODO: add error no permission
+				}
+			}
+			return task.get_reply();
+		case Command::PART: 
+			{
+				string reason;
+				size_t number_of_channels = task.params.size();
+				if (task.params.size() > 1 && 
+						task.params.back()[0] != IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX) {
+					number_of_channels -= 1;
+				}
+				vector<const Channel*> empty_channels;
+				for (size_t i = 0; i < number_of_channels; ++i) {
+					const string& channel_name = task.params[i];
+					if(!user.is_joined(channel_name)) {
+						task.add_error(Error(Error::ERR_NOTONCHANNEL));
+						continue;
+					}
+					try {
+						const Channel& channel = data.get_channel(channel_name);
+						data.leave_channel(channel, user);
+						user.remove_channel(channel);
+						task.add_channel_to_reply(channel);
+						if (channel.get_number_of_users() == 0)
+							empty_channels.push_back(&channel);
+					}
+					catch (ChannelData::ChannelNotExist&) {
+						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+					}
+					vector<string> reply = task.get_reply();
+					for (size_t i = 0; i < empty_channels.size(); ++i)
+						data.remove_channel(*empty_channels[i]);
+					return reply;
 				}
 			}
 			break;
 		default:
 			throw Command::UnSupported();
 	}
-	return task.get_reply();
+	return vector<string>(); 
 }
 
 vector<string> RequestHandler::execute(const UserTask& task) {
