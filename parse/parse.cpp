@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 22:49:46 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/27 14:10:33 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,13 @@ int parseMiddle(std::string params, std::vector<t_token>& tokens)
 	for (size_t i = 0; i < params.length(); i++)
 	{
 		if (params[i] == ' ')
-			return parseParams(params.substr(i), tokens);
+		{
+			std::string middle = params.substr(0, i);
+			tokens.push_back((t_token){ MIDDLE, middle });
+			if (parseParams(params.substr(i), tokens) == FAIL)
+				return FAIL;
+			return SUCCESS;
+		}
 		if (params[i] == '\0' || params[i] == '\r' || params[i] == '\n' || params[i] == ' ')
 			return FAIL;
 	}
