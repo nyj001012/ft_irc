@@ -225,10 +225,15 @@ void Server::runServer()
 					std::vector<char> write_vector = _connections[i].getWriteBuffer();
 					std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
 					std::vector<t_token> tokens;
-					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
-					{
-						std::vector<std::string> vec = getTokensValue(tokens);
-						handler.get_request(vec, _connections[i]);
+					if (parseMessageFormat(message, this->_is_debug, tokens)) {
+						this->sendMessage(i, message);
+						std::vector<std::string> vec = split_string(message);
+						Connection connection;	
+						connection.socket_fd = i;
+						std::vector<std::string> reply = handler.get_request(vec, connection);
+						for (size_t i = 0; i < reply.size(); ++i) {
+							sendMessage(connection.socket_fd, reply[i]);
+						}
 					}
 					_connections[i].clearWriteBuffer();
 					this->saveLineToBuffer(_connections[i], "");

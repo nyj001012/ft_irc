@@ -24,4 +24,9 @@ void skipChar(std::string& string, char c);
 
 void *get_in_addr(const struct sockaddr *sa);
 std::vector<std::string> split_string(const std::string&);
+std::vector<std::string> split_string(const std::string&, const char);
+std::vector<std::string> strs_to_vector(const std::string&);
+std::vector<std::string> strs_to_vector(const std::string&, const std::string&);
+std::vector<std::string> strs_to_vector(const std::string&,const std::string&, const std::string&);
+std::vector<std::string> strs_to_vector(const std::string&,const std::string&, const std::string&, const std::string&);
 #endif //FT_IRC__UTILS_HPP_

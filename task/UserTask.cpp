@@ -6,12 +6,14 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 23:48:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 02:30:39 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 02:19:18 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Task.hpp"
 #include "../include/Irc.hpp"
+#include "../include/config.hpp"
+#include "../include/utils.hpp"
 #include <ctype.h>
 #include <cassert>
 #include <sstream>
@@ -21,6 +23,7 @@ using std::vector;
 using std::string;
 using std::make_pair;
 using IRC::Command;
+using IRC::Reply;
 typedef std::pair<std::string, const Serializable*> KeyValue;
 
 bool UserTask::is_valid_nickname(const string& nick) {
@@ -53,7 +56,7 @@ UserTask::UserTask(const Task& parent, const vector<string>& params): Task(paren
 			info.real_name = params[3];
 			break;
 		default:
-			assert(command.to_string());
+			assert(Command::UnSupported().what());
 	}
 }
 
@@ -84,6 +87,16 @@ UserTask& UserTask::add_next(const UserTask& next) {
 	return *this;
 }
 
+vector<string> UserTask::get_reply() const {
+	vector<string> vec;
+	if (command != Command::USER)
+		return vec;	
+
+	vector<string> params = strs_to_vector(WELCOM_MESSAGE + ' '+ info.get_id());
+	vec.push_back(Reply(Reply::RPL_WELCOME, SERVER_NAME, params).to_string());
+	return vec;
+}
+
 // Serializable
 string UserTask::_get_label() const {
 	std::stringstream ss;
@@ -95,9 +108,7 @@ string UserTask::_get_label() const {
 }
 
 vector<KeyValue> UserTask::_get_children() const {
-	vector<KeyValue> vec;
-	vec.push_back(make_pair("connection", &this->connection));
-	vec.push_back(make_pair("last command", &this->command));
+	vector<KeyValue> vec = Task::_get_children();
 	vec.push_back(make_pair("info", &this->info));
 	return vec;
 }

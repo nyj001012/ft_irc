@@ -38,7 +38,6 @@ namespace IRC {
 		Command();
 		Command(const std::string&);
 		const std::pair<int, int> parameter_range() const;
-		const char* to_string() const;
 
 		virtual std::string _get_label() const;
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 

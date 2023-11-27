@@ -12,6 +12,7 @@
 
 #include "IrcCommand.hpp"
 #include "../include/json.hpp"
+#include <climits>
 #define CMD_STRINGIFY(name) # name
 
 using std::string;
@@ -45,13 +46,6 @@ Command::Command(const string& str) {
 	throw Command::UnSupported();
 }
 
-const char* Command::to_string() const {
-	if (type == Unknown) {
-		throw Command::UnSupported();
-	}
-	return all_commands[type];
-}
-
 const Command::range Command::parameter_range() const {
 	Command::range range;
 	switch (type) {
@@ -60,6 +54,10 @@ const Command::range Command::parameter_range() const {
 			break;
 		case NICK:
 			range = make_pair(1, 2);
+			break;
+		case JOIN:
+			range = make_pair(1, INT_MAX);
+			break;
 		default:
 			break;
 	}
@@ -67,14 +65,18 @@ const Command::range Command::parameter_range() const {
 }
 
 string Command::_get_label() const {
-	return to_string();	
+	if (type == Unknown) {
+		throw Command::UnSupported();
+	}
+	return all_commands[type];
 }
 
 const char* Command::UnSupported::what() const throw(){
 	return "Unsupported command";
 }
+
 std::ostream& Command::_add_to_serialization(std::ostream& os,const int) const {
-	_json(os, to_string());
+	_json(os, "type", ':', _get_label());
 	return os;
 }
 

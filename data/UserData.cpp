@@ -155,10 +155,9 @@ ostream& UserData::_add_to_serialization(ostream& os, const int depth) const {
 	typedef list<User>::iterator UserIter;	
 	typedef list<User>::const_iterator UserConstIter;	
 	_json(os, "number of users", ':', users.size(), ',');
-	_json(os, "number of pedding users", ':', pendding_users.size());
-	if (depth > 0 && (users.size() + pendding_users.size()) > 0)
-		os << ',';
+	_json(os, "number of pendding users", ':', pendding_users.size());
 	if (depth > 0 && users.size() > 0) {
+		os << ',';
 		vector<const Serializable *>vec;
 		for (UserConstIter iter = users.begin(); iter != users.end(); ++iter) {
 			vec.push_back(&*iter);
@@ -189,12 +188,13 @@ ostream& UserData::_add_to_serialization(ostream& os, const int depth) const {
 		}
 	}
 	if (depth > 0 && pendding_users.size() > 0) {
+		os << ',';	
 		vector<const Serializable *>vec;
 		map<int, UserTask>::const_iterator iter;
 		for (iter = pendding_users.begin(); iter != pendding_users.end(); ++iter) {
 			vec.push_back(&iter->second);
 		}
-		_json(os, "pedding users", ':');
+		_json(os, "pendding users", ':');
 		os << ::_serialize(vec, depth - 1);
 	}
 	return os;

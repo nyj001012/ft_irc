@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 01:27:55 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 02:20:28 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 01:25:03 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,6 @@ namespace IRC {
 
 #include "../irc/IrcError.hpp"
 #include "../irc/IrcCommand.hpp"
+#include "../irc/IrcReply.hpp"
+#include "../irc/IrcLabels.hpp"
 #endif

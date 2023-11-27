@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:43:18 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/25 20:36:54 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/23 01:10:32 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ using std::make_pair;
 
 typedef std::pair<string, const Serializable*> KeyValue;
 
-Connection::Connection(): is_alive(false) {}
+Connection::Connection(): is_alive(true) {}
 Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): 
 	is_alive(false), socket_fd(socket_fd), password() {
 	char buffer[INET6_ADDRSTRLEN];
@@ -58,6 +58,9 @@ Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd)
 	} 
 	else 
 		return;
+}
+string User::Info::get_id() const {
+	return nick_name + '!' + user_name + '@' + host_name;
 }
 
 bool User::Info::is_equal(const User::Info& other) const {
@@ -135,6 +138,10 @@ const Connection& User::get_connection() const {
 	return connection;
 }
 
+const User::Info& User::get_info() const {
+	return info;
+}
+
 void User::add_channel(const Channel& channel) {
 	vector<const Channel*>::iterator found;
 	found = std::find(joined_channels.begin(), joined_channels.end(), &channel);
@@ -196,9 +203,8 @@ bool Connection::is_equal(const Connection& other) const {
 		return false;
 	if (port != other.port)
 		return false;
-	if (socket_fd != other.socket_fd) {
-		throw std::runtime_error("Different socket_fd for same connection");
-	}
+	if (socket_fd != other.socket_fd)
+		return false;
 	return true;
 }
 
@@ -218,7 +224,7 @@ bool operator==(const User::Info& a, const User::Info& b) {
 
 string Connection::_get_label() const {
 	stringstream ss;
-	ss << address << ":" << port;
+	ss << "socket=" << socket_fd;
 	if (is_alive)
 		ss << "(alive)";
 	else 

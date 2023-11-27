@@ -61,6 +61,7 @@ class User: public Serializable {
 			std::string host_name;
 			std::string server_name;
 			std::string real_name;
+			std::string get_id() const;
 
 			bool is_equal(const User::Info&) const;
 
@@ -75,6 +76,7 @@ class User: public Serializable {
 		bool is_available() const;
 		const std::string& get_nickname() const;
 		const Connection& get_connection() const;
+		const Info& get_info() const;
 
 		void add_channel(const Channel&);
 		void remove_channel(const Channel&);

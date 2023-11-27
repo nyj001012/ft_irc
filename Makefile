@@ -10,7 +10,9 @@ SRCS = main.cpp \
 		 utils/string_utils.cpp \
 		 irc/IrcCommand.cpp \
 		 irc/IrcError.cpp \
+		 irc/IrcReply.cpp \
 		 irc/IrcUtil.cpp \
+		 irc/IrcLabels.cpp \
 		 user/User.cpp \
 		 channel/Channel.cpp \
 		 data/UserData.cpp \
@@ -18,6 +20,7 @@ SRCS = main.cpp \
 		 parse/parse.cpp \
 		 task/Task.cpp \
 		 task/UserTask.cpp \
+		 task/ChannelTask.cpp \
 		 handler/RequestHandler.cpp
 
 OBJS = ${SRCS:.cpp=.o}

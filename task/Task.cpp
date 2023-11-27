@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 04:20:49 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/23 01:26:39 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ using std::vector;
 using std::auto_ptr;
 using IRC::Command;
 using IRC::Error;
+using std::pair;
+using std::make_pair;
 typedef std::pair<std::string, const Serializable*> KeyValue;
  
 int count_number_of_param(const vector<string>&);
@@ -60,6 +62,9 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 		case Command::USER:
 			return auto_ptr<Task>(new UserTask(base, tokens));
 			break;
+		case Command::JOIN:
+		case Command::PART:
+			return auto_ptr<Task>(new ChannelTask(base, tokens));
 		default:
 			break;
 	}
@@ -69,6 +74,10 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 
 bool Task::has_error() const {
 	return true;
+}
+
+vector<string> Task::get_reply() const {
+	return vector<string>();
 }
 
 const string& Task::get_prefix() const {
@@ -124,6 +133,13 @@ string Task::_get_label() const {
 	if (!prefix.empty())
 		label += " prefix=" + prefix;
 	return label;
+}
+
+vector<pair<string, const Serializable*> > Task::_get_children() const {
+	vector<pair<string, const Serializable*> > vec;
+	vec.push_back(make_pair("command", &this->command));
+	vec.push_back(make_pair("connection", &this->connection));
+	return vec;
 }
 
 std::ostream& Task::_add_to_serialization(std::ostream& os, const int) const {
