@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/19 15:13:42 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/27 14:31:58 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ int parseMessageFormat(std::string command, bool is_debug, std::vector<t_token>&
 	bool result;
 	if (command.empty() || command[command.length() - 1] != '\n')
 		result = FAIL;
-	command.erase(command.length() - 1); // '\n' 제거
-	command.erase(command.length() - 2); // '\r' 제거
-	if (command[0] == ':')
-		result = parseCommandWithOptions(command, tokens);
+	size_t crlf_pos = command.find("\r\n");
+	std::string trimmed_command = command.substr(0, crlf_pos);
+	if (trimmed_command[0] == ':')
+		result = parseCommandWithOptions(trimmed_command, tokens);
 	else
-		result = parseCommand(command, tokens);
+		result = parseCommand(trimmed_command, tokens);
 	reorderTrailing(tokens);
 	if (is_debug)
 		printTokens(tokens);
@@ -202,7 +202,13 @@ int parseMiddle(std::string params, std::vector<t_token>& tokens)
 	for (size_t i = 0; i < params.length(); i++)
 	{
 		if (params[i] == ' ')
-			return parseParams(params.substr(i), tokens);
+		{
+			std::string middle = params.substr(0, i);
+			tokens.push_back((t_token){ MIDDLE, middle });
+			if (parseParams(params.substr(i), tokens) == FAIL)
+				return FAIL;
+			return SUCCESS;
+		}
 		if (params[i] == '\0' || params[i] == '\r' || params[i] == '\n' || params[i] == ' ')
 			return FAIL;
 	}
@@ -238,8 +244,6 @@ void printTokens(std::vector<t_token> tokens)
 	size_t type_length = getLongestTokenType(tokens);
 	size_t value_length = getLongestTokenValue(tokens);
 
-	type_length = type_length > 4 ? type_length : 4;
-	value_length = value_length > 5 ? value_length : 5;
 	std::cout << F_BLACK_W_WHITE << "| " << std::setw(type_length) << "TYPE" << " | ";
 	std::cout << std::setw(value_length) << "VALUE" << " |" << FB_DEFAULT << std::endl;
 	for (size_t i = 0; i < tokens.size(); i++)
@@ -256,7 +260,7 @@ void printTokens(std::vector<t_token> tokens)
  */
 size_t getLongestTokenType(std::vector<t_token> tokens)
 {
-	size_t type_length = 0;
+	size_t type_length = 4;
 	for (size_t i = 0; i < tokens.size(); i++)
 	{
 		if (tokens[i].type.length() > type_length)
@@ -272,11 +276,26 @@ size_t getLongestTokenType(std::vector<t_token> tokens)
  */
 size_t getLongestTokenValue(std::vector<t_token> tokens)
 {
-	size_t value_length = 0;
+	size_t value_length = 5;
 	for (size_t i = 0; i < tokens.size(); i++)
 	{
 		if (tokens[i].value.length() > value_length)
 			value_length = tokens[i].value.length();
 	}
 	return value_length;
+}
+
+/**
+ * 토큰들의 value만을 저장하여 벡터로 반환한다.
+ * @param tokens
+ * @return 토큰들의 value만을 저장한 벡터
+ */
+std::vector<std::string> getTokensValue(std::vector<t_token> tokens)
+{
+	std::vector<std::string> tokens_value;
+	for (size_t i = 0; i < tokens.size(); i++)
+	{
+		tokens_value.push_back(tokens[i].value);
+	}
+	return tokens_value;
 }

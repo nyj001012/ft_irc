@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/19 15:13:52 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/27 14:32:13 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,6 @@ void reorderTrailing(std::vector<t_token>& tokens);
 void printTokens(std::vector<t_token> tokens);
 size_t getLongestTokenType(std::vector<t_token> tokens);
 size_t getLongestTokenValue(std::vector<t_token> tokens);
+std::vector<std::string> getTokensValue(std::vector<t_token> tokens);
 
 #endif //FT_IRC_PARSE_PARSE_HPP_

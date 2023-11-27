@@ -77,6 +77,36 @@ bool User::Info::is_equal(const User::Info& other) const {
 	return true;
 }
 
+std::vector<char> Connection::getReadBuffer()
+{
+	return _read_buffer;
+}
+
+std::vector<char> Connection::getWriteBuffer()
+{
+	return _write_buffer;
+}
+
+void Connection::setReadBuffer(std::vector<char> buffer)
+{
+	_read_buffer = buffer;
+}
+
+void Connection::setWriteBuffer(std::vector<char> buffer)
+{
+	_write_buffer = buffer;
+}
+
+void Connection::clearReadBuffer()
+{
+	_read_buffer.clear();
+}
+
+void Connection::clearWriteBuffer()
+{
+	_write_buffer.clear();
+}
+
 User::User() { }
 User::User(const Connection connection, const Info& info)
 	:connection(connection), info(info){ }

@@ -23,14 +23,15 @@ using std::string;
 using std::vector;
 using std::cout;
 using std::auto_ptr;
+using std::pair;
 using IRC::Error;
 using IRC::Command;
 
 RequestHandler::RequestHandler() {}
-vector<string> RequestHandler::get_request(vector<string>& req, const Connection& connection) {
+vector<pair<int, vector<string> > >  RequestHandler::get_request(vector<string>& req, const Connection& connection) {
 
 	auto_ptr<Task> task;
-	vector<string> reply;
+	vector<pair<int, vector<string> > > reply;
 	try {
 		task = Task::create(req, connection);	
 	}
@@ -40,7 +41,7 @@ vector<string> RequestHandler::get_request(vector<string>& req, const Connection
 	try {
 		UserTask* user_task = dynamic_cast<UserTask*>(task.get());
 		if (user_task != NULL) {
-			reply = execute(*user_task);
+			reply.push_back(make_pair(connection.socket_fd, execute(*user_task)));
 		}
 		ChannelTask* channel_task = dynamic_cast<ChannelTask*>(task.get());
 		if (channel_task != NULL) {
@@ -51,15 +52,15 @@ vector<string> RequestHandler::get_request(vector<string>& req, const Connection
 		std::cerr << e.what() << std::endl;
 	}
 	Reflector::shared().update();
-	for (size_t i = 0; i < reply.size(); ++i) {
-		reply[i] += "\r\n";
-	}
 	return reply;
 }
 
-vector<string> RequestHandler::execute(ChannelTask& task) {
+vector<pair<int, vector<string> > >
+RequestHandler::execute(ChannelTask& task) {
 	ChannelData& data = ChannelData::get_storage();
 	User& user = UserData::get_storage().get_user(task.get_connection());
+	vector<pair<int, vector<string> > > replies;
+	replies.push_back(make_pair(task.get_connection().socket_fd, vector<string>()));
 	switch (task.get_command().type) {
 		case Command::JOIN:
 			if (task.params.size() == 1 && task.params[0] == "0") {
@@ -79,7 +80,8 @@ vector<string> RequestHandler::execute(ChannelTask& task) {
 					// TODO: add error no permission
 				}
 			}
-			return task.get_reply();
+			replies[0].second = task.get_reply();
+			break;
 		case Command::PART: 
 			{
 				string reason;
@@ -106,17 +108,16 @@ vector<string> RequestHandler::execute(ChannelTask& task) {
 					catch (ChannelData::ChannelNotExist&) {
 						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
 					}
-					vector<string> reply = task.get_reply();
+					replies[0].second = task.get_reply();
 					for (size_t i = 0; i < empty_channels.size(); ++i)
 						data.remove_channel(*empty_channels[i]);
-					return reply;
 				}
 			}
 			break;
 		default:
 			throw Command::UnSupported();
 	}
-	return vector<string>(); 
+	return replies; 
 }
 
 vector<string> RequestHandler::execute(const UserTask& task) {
