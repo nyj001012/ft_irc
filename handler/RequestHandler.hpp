@@ -26,7 +26,8 @@ class RequestHandler {
 		std::vector<std::pair<int, std::vector<std::string> > > 
 			get_request(std::vector<std::string>&, const Connection&);
 	private:
-		std::vector<std::string> execute(const UserTask&);
+		std::vector<std::pair<int, std::vector<std::string> > > 
+			execute(const UserTask&);
 		std::vector<std::pair<int, std::vector<std::string> > > 
 			execute(ChannelTask&);
 };

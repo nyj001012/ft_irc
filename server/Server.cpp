@@ -230,12 +230,20 @@ void Server::runServer()
 						std::vector<std::string> vec = split_string(message);
 						Connection connection;	
 						connection.socket_fd = i;
-						std::vector<std::string> reply = handler.get_request(vec, connection);
-						for (size_t i = 0; i < reply.size(); ++i) {
-							sendMessage(connection.socket_fd, reply[i]);
+						std::vector<std::pair<int,std::vector<std::string> > > replies = handler.get_request(vec, connection);
+						if (replies.empty()) {
+								_connections[connection.socket_fd].clearWriteBuffer();
+								continue;
+						}
+						for (size_t i = 0; i < replies.size(); ++i) {
+							std::vector<std::string>& reply = replies[i].second;
+							const int socket_fd = replies[i].first;
+							for (size_t j = 0; j < reply.size(); ++j) {
+								sendMessage(socket_fd, reply[j]);
+								_connections[socket_fd].clearWriteBuffer();
+							}
 						}
 					}
-					_connections[i].clearWriteBuffer();
 					this->saveLineToBuffer(_connections[i], "");
 				}
 			}

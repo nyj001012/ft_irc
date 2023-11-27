@@ -41,7 +41,7 @@ vector<pair<int, vector<string> > >  RequestHandler::get_request(vector<string>&
 	try {
 		UserTask* user_task = dynamic_cast<UserTask*>(task.get());
 		if (user_task != NULL) {
-			reply.push_back(make_pair(connection.socket_fd, execute(*user_task)));
+			reply = execute(*user_task);
 		}
 		ChannelTask* channel_task = dynamic_cast<ChannelTask*>(task.get());
 		if (channel_task != NULL) {
@@ -120,8 +120,9 @@ RequestHandler::execute(ChannelTask& task) {
 	return replies; 
 }
 
-vector<string> RequestHandler::execute(const UserTask& task) {
+vector<pair<int, vector<string> > > RequestHandler::execute(const UserTask& task) {
 	UserData& data = UserData::get_storage();
+	vector<pair<int, vector<string> > > replies;
 	switch (task.get_command().type) {
 		case Command::PASS:
 			if (!data.is_pedding_user_exist(task.get_connection()))
@@ -154,10 +155,11 @@ vector<string> RequestHandler::execute(const UserTask& task) {
 				}
 				data.create_user(updated.get_connection(),updated.info);
 				data.remove_task(updated.get_connection());
-				return updated.get_reply();
+				replies.push_back(make_pair(task.get_connection().socket_fd, updated.get_reply()));
+				break;
 			}
 		default:
 			throw Command::UnSupported();
 	}
-	return vector<string>();
+	return replies;
 }
