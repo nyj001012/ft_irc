@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:43:05 by yena              #+#    #+#             */
-/*   Updated: 2023/11/27 14:10:33 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/27 14:31:58 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,4 +283,19 @@ size_t getLongestTokenValue(std::vector<t_token> tokens)
 			value_length = tokens[i].value.length();
 	}
 	return value_length;
+}
+
+/**
+ * 토큰들의 value만을 저장하여 벡터로 반환한다.
+ * @param tokens
+ * @return 토큰들의 value만을 저장한 벡터
+ */
+std::vector<std::string> getTokensValue(std::vector<t_token> tokens)
+{
+	std::vector<std::string> tokens_value;
+	for (size_t i = 0; i < tokens.size(); i++)
+	{
+		tokens_value.push_back(tokens[i].value);
+	}
+	return tokens_value;
 }

@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 22:40:13 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/27 14:32:26 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ void Server::runServer()
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
-						std::vector<std::string> vec = split_string(message);
+						std::vector<std::string> vec = getTokensValue(tokens);
 						handler.get_request(vec, _connections[i]);
 					}
 					_connections[i].clearWriteBuffer();
