@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/28 23:08:02 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 04:07:22 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "../message/Message.hpp"
 #include <algorithm>
 #include <iostream>
+#include <iterator>
 
 using std::string;
 using std::vector;
@@ -28,6 +29,9 @@ using std::auto_ptr;
 using std::pair;
 using IRC::Error;
 using IRC::Command;
+
+int get_fd(const User*);
+void add_broadcast_to_others(const vector<string>, vector<Message>&, const Channel&, const User&);
 
 RequestHandler::RequestHandler() {}
 vector<Message>  RequestHandler::get_request(vector<string>& req, const Connection& connection) {
@@ -61,7 +65,7 @@ vector<Message>
 RequestHandler::execute(ChannelTask& task) {
 	ChannelData& data = ChannelData::get_storage();
 	User& user = UserData::get_storage().get_user(task.get_connection());
-	vector<Message> replies;
+	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
 	switch (task.get_command().type) {
 		case Command::JOIN:
 			if (task.params.size() == 1 && task.params[0] == "0") {
@@ -77,6 +81,11 @@ RequestHandler::execute(ChannelTask& task) {
 							data.join_channel(name_key[0], user));
 					user.add_channel(joined);
 					task.add_channel_to_reply(joined);
+					if (joined.get_number_of_users() > 1) {
+						string message = ChannelTask::get_channel_join_message(joined, user);
+						add_broadcast_to_others(strs_to_vector(message),
+								replies, joined, user);
+					}
 				}
 				catch (Error& e) {
 					task.add_error(e);
@@ -91,6 +100,7 @@ RequestHandler::execute(ChannelTask& task) {
 				if (task.params.size() > 1 && 
 						task.params.back()[0] != IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX) {
 					number_of_channels -= 1;
+					reason = task.params.back();
 				}
 				vector<const Channel*> empty_channels;
 				for (size_t i = 0; i < number_of_channels; ++i) {
@@ -106,6 +116,12 @@ RequestHandler::execute(ChannelTask& task) {
 						task.add_channel_to_reply(channel);
 						if (channel.get_number_of_users() == 0)
 							empty_channels.push_back(&channel);
+						else {
+							string message = ChannelTask::get_channel_part_message(
+									channel, user, reason);
+							add_broadcast_to_others(strs_to_vector(message),
+									replies, channel, user);
+						}
 					}
 					catch (ChannelData::ChannelNotExist&) {
 						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
@@ -124,7 +140,7 @@ RequestHandler::execute(ChannelTask& task) {
 
 vector<Message> RequestHandler::execute(UserTask& task) {
 	UserData& data = UserData::get_storage();
-	vector<Message> replies;
+	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
 	switch (task.get_command().type) {
 		case Command::PASS:
 			if (!data.is_pedding_user_exist(task.get_connection()))
@@ -164,4 +180,17 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 			throw Command::UnSupported();
 	}
 	return replies;
+}
+
+void add_broadcast_to_others(const vector<string> new_messages, vector<Message>& messages, const Channel& channel, const User& sender) {
+
+		vector<int> fds;
+		vector<const User*> users = channel.get_users();
+		std::transform(users.begin(), users.end(), std::back_inserter(fds), get_fd);
+		add_new_message(new_messages, fds, messages)
+			.remove_fd(sender.get_connection().socket_fd);
+}
+
+int get_fd(const User* user) {
+	return user->get_connection().socket_fd;
 }
