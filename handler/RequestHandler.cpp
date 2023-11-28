@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 02:16:49 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/28 23:08:02 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include "../data/UserData.hpp"
 #include "../data/ChannelData.hpp"
 #include "../include/utils.hpp"
+#include "../message/Message.hpp"
+#include <algorithm>
 #include <iostream>
 
 using std::string;
@@ -28,10 +30,10 @@ using IRC::Error;
 using IRC::Command;
 
 RequestHandler::RequestHandler() {}
-vector<pair<int, vector<string> > >  RequestHandler::get_request(vector<string>& req, const Connection& connection) {
+vector<Message>  RequestHandler::get_request(vector<string>& req, const Connection& connection) {
 
 	auto_ptr<Task> task;
-	vector<pair<int, vector<string> > > reply;
+	vector<Message> reply;
 	try {
 		task = Task::create(req, connection);	
 	}
@@ -55,12 +57,11 @@ vector<pair<int, vector<string> > >  RequestHandler::get_request(vector<string>&
 	return reply;
 }
 
-vector<pair<int, vector<string> > >
+vector<Message>
 RequestHandler::execute(ChannelTask& task) {
 	ChannelData& data = ChannelData::get_storage();
 	User& user = UserData::get_storage().get_user(task.get_connection());
-	vector<pair<int, vector<string> > > replies;
-	replies.push_back(make_pair(task.get_connection().socket_fd, vector<string>()));
+	vector<Message> replies;
 	switch (task.get_command().type) {
 		case Command::JOIN:
 			if (task.params.size() == 1 && task.params[0] == "0") {
@@ -70,6 +71,7 @@ RequestHandler::execute(ChannelTask& task) {
 			for (size_t i = 0; i < task.params.size(); ++i) {
 				vector<string> name_key = split_string(task.params[i]);
 				try {
+					// TODO: throw error no permission
 					const Channel& joined = (name_key.size() == 2 ? 
 							data.join_channel(name_key[0], name_key[1], user):
 							data.join_channel(name_key[0], user));
@@ -77,10 +79,10 @@ RequestHandler::execute(ChannelTask& task) {
 					task.add_channel_to_reply(joined);
 				}
 				catch (Error& e) {
-					// TODO: add error no permission
+					task.add_error(e);
 				}
 			}
-			replies[0].second = task.get_reply();
+			add_new_message(task.get_reply(), task.get_connection().socket_fd,replies);
 			break;
 		case Command::PART: 
 			{
@@ -108,7 +110,7 @@ RequestHandler::execute(ChannelTask& task) {
 					catch (ChannelData::ChannelNotExist&) {
 						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
 					}
-					replies[0].second = task.get_reply();
+					add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
 					for (size_t i = 0; i < empty_channels.size(); ++i)
 						data.remove_channel(*empty_channels[i]);
 				}
@@ -120,9 +122,9 @@ RequestHandler::execute(ChannelTask& task) {
 	return replies; 
 }
 
-vector<pair<int, vector<string> > > RequestHandler::execute(const UserTask& task) {
+vector<Message> RequestHandler::execute(UserTask& task) {
 	UserData& data = UserData::get_storage();
-	vector<pair<int, vector<string> > > replies;
+	vector<Message> replies;
 	switch (task.get_command().type) {
 		case Command::PASS:
 			if (!data.is_pedding_user_exist(task.get_connection()))
@@ -132,7 +134,7 @@ vector<pair<int, vector<string> > > RequestHandler::execute(const UserTask& task
 			break;
 		case Command::NICK:
 			if (data.is_duplicated(task.info.nick_name))
-				throw Error(Error::ERR_NICKNAMEINUSE);
+				task.add_error(Error(Error::ERR_NICKNAMEINUSE));
 			else if (data.is_pedding_user_exist(task.get_connection()))
 				data.update_task(task);
 			else
@@ -141,8 +143,8 @@ vector<pair<int, vector<string> > > RequestHandler::execute(const UserTask& task
 		case Command::USER: 
 			{
 				if (!data.is_pedding_user_exist(task.get_connection())) {
-					if (UserData::get_storage().is_user_exist(task.get_connection()))
-						throw Error(Error::ERR_ALREADYREGISTRED);
+					if (UserData::get_storage().is_user_exist(task.get_connection())) 
+						task.add_error(Error(Error::ERR_ALREADYREGISTRED));
 					else {
 						// throw error?
 						break;
@@ -155,7 +157,7 @@ vector<pair<int, vector<string> > > RequestHandler::execute(const UserTask& task
 				}
 				data.create_user(updated.get_connection(),updated.info);
 				data.remove_task(updated.get_connection());
-				replies.push_back(make_pair(task.get_connection().socket_fd, updated.get_reply()));
+				add_new_message(updated.get_reply(), task.get_connection().socket_fd, replies);
 				break;
 			}
 		default:

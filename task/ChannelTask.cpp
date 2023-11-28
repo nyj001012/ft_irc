@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 00:26:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 02:04:07 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/28 22:22:45 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,20 +97,30 @@ vector<string> ChannelTask::get_reply() const {
 			reason = params.back();
 			number_of_channels -= 1;
 		}
-		const string user_id = ":" + user.get_info().get_id();
 		for (size_t i = 0; i < number_of_channels; ++i) {
-			string reply = user_id + " PART " + channels_to_reply[i]->get_name();
-			if (!reason.empty())
-				reply += ":" + reason;
-			vec.push_back(reply);
+			const Channel& channel = *channels_to_reply[i];
+			vec.push_back(get_channel_part_message(channel, user, reason));
 		}
 	}
 	return vec;
 }
 
+string ChannelTask::get_channel_part_message(const Channel& channel, const User& user, const string& reason) {
+
+	const string user_id = ":" + user.get_info().get_id();
+	string reply = user_id + " PART " + channel.get_name(); 
+	if (!reason.empty())
+		reply += ":" + reason;
+	return reply;
+}
+
+string ChannelTask::get_channel_join_message(const Channel &channel, const User &user) {
+	return ":" + user.get_info().get_id() + " JOIN " + channel.get_name();
+}
+
 void add_channel_join_reply(const Channel& channel, const User& user, vector<string>& vec){
 
-	vec.push_back(":" + user.get_info().get_id() + " JOIN " + channel.get_name());
+	vec.push_back(ChannelTask::get_channel_join_message(channel, user));
 	string mode; //TODO: Channel mode
 	vec.push_back(":" + SERVER_NAME + " MODE " + channel.get_name() + ' ' + mode);	
 	string topic = channel.get_topic();
@@ -123,14 +133,6 @@ void add_channel_join_reply(const Channel& channel, const User& user, vector<str
 	vec.push_back(Reply(Reply::RPL_NAMREPLY, SERVER_NAME, name_params).to_string());
 	vec.push_back(Reply(Reply::RPL_ENDOFNAMES, SERVER_NAME, 
 				strs_to_vector(user.get_nickname(), channel.get_name())).to_string());
-}
-
-void ChannelTask::add_error(const Error& error) {
-	errors.push_back(error);
-}
-
-bool ChannelTask::has_error() const {
-	return !errors.empty();
 }
 
 // Serialize
