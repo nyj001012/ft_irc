@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/28 18:23:54 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/28 18:24:52 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,6 +212,7 @@ void Server::runServer()
 		throw std::runtime_error("Error: select() failed");
 	for (int i = 0; i <= this->_fd_max; i++)
 	{
+		signal(SIGPIPE, SIG_IGN);
 		if (FD_ISSET(i, &_read_fds_backup))
 		{
 			if (i == this->_server_socket)
