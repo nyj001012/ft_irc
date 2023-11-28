@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:14:43 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 01:32:19 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/28 22:18:27 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ struct Task: public Serializable {
 		const Connection& get_connection() const;
 		virtual bool has_error() const;
 		virtual std::vector<std::string> get_reply() const;
+		void add_error(const IRC::Error&);
 
 		virtual std::string _get_label() const;
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
@@ -44,6 +45,7 @@ struct Task: public Serializable {
 		Task& operator=(const Task&);
 		Connection connection;
 		Command command;
+		std::vector<IRC::Error> errors;
 		Task& set_prefix(const std::string&);
 		std::string prefix;
 };
@@ -66,6 +68,8 @@ struct UserTask: public Task {
 struct ChannelTask: public Task {
 
 	public:
+		static std::string get_channel_join_message(const Channel&, const User&);
+		static std::string get_channel_part_message(const Channel&, const User&, const std::string&);
 
 		ChannelTask(const Task& parent, const std::vector<std::string>&);
 		virtual std::string _get_label() const;
@@ -73,12 +77,9 @@ struct ChannelTask: public Task {
 		virtual std::vector<std::string> get_reply() const;
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		void add_channel_to_reply(const Channel&);
-		void add_error(const IRC::Error&);
-		virtual bool has_error() const;
 
 	private:
 		std::vector<const Channel*> channels_to_reply;
-		std::vector<IRC::Error> errors;
 };
 
 #endif

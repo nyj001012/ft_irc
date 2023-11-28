@@ -6,12 +6,13 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/28 18:24:52 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/28 23:53:45 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "../user/User.hpp"
+#include "../message/Message.hpp"
 #include <cstring>
 #include <cstdlib>
 
@@ -230,24 +231,24 @@ void Server::runServer()
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
 						std::vector<std::string> vec = getTokensValue(tokens);
+						// handler repuest
 						Connection connection;
 						connection.socket_fd = i;
-						std::vector<std::pair<int, std::vector<std::string> > > replies = handler
-								.get_request(vec, connection);
-						if (replies.empty())
+						std::vector<Message> messages = handler.get_request(vec, connection);
+						if (messages.empty())
 						{
 							this->saveLineToBuffer(_connections[i], "");
+							_connections[i].clearWriteBuffer();
 							continue;
 						}
-						for (size_t k = 0; k < replies.size(); ++k)
+						// send message
+						for (size_t j = 0; j < messages.size(); ++j)
 						{
-							std::vector<std::string>& reply = replies[k].second;
-							const int socket_fd = replies[k].first;
-							for (size_t j = 0; j < reply.size(); ++j)
-							{
-								sendMessage(socket_fd, reply[j]);
-								_connections[socket_fd].clearWriteBuffer();
-							}
+							messages[j].foreach<Server>(*this, &Server::sendMessage);
+						}
+						std::vector<int> all_fds = Message::get_all_fds(messages);
+						for (size_t j = 0; j < all_fds.size(); ++j) {
+							_connections[all_fds[j]].clearWriteBuffer();
 						}
 					}
 					this->saveLineToBuffer(_connections[i], "");
