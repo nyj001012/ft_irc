@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/27 14:32:26 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/28 18:23:54 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,21 +224,26 @@ void Server::runServer()
 				{
 					std::vector<char> write_vector = _connections[i].getWriteBuffer();
 					std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
+					this->sendMessage(i, write_buffer);
 					std::vector<t_token> tokens;
-					if (parseMessageFormat(message, this->_is_debug, tokens)) {
-						this->sendMessage(i, message);
-						std::vector<std::string> vec = split_string(message);
-						Connection connection;	
+					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
+					{
+						std::vector<std::string> vec = getTokensValue(tokens);
+						Connection connection;
 						connection.socket_fd = i;
-						std::vector<std::pair<int,std::vector<std::string> > > replies = handler.get_request(vec, connection);
-						if (replies.empty()) {
-								_connections[connection.socket_fd].clearWriteBuffer();
-								continue;
+						std::vector<std::pair<int, std::vector<std::string> > > replies = handler
+								.get_request(vec, connection);
+						if (replies.empty())
+						{
+							this->saveLineToBuffer(_connections[i], "");
+							continue;
 						}
-						for (size_t i = 0; i < replies.size(); ++i) {
-							std::vector<std::string>& reply = replies[i].second;
-							const int socket_fd = replies[i].first;
-							for (size_t j = 0; j < reply.size(); ++j) {
+						for (size_t k = 0; k < replies.size(); ++k)
+						{
+							std::vector<std::string>& reply = replies[k].second;
+							const int socket_fd = replies[k].first;
+							for (size_t j = 0; j < reply.size(); ++j)
+							{
 								sendMessage(socket_fd, reply[j]);
 								_connections[socket_fd].clearWriteBuffer();
 							}
@@ -303,7 +308,7 @@ void Server::saveLineToBuffer(Connection& connection, std::string message)
 }
 
 /**
- * 클라이언트로부터 메시지를 받아온다. 사용 후에 메모리를 해제해야 한다.
+ * 클라이언트로부터 메시지를 받아온다.
  * @param client_socket 클라이언트 소켓
  * @return 클라이언트로부터 받은 메시지
  */
@@ -347,13 +352,14 @@ void Server::closeClient(int client_socket)
 }
 
 /**
- * 클라이언트에게 메시지를 보낸다. 메시지를 모두 보내면 읽기용 fd는 fd_set에서 제거하고, 쓰기용 fd는 fd_set에 추가한다.
+ * 클라이언트에게 메시지를 보낸다.
  * @param client_socket 메시지를 보낼 클라이언트 소켓
  * @param message 보낼 메시지
  */
 void Server::sendMessage(int client_socket, std::string& message)
 {
-	ssize_t write_size = write(client_socket, message.data(), message.length());
+	std::string buffer = message + "\r\n";
+	ssize_t write_size = write(client_socket, buffer.data(), buffer.length());
 	if (write_size == -1)
 		throw std::runtime_error("Error: write() failed");
 	if (write_size == static_cast<ssize_t >(message.length()))
