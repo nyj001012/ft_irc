@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/25 22:35:12 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/29 13:18:21 by yena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,17 @@ public:
 	void initializeServer(const char* port);
 	void runServer();
 	void acceptClient();
-	void saveLineToBuffer(Connection &connection, std::string message);
-	std::string receiveMessage(int client_socket);
+	void saveLineToBuffer(int client_socket);
+	void receiveMessage(int client_socket);
 	void sendMessage(int client_socket, std::string& message);
 	void closeClient(int client_socket);
 	void closeServer();
+	std::string getWriteBuffer(int fd);
+	std::string getReadBuffer(int fd);
+	void setWriteBuffer(int fd, std::string buffer);
+	void setReadBuffer(int fd, std::string buffer);
+	void clearWriteBuffer(int fd);
+	void clearReadBuffer(int fd);
 
 private:
 	int _max_client_number;
@@ -73,6 +79,8 @@ private:
 	fd_set _read_fds_backup;
 	fd_set _write_fds_backup;
 	std::map<int, Connection> _connections;
+	std::map<int, std::string > _write_buffers;
+	std::map<int, std::string > _read_buffers;
 };
 std::ostream& operator<<(std::ostream& os, const Server& server);
 std::ostream& operator<<(std::ostream& os, const fd_set& fds);
