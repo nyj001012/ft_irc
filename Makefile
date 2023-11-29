@@ -21,6 +21,7 @@ SRCS = main.cpp \
 		 task/Task.cpp \
 		 task/UserTask.cpp \
 		 task/ChannelTask.cpp \
+		 task/MessageTask.cpp \
 		 message/Message.cpp \
 		 handler/RequestHandler.cpp 
 

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/29 23:59:38 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/30 03:21:10 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,10 @@ vector<Message>  RequestHandler::get_request(vector<string>& req, const Connecti
 		if (channel_task != NULL) {
 			reply = execute(*channel_task);
 		}
+		MessageTask* message_task = dynamic_cast<MessageTask*>(task.get());
+		if (message_task != NULL) {
+			reply = execute(*message_task);	
+		}
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
@@ -66,6 +70,52 @@ vector<Message>  RequestHandler::get_request(vector<string>& req, const Connecti
 		add_new_message(error_messages, connection.socket_fd, reply);
 	}
 	return reply;
+}
+
+vector<Message>
+RequestHandler::execute(MessageTask& task) {
+
+	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
+	UserData& user_data = UserData::get_storage();
+	ChannelData& channel_data = ChannelData::get_storage();
+
+	const User& sender = user_data.get_user(task.get_connection());
+	task.set_sender(sender);
+
+	for (size_t i = 0; i < task.recipients.size(); ++i) {
+		vector<int> fds;
+		const string& name = task.recipients[i].second;
+
+		switch (task.recipients[i].first) {
+			case MessageTask::USER:
+				if (!user_data.is_user_exist(name))
+					task.add_error(Error(Error::ERR_NOSUCHNICK));
+				else {
+					const User& recipient = user_data.get_user(name);
+					fds.push_back(recipient.get_connection().socket_fd);	
+				}
+				break;
+			case MessageTask::CHANNEL:
+				if (!channel_data.is_channel_exist(name)) 
+					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+				else if (!sender.is_joined(name)) 
+					task.add_error(Error(Error::ERR_NOTONCHANNEL));
+				else {
+					const Channel& channel = channel_data.get_channel(name);
+					vector<const User*> users = channel.get_users();
+					std::transform(users.begin(), users.end(), std::back_inserter(fds), get_fd);
+				}
+				break;
+		}
+
+		if (!fds.empty()) {
+			add_new_message(
+					strs_to_vector(":" + task.get_prefix() + ' ' + task.content),
+					fds, replies);
+		}
+	}
+
+	return replies;
 }
 
 vector<Message>

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/29 23:45:53 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/30 02:51:41 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,19 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 	int count = count_number_of_param(tokens);
 	Command::range range = base.command.parameter_range();
 	if (count < range.first) {
-		if (base.command == Command::NICK)
+		if (base.command == Command::PRIVMSG) {
+			if (count == 0)
+				throw Error(Error::ERR_NORECIPIENT);
+			else
+				throw Error(Error::ERR_NOTEXTTOSEND);
+		}
+		else if (base.command == Command::NICK)
 			throw Error(Error::ERR_NONICKNAMEGIVEN);
 		else
 			throw Error(Error::ERR_NEEDMOREPARAMS); 
 	}
 	else if (count > range.second) {
-		// TODO: Throw Error
+		// Throw Error?
 	}
 
 	switch (base.command.type) {
@@ -65,6 +71,8 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 		case Command::JOIN:
 		case Command::PART:
 			return auto_ptr<Task>(new ChannelTask(base, tokens));
+		case Command::PRIVMSG:
+			return auto_ptr<Task>(new MessageTask(base, tokens));
 		default:
 			break;
 	}

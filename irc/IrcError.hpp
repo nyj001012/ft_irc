@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:23:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/29 23:56:17 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/30 02:50:02 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@ namespace IRC {
 			ERR_BADCHANNELKEY,
 			ERR_NOSUCHCHANNEL,
 			ERR_NOTONCHANNEL,
+			ERR_CANNOTSENDTOCHAN,
+			ERR_NORECIPIENT,
+			ERR_NOSUCHNICK,
+			ERR_NOTEXTTOSEND
 		} code;
 
 		Error();

@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 01:46:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/29 23:57:50 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/30 02:49:53 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ const char *all_errors[] = {
 	ERROR_STRINGIFY(ERR_BADCHANNELKEY),
 	ERROR_STRINGIFY(ERR_NOSUCHCHANNEL),
 	ERROR_STRINGIFY(ERR_NOTONCHANNEL),
+	ERROR_STRINGIFY(ERR_CANNOTSENDTOCHAN),
+	ERROR_STRINGIFY(ERR_NORECIPIENT),
+	ERROR_STRINGIFY(ERR_NOSUCHNICK),
+	ERROR_STRINGIFY(ERR_NOTEXTTOSEND),
 };
 
 Error::Error(): code(UnKnown) {}
