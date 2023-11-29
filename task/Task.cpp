@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/28 21:58:21 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 23:45:53 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,10 @@ void Task::add_error(const Error& error) {
 
 bool Task::has_error() const {
 	return !errors.empty();
+}
+
+vector<IRC::Error> Task::get_errors() const {
+	return errors;
 }
 
 vector<string> Task::get_reply() const {

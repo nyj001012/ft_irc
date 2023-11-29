@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 00:14:43 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/28 22:18:27 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 23:45:59 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ struct Task: public Serializable {
 		virtual bool has_error() const;
 		virtual std::vector<std::string> get_reply() const;
 		void add_error(const IRC::Error&);
+		std::vector<IRC::Error> get_errors() const;
 
 		virtual std::string _get_label() const;
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;

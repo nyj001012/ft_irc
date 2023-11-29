@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/28 23:53:45 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 23:25:09 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "../message/Message.hpp"
 #include <cstring>
 #include <cstdlib>
+#include <exception>
 
 Server::Server()
 {
@@ -110,6 +111,36 @@ struct sockaddr_in Server::getServerAddr() const
 bool Server::getIsDebug() const
 {
 	return this->_is_debug;
+}
+
+std::string Server::getReadBuffer(int fd)
+{
+	return _read_buffers.find(fd)->second;
+}
+
+std::string Server::getWriteBuffer(int fd)
+{
+	return _write_buffers.find(fd)->second;
+}
+
+void Server::setReadBuffer(int fd, std::string buffer)
+{
+	_read_buffers[fd] = buffer;
+}
+
+void Server::setWriteBuffer(int fd, std::string buffer)
+{
+	_write_buffers[fd] = buffer;
+}
+
+void Server::clearReadBuffer(int fd)
+{
+	_read_buffers[fd].clear();
+}
+
+void Server::clearWriteBuffer(int fd)
+{
+	_write_buffers[fd].clear();
 }
 
 void Server::setMaxClientNumber(int max_client_number)
@@ -220,38 +251,32 @@ void Server::runServer()
 				this->acceptClient();
 			else
 			{
-				std::string message = this->receiveMessage(i);
-				this->saveLineToBuffer(_connections[i], message);
-				while (_connections[i].getWriteBuffer().size())
+				this->receiveMessage(i);
+				this->saveLineToBuffer(_connections[i].socket_fd);
+				while (_write_buffers[i].length())
 				{
-					std::vector<char> write_vector = _connections[i].getWriteBuffer();
-					std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
+					std::string write_buffer = _write_buffers[i];
 					this->sendMessage(i, write_buffer);
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
 						std::vector<std::string> vec = getTokensValue(tokens);
-						// handler repuest
+						// handle repuest
 						Connection connection;
 						connection.socket_fd = i;
 						std::vector<Message> messages = handler.get_request(vec, connection);
-						if (messages.empty())
-						{
-							this->saveLineToBuffer(_connections[i], "");
-							_connections[i].clearWriteBuffer();
-							continue;
-						}
 						// send message
 						for (size_t j = 0; j < messages.size(); ++j)
 						{
 							messages[j].foreach<Server>(*this, &Server::sendMessage);
 						}
 						std::vector<int> all_fds = Message::get_all_fds(messages);
-						for (size_t j = 0; j < all_fds.size(); ++j) {
-							_connections[all_fds[j]].clearWriteBuffer();
+						for (size_t j = 0; j < all_fds.size(); ++j)
+						{
+							_write_buffers[all_fds[j]] = "";
 						}
 					}
-					this->saveLineToBuffer(_connections[i], "");
+					this->saveLineToBuffer(i);
 				}
 			}
 		}
@@ -274,48 +299,37 @@ void Server::acceptClient()
 	Connection connection;
 	connection.socket_fd = client_socket;
 	_connections.insert(std::make_pair(client_socket, connection));
+	_write_buffers.insert(std::make_pair(client_socket, ""));
+	_read_buffers.insert(std::make_pair(client_socket, ""));
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] New client connected: " << client_socket << FB_DEFAULT << std::endl;
 }
 
-void Server::saveLineToBuffer(Connection& connection, std::string message)
+void Server::saveLineToBuffer(int fd)
 {
-	std::vector<char> read_vector = connection.getReadBuffer();
-	std::vector<char> write_vector = connection.getWriteBuffer();
-	std::string read_buffer = std::string(read_vector.begin(), read_vector.end());
-	std::string write_buffer = std::string(write_vector.begin(), write_vector.end());
-	if (message.empty())
+	if (!_read_buffers[fd].length())
+		return;
+	else
 	{
+		std::string read_buffer = _read_buffers[fd];
 		size_t crlf_pos = read_buffer.find("\r\n");
 		if (crlf_pos != std::string::npos)
 		{
-			std::string new_write_data = read_buffer.substr(0, crlf_pos + 2);
 			std::string new_read_data = read_buffer.substr(crlf_pos + 2);
-			connection.setWriteBuffer(std::vector<char>(new_write_data.begin(), new_write_data.end()));
-			connection.setReadBuffer(std::vector<char>(new_read_data.begin(), new_read_data.end()));
+			_write_buffers[fd] = read_buffer.substr(0, crlf_pos + 2);
+			_read_buffers[fd] = new_read_data;
 		}
-	}
-	else
-	{
-		std::string new_read_data = read_buffer + message;
-		size_t crlf_pos = new_read_data.find("\r\n");
-		if (crlf_pos != std::string::npos)
-		{
-			std::string new_write_data = new_read_data.substr(0, crlf_pos + 2);
-			new_read_data = new_read_data.substr(crlf_pos + 2);
-			connection.setWriteBuffer(std::vector<char>(new_write_data.begin(), new_write_data.end()));
-		}
-		connection.setReadBuffer(std::vector<char>(new_read_data.begin(), new_read_data.end()));
+		else
+			_write_buffers[fd] = read_buffer;
 	}
 }
 
 /**
  * 클라이언트로부터 메시지를 받아온다.
  * @param client_socket 클라이언트 소켓
- * @return 클라이언트로부터 받은 메시지
  */
 
-std::string Server::receiveMessage(int client_socket)
+void Server::receiveMessage(int client_socket)
 {
 	std::vector<char> buffer(BUFFER_SIZE);
 	ssize_t read_size = read(client_socket, &buffer[0], BUFFER_SIZE);
@@ -324,7 +338,6 @@ std::string Server::receiveMessage(int client_socket)
 	if (read_size == 0)
 	{
 		this->closeClient(client_socket);
-		return "";
 	}
 	if (read_size < BUFFER_SIZE - 2)
 		buffer.resize(read_size);
@@ -333,7 +346,7 @@ std::string Server::receiveMessage(int client_socket)
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
 	FD_SET(client_socket, &this->_read_fds);
-	return std::string(buffer.begin(), buffer.end());
+	_read_buffers[client_socket] = buffer.data();
 }
 
 /**
@@ -349,6 +362,8 @@ void Server::closeClient(int client_socket)
 	FD_CLR(client_socket, &this->_read_fds);
 	FD_CLR(client_socket, &this->_write_fds);
 	_connections.erase(client_socket);
+	_read_buffers.erase(client_socket);
+	_write_buffers.erase(client_socket);
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] Client closed: " << client_socket << FB_DEFAULT << std::endl;
 }

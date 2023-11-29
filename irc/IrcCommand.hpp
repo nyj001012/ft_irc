@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:26:45 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 01:36:18 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 23:03:29 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ namespace IRC {
 			MODE,
 			TOPIC,
 			INVITE,
+			KICK,
 			PRIVMSG,
 			//PING,
 			//PONG,

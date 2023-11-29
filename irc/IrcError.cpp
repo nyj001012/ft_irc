@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 01:46:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/22 23:35:48 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 23:57:50 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,15 @@ const char* Error::what() const throw() {
 		return "UnKnwon";
 	}
 	return all_errors[code];
+}
+
+string Error::get_message() const {
+	string descripton;
+	return string(what()) + " :" + descripton;
+}
+
+string Error::_get_message(const Error & error) {
+	return error.get_message();
 }
 
 bool operator==(const Code c, const Error& e) {

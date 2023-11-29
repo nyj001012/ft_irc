@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/29 04:07:22 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 23:59:38 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ vector<Message>  RequestHandler::get_request(vector<string>& req, const Connecti
 		task = Task::create(req, connection);	
 	}
 	catch(Error &e) {
-		std::cerr << e.what() << std::endl;
+		add_new_message(strs_to_vector(e.get_message()), connection.socket_fd, reply);	
+		return reply;
 	}
 	try {
 		UserTask* user_task = dynamic_cast<UserTask*>(task.get());
@@ -58,6 +59,12 @@ vector<Message>  RequestHandler::get_request(vector<string>& req, const Connecti
 		std::cerr << e.what() << std::endl;
 	}
 	Reflector::shared().update();
+	if (task->has_error()) {
+		vector<Error> errors = task->get_errors();
+		vector<string> error_messages;
+		std::transform(errors.begin(), errors.end(), std::back_inserter(error_messages), &Error::_get_message);
+		add_new_message(error_messages, connection.socket_fd, reply);
+	}
 	return reply;
 }
 
@@ -149,8 +156,10 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 				data.update_task(task);
 			break;
 		case Command::NICK:
-			if (data.is_duplicated(task.info.nick_name))
+			if (data.is_duplicated(task.info.nick_name)) {
 				task.add_error(Error(Error::ERR_NICKNAMEINUSE));
+				return replies;
+			}
 			else if (data.is_pedding_user_exist(task.get_connection()))
 				data.update_task(task);
 			else
@@ -159,8 +168,10 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 		case Command::USER: 
 			{
 				if (!data.is_pedding_user_exist(task.get_connection())) {
-					if (UserData::get_storage().is_user_exist(task.get_connection())) 
+					if (UserData::get_storage().is_user_exist(task.get_connection()))  {
 						task.add_error(Error(Error::ERR_ALREADYREGISTRED));
+						return replies;
+					}
 					else {
 						// throw error?
 						break;

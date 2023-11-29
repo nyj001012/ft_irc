@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 02:20:54 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/29 03:35:20 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 22:22:13 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,6 @@ public:
 	bool is_equal(const Connection&) const;
 	Connection();
 	Connection(const struct sockaddr_storage*, const int socket_fd);
-
-	std::vector<char> getWriteBuffer();
-	std::vector<char> getReadBuffer();
-	void setWriteBuffer(std::vector<char>);
-	void setReadBuffer(std::vector<char>);
-	void clearWriteBuffer();
-	void clearReadBuffer();
-
-private:
-	std::vector<char> _write_buffer;
-	std::vector<char> _read_buffer;
 };
 
 class User: public Serializable {
