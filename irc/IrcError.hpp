@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcError.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:23:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/22 23:35:32 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/04 16:52:17 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ namespace IRC {
 			ERR_BADCHANNELKEY,
 			ERR_NOSUCHCHANNEL,
 			ERR_NOTONCHANNEL,
+			ERR_UNKNOWNMODE,
+			ERR_NOTOPIC,
 		} code;
 
 		Error();

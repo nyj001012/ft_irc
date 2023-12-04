@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcError.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 01:46:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/22 23:35:48 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/04 16:52:12 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ const char *all_errors[] = {
 	ERROR_STRINGIFY(ERR_BADCHANNELKEY),
 	ERROR_STRINGIFY(ERR_NOSUCHCHANNEL),
 	ERROR_STRINGIFY(ERR_NOTONCHANNEL),
+	ERROR_STRINGIFY(ERR_UNKNOWNMODE),
+	ERROR_STRINGIFY(ERR_NOTOPIC),
 };
 
 Error::Error(): code(UnKnown) {}

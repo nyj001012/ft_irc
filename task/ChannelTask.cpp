@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ChannelTask.cpp                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/21 00:26:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 02:04:07 by heshin           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "Task.hpp"
 #include "../channel/Channel.hpp"
@@ -55,6 +44,9 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 				params.push_back(raw_params[1]);
 			}
 			break;
+		case Command::MODE:
+			if (raw_params.size() < 2)
+				throw Error(Error::ERR_NEEDMOREPARAMS);
 		default:
 			throw Command::UnSupported();
 	}
