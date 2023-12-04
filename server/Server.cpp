@@ -245,7 +245,7 @@ void Server::runServer()
 				while (_write_buffers[i].length())
 				{
 					std::string write_buffer = _write_buffers[i];
-					this->sendMessage(i, write_buffer);
+					//this->sendMessage(i, write_buffer);
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{

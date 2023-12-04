@@ -91,7 +91,7 @@ vector<string> UserTask::get_reply() const {
 	vector<string> vec;
 	if (command != Command::USER)
 		return vec;	
-
+	
 	vector<string> params = strs_to_vector(WELCOM_MESSAGE + ' '+ info.get_id());
 	vec.push_back(Reply(Reply::RPL_WELCOME, SERVER_NAME, params).to_string());
 	return vec;

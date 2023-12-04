@@ -34,6 +34,7 @@ namespace IRC {
 		Reply(const Code, const std::string& prefix, const std::vector<std::string>& params);
 		std::string to_string() const;
 		std::string get() const;
+		
 		virtual std::string _get_label() const;
 
 		struct UnKnownError: public std::exception { 

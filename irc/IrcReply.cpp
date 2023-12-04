@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "IrcReply.hpp"
+#include <stdexcept>
 #include <string>
 #define REPLY_STRINGIFY(name) # name
 
@@ -27,6 +28,22 @@ const char *all_reply[] = {
 	REPLY_STRINGIFY(RPL_ENDOFNAMES),
 	REPLY_STRINGIFY(RPL_TOPIC),
 };
+
+string get_code(const Code code) {
+	switch (code) {
+		case Reply::RPL_WELCOME:
+			return "001";
+		case Reply::RPL_NAMREPLY:
+			return "355";
+		case Reply::RPL_ENDOFNAMES:
+			return "366";
+		case Reply::RPL_TOPIC:
+			return "332";
+		default:
+			throw Reply::UnKnownError();
+	}
+}
+
 
 Reply::Reply(): code(UnKnown) {}
 Reply::~Reply() throw(){}
@@ -51,7 +68,7 @@ string Reply::to_string() const {
 	string reply;
 	if (!prefix.empty())
 		reply += ":" + prefix + ' ';
-	reply += all_reply[code];
+	reply += get_code(code);
 	if (params.empty())
 		return reply;
 	switch (code) {
