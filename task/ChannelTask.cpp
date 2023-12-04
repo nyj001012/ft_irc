@@ -43,9 +43,10 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 			}
 			break;
 		case Command::INVITE: 
+		case Command::KICK:
 			{
-				const string& user_name = raw_params[0];
-				const string& channel_name = raw_params[1];
+				const string& user_name = command == Command::INVITE ? raw_params[0]: raw_params[1];
+				const string& channel_name = command == Command::INVITE ? raw_params[1]: raw_params[0];
 				if (!UserTask::is_valid_nickname(user_name)) {
 					throw Error(Error::ERR_NOSUCHNICK);
 				}

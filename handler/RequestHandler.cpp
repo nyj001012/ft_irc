@@ -126,7 +126,7 @@ RequestHandler::execute(MessageTask& task) {
 vector<Message>
 RequestHandler::execute(ChannelTask& task) {
 	ChannelData& data = ChannelData::get_storage();
-	UserData& Udata = UserData::get_storage();
+	UserData& user_data = UserData::get_storage();
 	User& user = UserData::get_storage().get_user(task.get_connection());
 	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
 	switch (task.get_command().type) {
@@ -197,7 +197,6 @@ RequestHandler::execute(ChannelTask& task) {
 			break;
 		case Command::INVITE:
 			{
-				UserData& user_data = UserData::get_storage();
 				if (!user_data.is_user_exist(task.get_connection())) {
 					return replies;
 				}
@@ -224,6 +223,39 @@ RequestHandler::execute(ChannelTask& task) {
 						add_new_message(strs_to_vector(message), target_user.get_connection().socket_fd, replies);
 					}
 				}
+				break;
+			}
+		case Command::KICK:
+			{
+				if (!user_data.is_user_exist(task.get_connection())) 
+					return replies;
+				const User& user = user_data.get_user(task.get_connection());
+				const string& channel_name = task.params[0];
+				const string& target_user_name = task.params[1];
+				if (!user_data.is_user_exist(target_user_name))
+					task.add_error(Error(Error::ERR_NOSUCHNICK));
+				else if (!data.is_channel_exist(channel_name))
+					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+				else if (!user.is_joined(channel_name))
+					task.add_error(Error(Error::ERR_NOTONCHANNEL));
+				else {
+					const Channel& channel = data.get_channel(channel_name);
+					if (!channel.is_operator(user))
+						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+					else {
+						string message = ":" + user.get_info().get_id() +
+							' ' + Command::get_command_name(Command::KICK) + ' ' + channel_name;
+						if (task.params.size() > 2) 
+							message += " :" + task.params[2];
+						else	
+							message += " :" + user.get_nickname();
+						add_new_message(strs_to_vector(message), task.get_connection().socket_fd, replies);
+						add_broadcast_to_others(strs_to_vector(message),
+								replies, channel, user);
+						data.leave_channel(channel, user_data.get_user(target_user_name));	
+					}
+				}
+						
 				break;
 			}
 		case Command::TOPIC:
@@ -330,7 +362,7 @@ RequestHandler::execute(ChannelTask& task) {
 													{
 														if (i + 1 < task.params.size()) {
 															try {
-																User &target_user = Udata.get_user(task.params[i + 1]);
+																User &target_user = user_data.get_user(task.params[i + 1]);
 																if (setting)
 																	channel.add_operator(target_user);
 																else
