@@ -69,11 +69,14 @@ struct UserTask: public Task {
 		UserTask(const Task&, const std::vector<std::string>&);
 		User::Info info;
 		UserTask& add_next(const UserTask&);
+		const std::vector<std::string>& get_params() const;
 		virtual std::vector<std::string> get_reply() const;
 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::string _get_label() const;
 
+	protected:
+		std::vector<std::string> params;
 };
 
 struct ChannelTask: public Task {

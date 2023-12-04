@@ -368,6 +368,22 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 				add_new_message(updated.get_reply(), "" , make_pair(task.get_connection().socket_fd, ""), replies);
 				break;
 			}
+		case Command::QUIT: 
+			{
+				if (!data.is_user_exist(task.get_connection()))
+					return replies;
+				User& user = data.get_user(task.get_connection());
+				if (!task.get_params().empty()) {
+					vector<const Channel*> channels = user.get_all_channels();
+					string prefix = user.get_info().get_id() + ' ' + Command::get_command_name(Command::QUIT);
+					vector<string> messages = strs_to_vector(prefix + " :" + task.get_params()[0]);
+					for (size_t i = 0; i < channels.size(); ++i) {
+						add_broadcast_to_others(messages, replies, *channels[i], user);
+					}
+				}
+				data.delete_user(user);
+				break;
+			}
 		default:
 			throw Command::UnSupported();
 	}
@@ -376,15 +392,15 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 
 void add_broadcast_to_others(const vector<string> new_messages, vector<Message>& messages, const Channel& channel, const User& sender) {
 
-		vector<const User*> users = channel.get_users();	
-		vector<int> fds;
+	vector<const User*> users = channel.get_users();	
+	vector<int> fds;
 
-		for (size_t i = 0; i < users.size(); ++i) {
-			if (users[i]->get_nickname() == sender.get_nickname())
-				continue;
-			fds.push_back(get_fd(users[i]));
-		}
-		add_new_message(new_messages, fds, messages);
+	for (size_t i = 0; i < users.size(); ++i) {
+		if (users[i]->get_nickname() == sender.get_nickname())
+			continue;
+		fds.push_back(get_fd(users[i]));
+	}
+	add_new_message(new_messages, fds, messages);
 }
 
 int get_fd(const User* user) {

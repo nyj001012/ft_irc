@@ -41,19 +41,23 @@ bool UserTask::is_valid_nickname(const string& nick) {
 	return true;
 }
 
-UserTask::UserTask(const Task& parent, const vector<string>& params): Task(parent) {
+UserTask::UserTask(const Task& parent, const vector<string>& raw_params): Task(parent) {
 	switch (command.type){
 		case Command::PASS:
-			connection.password = params.front();
+			connection.password = raw_params.front();
 			break;
 		case Command::NICK:
-			info.nick_name = params.front();
+			info.nick_name = raw_params.front();
 			break;
 		case Command::USER:
-			info.user_name = params[0];
-			info.host_name = params[1];
-			info.server_name = params[2];
-			info.real_name = params[3];
+			info.user_name = raw_params[0];
+			info.host_name = raw_params[1];
+			info.server_name = raw_params[2];
+			info.real_name = raw_params[3];
+			break;
+		case Command::QUIT:
+			if (!raw_params.empty())
+				params.push_back(raw_params[0]);
 			break;
 		default:
 			assert(Command::UnSupported().what());
@@ -63,13 +67,13 @@ UserTask::UserTask(const Task& parent, const vector<string>& params): Task(paren
 UserTask& UserTask::add_next(const UserTask& next) {
 
 	if (command == Command::USER) {
-		// TODO: throw IrcError	
-
+			//throw Error	
+		return *this;
 	}
 	if (next.command == Command::PASS) {
 		if (command != Command::PASS) {
-			// TODO: throw IrcError	
-
+			//throw Error	
+			return *this;
 		}
 		connection.password = next.connection.password;
 	}
@@ -85,6 +89,10 @@ UserTask& UserTask::add_next(const UserTask& next) {
 	}
 	command = next.command;
 	return *this;
+}
+
+const vector<string>& UserTask::get_params() const {
+	return params;
 }
 
 vector<string> UserTask::get_reply() const {
