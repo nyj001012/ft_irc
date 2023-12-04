@@ -20,21 +20,35 @@ struct Message {
 	public:
 		static std::vector<int> get_all_fds(const std::vector<Message>&);
 		static std::vector<Message> create_start_from(const int);
-		std::vector<int> recipients_fd;
+		std::vector<std::pair<int, std::string> > recipients;
 		std::vector<std::string> contents;
+		std::string prefix;
 		template <typename T> void foreach(T&, void (T::*func)(int, std::string&));
-		void remove_fd(const int);
 };
-Message& add_new_message(const std::vector<std::string>&, const std::vector<int>&, std::vector<Message>&);
-Message& add_new_message(const std::vector<std::string>&, const int, std::vector<Message>&);
+Message& add_new_message(const std::vector<std::string>&, const std::string&, const std::vector<std::pair<int, std::string> >&, std::vector<Message>&);
+Message& add_new_message(const std::vector<std::string>&, const std::string&,  const std::pair<int, std::string>, std::vector<Message>&);
+Message add_new_message(const std::vector<std::string>&, const std::vector<int>&, std::vector<Message>&);
+Message add_new_message(const std::vector<std::string>&, const int, std::vector<Message>&);
 
 template <typename T> void Message::foreach(T& t,void (T::*func)(int, std::string&)) {
-	const std::set<int> fds(recipients_fd.begin(), recipients_fd.end());
-	std::set<int>::iterator iter;
-	for (iter = fds.begin(); iter != fds.end(); ++iter) {
+	const std::set<std::pair<int, std::string> > targets(recipients.begin(), recipients.end());
+	std::set<std::pair<int, std::string> >::iterator iter;
+	for (iter = targets.begin(); iter != targets.end(); ++iter) {
 		for (size_t j = 0; j < contents.size(); ++j) {
 			std::string& content = contents[j];
-			(t.*func)(*iter, content);
+			if (prefix.empty() && iter->second.empty()) {
+				(t.*func)(iter->first, content);
+				continue;
+			}
+			std::string result;
+			if (!prefix.empty()) {
+				result = prefix + ' ';
+			}
+			if (!iter->second.empty()) {
+				result += iter->second + ' ';
+			}
+			result += ":" + content;
+			(t.*func)(iter->first, result);
 		}
 	}
 }

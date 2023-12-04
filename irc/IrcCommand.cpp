@@ -47,6 +47,10 @@ Command::Command(const string& str) {
 	throw Command::UnSupported();
 }
 
+string Command::get_command_name(const Type t) {
+	return all_commands[t];
+}
+
 const Command::range Command::parameter_range() const {
 	Command::range range;
 	switch (type) {

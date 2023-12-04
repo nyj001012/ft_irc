@@ -38,6 +38,7 @@ namespace IRC {
 
 		Command();
 		Command(const std::string&);
+		static std::string get_command_name(const Type);
 		const std::pair<int, int> parameter_range() const;
 
 		virtual std::string _get_label() const;

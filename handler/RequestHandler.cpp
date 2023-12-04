@@ -26,6 +26,7 @@ using std::string;
 using std::vector;
 using std::cout;
 using std::auto_ptr;
+using std::make_pair;
 using std::pair;
 using IRC::Error;
 using IRC::Command;
@@ -83,7 +84,8 @@ RequestHandler::execute(MessageTask& task) {
 	task.set_sender(sender);
 
 	for (size_t i = 0; i < task.recipients.size(); ++i) {
-		vector<int> fds;
+		vector<pair<int, string> > recipients;
+		pair<int, string> r;
 		const string& name = task.recipients[i].second;
 
 		switch (task.recipients[i].first) {
@@ -92,7 +94,8 @@ RequestHandler::execute(MessageTask& task) {
 					task.add_error(Error(Error::ERR_NOSUCHNICK));
 				else {
 					const User& recipient = user_data.get_user(name);
-					fds.push_back(recipient.get_connection().socket_fd);	
+					recipients.push_back(
+							make_pair(recipient.get_connection().socket_fd, name));
 				}
 				break;
 			case MessageTask::CHANNEL:
@@ -103,15 +106,16 @@ RequestHandler::execute(MessageTask& task) {
 				else {
 					const Channel& channel = channel_data.get_channel(name);
 					vector<const User*> users = channel.get_users();
-					std::transform(users.begin(), users.end(), std::back_inserter(fds), get_fd);
+					for (size_t i = 0; i < users.size(); ++i) {
+						recipients.push_back(
+								make_pair(users[i]->get_connection().socket_fd, name));
+					}
 				}
 				break;
 		}
 
-		if (!fds.empty()) {
-			add_new_message(
-					strs_to_vector(":" + task.get_prefix() + ' ' + task.content),
-					fds, replies);
+		if (!recipients.empty()) {
+			add_new_message(strs_to_vector(task.content), task.get_prefix() + ' ' + Command::get_command_name(Command::PRIVMSG), recipients, replies);
 		}
 	}
 
@@ -149,7 +153,7 @@ RequestHandler::execute(ChannelTask& task) {
 					task.add_error(e);
 				}
 			}
-			add_new_message(task.get_reply(), task.get_connection().socket_fd,replies);
+			add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
 			break;
 		case Command::PART: 
 			{
@@ -361,7 +365,7 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 				}
 				data.create_user(updated.get_connection(),updated.info);
 				data.remove_task(updated.get_connection());
-				add_new_message(updated.get_reply(), task.get_connection().socket_fd, replies);
+				add_new_message(updated.get_reply(), "" , make_pair(task.get_connection().socket_fd, ""), replies);
 				break;
 			}
 		default:
@@ -372,11 +376,15 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 
 void add_broadcast_to_others(const vector<string> new_messages, vector<Message>& messages, const Channel& channel, const User& sender) {
 
+		vector<const User*> users = channel.get_users();	
 		vector<int> fds;
-		vector<const User*> users = channel.get_users();
-		std::transform(users.begin(), users.end(), std::back_inserter(fds), get_fd);
-		add_new_message(new_messages, fds, messages)
-			.remove_fd(sender.get_connection().socket_fd);
+
+		for (size_t i = 0; i < users.size(); ++i) {
+			if (users[i]->get_nickname() == sender.get_nickname())
+				continue;
+			fds.push_back(get_fd(users[i]));
+		}
+		add_new_message(new_messages, fds, messages);
 }
 
 int get_fd(const User* user) {

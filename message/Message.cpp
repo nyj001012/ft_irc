@@ -16,57 +16,64 @@
 
 using std::vector;
 using std::string;
+using std::pair;
 using std::set;
 
 vector<Message> Message::create_start_from(const int fd) {
 	vector<Message> vec;
 	vec.push_back(Message());
-	vec.back().recipients_fd.push_back(fd);
+	vec.back().recipients.push_back(make_pair(fd, string()));
 	return vec;
 }
 
-Message& add_new_message(const vector<string>& new_messages, const vector<int>& fds, vector<Message>& messages) {
+Message& add_new_message(const vector<string>& new_messages, const string& prefix, const vector<pair<int, string> >& recipients, std::vector<Message>& messages) {
+
 	vector<Message>::iterator iter;
 	Message *target = NULL;
 	for (iter = messages.begin(); iter != messages.end(); ++iter) {
-		if (iter->recipients_fd == fds) {
+		if (iter->recipients == recipients) {
 			target = &*iter;
 			break;
 		}
 	}
 	if (target == NULL) {
 		messages.push_back(Message());
-		messages.back().recipients_fd = fds;
+		messages.back().recipients = recipients;
 		target = &messages.back();
 	}
+	target->prefix = prefix;
 	for (size_t i = 0; i < new_messages.size(); ++i) {
 		target->contents.push_back(new_messages[i] + "\r\n");
 	}
 	return *target;
 }
 
-Message& add_new_message(const vector<string>& new_messages, const int fd, vector<Message>& messages) {
-	vector<int> fds;
-	fds.push_back(fd);
-	return add_new_message(new_messages, fds, messages);
+Message& add_new_message(const std::vector<std::string>& new_messages, const string& prefix, const std::pair<int, std::string> recipient, std::vector<Message>& messages) {
+	vector<pair<int, string> > recipients;
+	recipients.push_back(recipient);
+	return add_new_message(new_messages, prefix, recipients, messages);
 }
 
-void Message::remove_fd(const int fd) {
-	size_t i = 0;
-	while (i < recipients_fd.size()) {
-		if (recipients_fd[i] == fd)
-			recipients_fd.erase(recipients_fd.begin() + i);
-		else 
-			++i;
+Message add_new_message(const vector<std::string>& new_message, const vector<int>& fds, std::vector<Message>& messages) {
+	vector<pair<int, string> > recipients;
+	for (size_t i = 0; i < fds.size(); ++i) {
+		recipients.push_back(make_pair(fds[i], string()));
 	}
+	return add_new_message(new_message, string(), recipients, messages);
 }
 
+Message add_new_message(const vector<std::string>& new_message, const int fd, std::vector<Message>& messages) {
+	vector<pair<int, string> > recipients;
+	recipients.push_back(make_pair(fd, string()));
+	return add_new_message(new_message, string(), recipients, messages);
+}
 vector<int> Message::get_all_fds(const vector<Message>& messages) {
 	set<int> fds;
-
 	for (size_t i = 0; i < messages.size(); ++i) {
-		fds.insert(messages[i].recipients_fd.begin(), messages[i].recipients_fd.end());
+		const Message& message = messages[i];
+		for (size_t j = 0; j < message.recipients.size(); ++j) {
+			fds.insert(message.recipients[j].first);
+		}
 	}
 	return vector<int>(fds.begin(), fds.end());
 }
-
