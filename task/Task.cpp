@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Task.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/03 00:25:33 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/30 02:51:41 by heshin           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "Task.hpp"
 #include "../include/utils.hpp"
 #include "../include/json.hpp"
@@ -70,6 +58,8 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 			break;
 		case Command::JOIN:
 		case Command::PART:
+		case Command::TOPIC:
+		case Command::MODE:
 			return auto_ptr<Task>(new ChannelTask(base, tokens));
 		case Command::PRIVMSG:
 			return auto_ptr<Task>(new MessageTask(base, tokens));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 18:42:07 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 01:31:39 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/04 16:03:03 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,14 @@ const string& Channel::get_name() const {
 	return name;
 }
 
+void	Channel::set_topic(const std::string &new_topic, const User &user)
+{
+	if (topic_protected && !is_operator(user))
+		throw Error(Error::ERR_CHANOPRIVSNEEDED);
+	topic = new_topic;
+	// mode -t 가 설정이 되어있으면 operator가 아니면 topic을 바꿀 수 없다.
+}
+
 const string& Channel::get_topic() const {
 	return topic;
 }
@@ -110,6 +118,11 @@ bool Channel::is_equal(const Channel& other) const {
 	return true;
 }
 
+bool	Channel::is_operator(const User &user) const
+{
+	return &get_operator() == &user;
+}
+
 // Serializable
 
 string Channel::_get_label() const {
@@ -133,6 +146,42 @@ ostream& Channel::_add_to_serialization(ostream& os, const int depth) const {
 		_json(os, "users", ':', users.size());
 	}
 	return os;
+}
+
+void	Channel::set_invite_only(bool setting)
+{
+	invite_only = setting;
+}
+
+void	Channel::set_topic_protection(bool setting)
+{
+	topic_protected = setting;
+}
+
+void	Channel::set_key(const std::string &new_key)
+{
+	key = new_key;
+}
+
+void	Channel::set_user_limit(int limit)
+{
+	user_limit = limit;
+}
+
+void	Channel::remove_user_limit()
+{
+	user_limit = -1; // -1은 사용자 제한이 없음을 의미합니다.
+}
+
+void	Channel::add_operator(const User &user)
+{
+	operator_user = &user;
+}
+
+void	Channel::remove_operator(const User &user)
+{
+	if (operator_user == &user)
+		operator_user = NULL;
 }
 
 bool operator==(const Channel& a, const Channel& b) {

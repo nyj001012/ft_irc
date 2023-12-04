@@ -121,6 +121,7 @@ RequestHandler::execute(MessageTask& task) {
 vector<Message>
 RequestHandler::execute(ChannelTask& task) {
 	ChannelData& data = ChannelData::get_storage();
+	UserData& Udata = UserData::get_storage();
 	User& user = UserData::get_storage().get_user(task.get_connection());
 	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
 	switch (task.get_command().type) {
@@ -189,10 +190,135 @@ RequestHandler::execute(ChannelTask& task) {
 				}
 			}
 			break;
+		case Command::TOPIC:
+		{
+			if (task.params.empty()) {
+				task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+				break ;
+			}
+			const std::string &channel_name = task.params[0];
+
+			try {
+				Channel &channel = data.get_channel(channel_name);
+
+				if (task.params.size() == 1) {
+					std::string topic = channel.get_topic();
+					// if (!topic.empty()) {
+						// "332 " + user.get_nickname() + " " + channel_name + " :" + topic
+					// }
+					// else
+					// {
+						// "331 " + user.get_nickname() + " " + channel_name + " :No topic is set"
+					// }
+				}
+				else if (task.params.size() >= 2) { // 채널의 주제를 설정하는 경우에
+					if (!channel.is_operator(user) && channel.topic_protected) {
+						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+						break ;
+					}
+					const std::string &new_topic = task.params[1];
+					channel.set_topic(new_topic, user);
+					// 332 + user.get_nickname() + " " + channel_name + " :" + new_topic
+				}
+			}
+			catch (ChannelData::ChannelNotExist&) {
+				task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+			}
+			break ;
+		}
+		case Command::MODE:
+		{
+			if (task.params.size() < 2) {
+				task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+				break ;
+			}
+
+			const std::string &target = task.params[0];
+			const std::string &mode = task.params[1];
+
+			if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX) {
+				try {
+					Channel &channel = data.get_channel(target);
+
+					if (!channel.is_operator(user))
+					{
+						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+						break ;
+					}
+					bool setting = true;
+					for (size_t i = 0 ; i < mode.length() ; ++i) {
+						char modeChar = mode[i];
+
+						if (modeChar == '+' || modeChar == '-') {
+							setting = (modeChar == '+');
+							continue ;
+						}
+
+						switch (modeChar) {
+							case 'i': {
+								channel.set_invite_only(setting);
+								break;
+							}
+							case 't':
+							{
+								channel.set_topic_protection(setting);
+								break;
+							}
+							case 'k':
+							{
+								if (setting && (i + 1 < task.params.size())) {
+									channel.set_key(task.params[i + 1]);
+									i++;
+								} else {
+									channel.set_key("");
+								}
+								break ;
+							}
+							case 'l':
+							{
+								if (setting && (i + 1 < task.params.size())) {
+									char *end;
+									long limit = std::strtol(task.params[i + 1].c_str(), &end, 10);
+
+									if (*end == '\0' && end != task.params[i + 1].c_str())
+										channel.set_user_limit(static_cast<int>(limit));
+									else
+										task.add_error(Error(Error::ERR_UNKNOWNMODE));
+									i++;
+								}
+								else
+									channel.remove_user_limit();
+								break ;
+							}
+							case 'o':
+							{
+								if (i + 1 < task.params.size()) {
+									try {
+										User &target_user = Udata.get_user(task.params[i + 1]);
+										if (setting)
+											channel.add_operator(target_user);
+										else
+											channel.remove_operator(target_user);
+										i++;
+									}
+									catch (UserData::UserNotExist&) {
+										task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+									}
+									break ;
+								}
+							}
+						}
+					}
+				}
+				catch (ChannelData::ChannelNotExist&) {
+					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+				}
+			}
+		}
 		default:
 			throw Command::UnSupported();
 	}
-	return replies; 
+	return replies;
 }
 
 vector<Message> RequestHandler::execute(UserTask& task) {
@@ -225,7 +351,7 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 					else {
 						// throw error?
 						break;
-					}	
+					}
 				}
 				const UserTask updated = data.update_task(task);
 				if (updated.info.nick_name.empty()) {

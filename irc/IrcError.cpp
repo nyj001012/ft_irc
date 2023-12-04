@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcError.cpp                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 01:46:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/30 02:49:53 by heshin           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "IrcError.hpp"
 #include <string>
 #define ERROR_STRINGIFY(name) # name
@@ -32,6 +20,8 @@ const char *all_errors[] = {
 	ERROR_STRINGIFY(ERR_NORECIPIENT),
 	ERROR_STRINGIFY(ERR_NOSUCHNICK),
 	ERROR_STRINGIFY(ERR_NOTEXTTOSEND),
+	ERROR_STRINGIFY(ERR_UNKNOWNMODE),
+	ERROR_STRINGIFY(ERR_NOTOPIC),
 };
 
 Error::Error(): code(UnKnown) {}

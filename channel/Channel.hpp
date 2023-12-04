@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: kimsejoon <kimsejoon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 17:50:03 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 01:31:43 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/04 18:57:15 by kimsejoon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Channel: public Serializable {
 		virtual ~Channel();
 		const std::string& get_name() const;
 		const std::string& get_topic() const;
+		void	set_topic(const std::string &new_topic, const User &user);
 		int get_number_of_users() const;
 		const User& get_operator() const;
 		void set_key(const std::string&, const User&);
@@ -37,10 +38,19 @@ class Channel: public Serializable {
 		void add_user(const User&);
 		void remove_user(const User&);
 		bool is_allowed_to_join(const User&);
+		bool is_operator(const User &user) const;
 
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::string _get_label() const;
+
+		void	set_invite_only(bool setting);
+		void	set_topic_protection(bool setting);
+		void	set_key(const std::string &new_key);
+		void	set_user_limit(int limit);
+		void	remove_user_limit();
+		void	add_operator(const User &user);
+		void	remove_operator(const User &user);
 
 		struct AlreadyJoined: std::exception {
 			virtual const char * what() const throw();
@@ -49,6 +59,8 @@ class Channel: public Serializable {
 		struct NoPermission: std::exception {
 			virtual const char * what() const throw();
 		};
+
+		bool	topic_protected;
 	
 	private:
 		std::string name;
@@ -56,6 +68,9 @@ class Channel: public Serializable {
 		std::string key;
 		std::vector<const User*> users;
 		const User* operator_user;
+
+		bool	invite_only;
+		int	user_limit;
 
 		Channel();
 		Channel& operator=(const Channel&);

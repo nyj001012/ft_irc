@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcError.hpp                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/13 04:23:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/30 02:50:02 by heshin           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef IRC_ERROR_HPP
 # define IRC_ERROR_HPP
 # include "../debug/Serializable.hpp"
@@ -32,7 +20,9 @@ namespace IRC {
 			ERR_CANNOTSENDTOCHAN,
 			ERR_NORECIPIENT,
 			ERR_NOSUCHNICK,
-			ERR_NOTEXTTOSEND
+			ERR_NOTEXTTOSEND,
+			ERR_UNKNOWNMODE,
+			ERR_NOTOPIC,
 		} code;
 
 		Error();
