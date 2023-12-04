@@ -24,6 +24,7 @@ namespace IRC {
 			RPL_NAMREPLY,
 			RPL_ENDOFNAMES,
 			RPL_TOPIC,
+			RPL_INVITING,
 		} code;
 
 		std::string prefix;

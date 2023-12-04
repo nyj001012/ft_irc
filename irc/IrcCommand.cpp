@@ -74,6 +74,9 @@ const Command::range Command::parameter_range() const {
 		case TOPIC:
 			range = make_pair(2, 3);
 			break;
+		case INVITE:
+			range = make_pair(2, 2);
+			break;
 		default:
 			break;
 	}

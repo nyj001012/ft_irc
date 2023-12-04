@@ -61,6 +61,7 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 		case Command::PART:
 		case Command::TOPIC:
 		case Command::MODE:
+		case Command::INVITE:
 			return auto_ptr<Task>(new ChannelTask(base, tokens));
 		case Command::PRIVMSG:
 			return auto_ptr<Task>(new MessageTask(base, tokens));

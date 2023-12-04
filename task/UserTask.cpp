@@ -91,10 +91,6 @@ UserTask& UserTask::add_next(const UserTask& next) {
 	return *this;
 }
 
-const vector<string>& UserTask::get_params() const {
-	return params;
-}
-
 vector<string> UserTask::get_reply() const {
 	vector<string> vec;
 	if (command != Command::USER)

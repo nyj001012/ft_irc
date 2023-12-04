@@ -42,6 +42,20 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 				params.push_back(raw_params[1]);
 			}
 			break;
+		case Command::INVITE: 
+			{
+				const string& user_name = raw_params[0];
+				const string& channel_name = raw_params[1];
+				if (!UserTask::is_valid_nickname(user_name)) {
+					throw Error(Error::ERR_NOSUCHNICK);
+				}
+				if (!is_valid_channel_name(channel_name)) {
+					// not on rfc
+					throw Error(Error::ERR_NOSUCHCHANNEL);
+				}
+				params = raw_params;
+				break;
+			}
 		default:
 			throw Command::UnSupported();
 	}
@@ -64,9 +78,6 @@ bool ChannelTask::is_valid_channel_name(const string& name) {
 }
 
 vector<string> ChannelTask::get_reply() const {
-	if (has_error()) {
-		// TODO: add errors to other reply
-	}
 	vector<string> vec;
 	const User& user = UserData::get_storage().get_user(connection);
 
@@ -88,6 +99,9 @@ vector<string> ChannelTask::get_reply() const {
 			const Channel& channel = *channels_to_reply[i];
 			vec.push_back(get_channel_part_message(channel, user, reason));
 		}
+	}
+	else if (command == Command::INVITE) {
+		vec.push_back(Reply(Reply::RPL_INVITING, string()).to_string() + ' ' + params[0] + ' ' + params[1]);	
 	}
 	return vec;
 }
