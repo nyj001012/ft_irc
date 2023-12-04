@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:28:24 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/18 01:33:05 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/29 23:04:06 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ const char *all_commands[] = {
 	CMD_STRINGIFY(MODE),
 	CMD_STRINGIFY(TOPIC),
 	CMD_STRINGIFY(INVITE),
+	CMD_STRINGIFY(KICK),
 	CMD_STRINGIFY(PRIVMSG),
 	//CMD_STRINGIFY(PING),
 	//CMD_STRINGIFY(PONG),
@@ -56,7 +57,15 @@ const Command::range Command::parameter_range() const {
 			range = make_pair(1, 2);
 			break;
 		case JOIN:
+		case PART:
 			range = make_pair(1, INT_MAX);
+			break;
+		case USER:
+			range = make_pair(4, 4);
+			break;
+		case KICK:
+		case TOPIC:
+			range = make_pair(2, 3);
 			break;
 		default:
 			break;

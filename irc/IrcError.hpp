@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:23:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/22 23:35:32 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/30 02:50:02 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@ namespace IRC {
 			ERR_BADCHANNELKEY,
 			ERR_NOSUCHCHANNEL,
 			ERR_NOTONCHANNEL,
+			ERR_CANNOTSENDTOCHAN,
+			ERR_NORECIPIENT,
+			ERR_NOSUCHNICK,
+			ERR_NOTEXTTOSEND
 		} code;
 
 		Error();
@@ -36,6 +40,8 @@ namespace IRC {
 		Error(const Code);
 		virtual std::string _get_label() const;
 		virtual const char* what() const throw();
+		static std::string _get_message(const Error&);
+		std::string get_message() const;
 
 		struct UnKnownError: public std::exception { 
 			virtual const char* what() const throw();

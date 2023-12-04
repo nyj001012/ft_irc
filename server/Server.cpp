@@ -6,7 +6,7 @@
 /*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 20:28:24 by yena              #+#    #+#             */
-/*   Updated: 2023/11/29 13:27:20 by yena             ###   ########.fr       */
+/*   Updated: 2023/11/30 03:28:02 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "../message/Message.hpp"
 #include <cstring>
 #include <cstdlib>
+#include <exception>
 
 Server::Server()
 {
@@ -260,16 +261,10 @@ void Server::runServer()
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
 						std::vector<std::string> vec = getTokensValue(tokens);
-						// handler repuest
+						// handle repuest
 						Connection connection;
 						connection.socket_fd = i;
 						std::vector<Message> messages = handler.get_request(vec, connection);
-						if (messages.empty())
-						{
-							this->saveLineToBuffer(i);
-							clearReadBuffer(i);
-							continue;
-						}
 						// send message
 						for (size_t j = 0; j < messages.size(); ++j)
 						{

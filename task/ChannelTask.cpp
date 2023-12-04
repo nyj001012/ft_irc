@@ -6,7 +6,7 @@
 /*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 00:26:59 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/28 22:22:45 by heshin           ###   ########.fr       */
+/*   Updated: 2023/11/30 02:40:57 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ using IRC::ChannelLabel;
 using IRC::Reply;
 using IRC::Error;
 
-bool is_valid_channel_name(const string&);
 void add_channel_join_reply(const Channel&, const User&, vector<string>&);
 
 ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): Task(parent) {
@@ -64,8 +63,8 @@ void ChannelTask::add_channel_to_reply(const Channel& channel) {
 	channels_to_reply.push_back(&channel);
 }
 
-bool is_valid_channel_name(const string& name) {
-	if (name.length() == 0 || name.length() > 50)
+bool ChannelTask::is_valid_channel_name(const string& name) {
+	if (name.length() <= 1 || name.length() > 50)
 		return false;
 	if (name[0] != '&')
 		return false;
@@ -150,6 +149,7 @@ ostream& ChannelTask::_add_to_serialization(ostream& os, const int depth) const 
 	}
 	_json(os, "number of params", ':',params.size());
 	if (params.size() > 0) {
+		os << ',';
 		_json(os, "params", ':');
 		_json(os, params);
 	}
