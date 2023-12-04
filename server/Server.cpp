@@ -375,8 +375,7 @@ void Server::closeClient(int client_socket)
  */
 void Server::sendMessage(int client_socket, std::string& message)
 {
-	std::string buffer = message + "\r\n";
-	ssize_t write_size = write(client_socket, buffer.data(), buffer.length());
+	ssize_t write_size = write(client_socket, message.data(), message.length());
 	if (write_size == -1)
 		throw std::runtime_error("Error: write() failed");
 	if (write_size == static_cast<ssize_t >(message.length()))

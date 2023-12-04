@@ -39,8 +39,9 @@ Message& add_new_message(const vector<string>& new_messages, const vector<int>& 
 		messages.back().recipients_fd = fds;
 		target = &messages.back();
 	}
-	target->contents.insert(target->contents.end(), 
-			new_messages.begin(), new_messages.end());
+	for (size_t i = 0; i < new_messages.size(); ++i) {
+		target->contents.push_back(new_messages[i] + "\r\n");
+	}
 	return *target;
 }
 
