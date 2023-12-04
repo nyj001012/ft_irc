@@ -314,6 +314,7 @@ RequestHandler::execute(ChannelTask& task) {
 					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
 				}
 			}
+			break;
 		}
 		default:
 			throw Command::UnSupported();

@@ -4,6 +4,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <exception>
+#include <signal.h>
 
 Server::Server()
 {

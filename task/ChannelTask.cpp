@@ -42,9 +42,6 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 				params.push_back(raw_params[1]);
 			}
 			break;
-		case Command::MODE:
-			if (raw_params.size() < 2)
-				throw Error(Error::ERR_NEEDMOREPARAMS);
 		default:
 			throw Command::UnSupported();
 	}
