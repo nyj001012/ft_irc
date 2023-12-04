@@ -23,6 +23,7 @@ namespace IRC {
 			ERR_NOTEXTTOSEND,
 			ERR_UNKNOWNMODE,
 			ERR_NOTOPIC,
+			ERR_USERONCHANNEL,
 		} code;
 
 		Error();

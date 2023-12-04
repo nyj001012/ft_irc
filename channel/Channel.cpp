@@ -48,12 +48,6 @@ Channel::Channel(const Channel& other)
 	operator_user(other.operator_user)
 { }
 
-void Channel::set_key(const string& new_key, const User& user) {
-	if (&user != operator_user) 
-		throw Error(Error::ERR_CHANOPRIVSNEEDED);
-	key = new_key;
-}
-
 const string& Channel::get_key() const {
 	return key;
 }
@@ -121,6 +115,20 @@ bool Channel::is_equal(const Channel& other) const {
 bool	Channel::is_operator(const User &user) const
 {
 	return &get_operator() == &user;
+}
+
+bool Channel::is_allowed_to_join(const User& user) const {
+	if (invite_only) {
+		return false;
+	}
+	(void) user;
+	return true;
+}
+
+bool Channel::is_allowed_to_invite(const User& user) const {
+	if (!invite_only)
+		return true;
+	return is_operator(user);
 }
 
 // Serializable

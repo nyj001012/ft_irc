@@ -73,6 +73,7 @@ struct UserTask: public Task {
 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
 		virtual std::string _get_label() const;
+		std::vector<std::string> params;
 
 };
 

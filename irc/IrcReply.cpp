@@ -27,6 +27,7 @@ const char *all_reply[] = {
 	REPLY_STRINGIFY(RPL_NAMREPLY),
 	REPLY_STRINGIFY(RPL_ENDOFNAMES),
 	REPLY_STRINGIFY(RPL_TOPIC),
+	REPLY_STRINGIFY(RPL_INVITING),
 };
 
 string get_code(const Code code) {
@@ -39,6 +40,8 @@ string get_code(const Code code) {
 			return "366";
 		case Reply::RPL_TOPIC:
 			return "332";
+		case Reply::RPL_INVITING:
+			return "341";
 		default:
 			throw Reply::UnKnownError();
 	}

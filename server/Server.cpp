@@ -264,6 +264,10 @@ void Server::runServer()
 						{
 							_write_buffers[all_fds[j]] = "";
 						}
+						if (tokens[0].type == COMMAND && 
+								tokens[0].value == "QUIT") {
+							this->closeClient(connection.socket_fd);
+						}
 					}
 					this->saveLineToBuffer(i);
 				}

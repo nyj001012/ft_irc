@@ -54,7 +54,7 @@ Channel& ChannelData::join_channel(const string& name, const string& key, const 
 	if (found == channel_map.end()) {
 		Channel& new_channel = create_channel(name, user);	
 		if (!key.empty())
-			new_channel.set_key(key, user);
+			new_channel.set_key(key);
 		return new_channel;
 	}
 	else {

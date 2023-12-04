@@ -64,12 +64,18 @@ const Command::range Command::parameter_range() const {
 		case PART:
 			range = make_pair(1, INT_MAX);
 			break;
+		case QUIT:
+			range = make_pair(0, INT_MAX);
+			break;
 		case USER:
 			range = make_pair(4, 4);
 			break;
 		case KICK:
 		case TOPIC:
 			range = make_pair(2, 3);
+			break;
+		case INVITE:
+			range = make_pair(2, 2);
 			break;
 		default:
 			break;

@@ -30,14 +30,14 @@ class Channel: public Serializable {
 		void	set_topic(const std::string &new_topic, const User &user);
 		int get_number_of_users() const;
 		const User& get_operator() const;
-		void set_key(const std::string&, const User&);
 		const std::string& get_key() const;
 		std::vector<const User*> get_users() const;
 		std::vector<std::string> get_user_names() const;
 		bool is_equal(const Channel&) const;
 		void add_user(const User&);
 		void remove_user(const User&);
-		bool is_allowed_to_join(const User&);
+		bool is_allowed_to_join(const User&) const;
+		bool is_allowed_to_invite(const User&) const;
 		bool is_operator(const User &user) const;
 
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 

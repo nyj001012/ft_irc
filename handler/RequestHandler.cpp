@@ -30,6 +30,7 @@ using std::make_pair;
 using std::pair;
 using IRC::Error;
 using IRC::Command;
+using IRC::Reply;
 
 int get_fd(const User*);
 void add_broadcast_to_others(const vector<string>, vector<Message>&, const Channel&, const User&);
@@ -125,7 +126,7 @@ RequestHandler::execute(MessageTask& task) {
 vector<Message>
 RequestHandler::execute(ChannelTask& task) {
 	ChannelData& data = ChannelData::get_storage();
-	UserData& Udata = UserData::get_storage();
+	UserData& user_data = UserData::get_storage();
 	User& user = UserData::get_storage().get_user(task.get_connection());
 	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
 	switch (task.get_command().type) {
@@ -194,132 +195,195 @@ RequestHandler::execute(ChannelTask& task) {
 				}
 			}
 			break;
-		case Command::TOPIC:
-		{
-			if (task.params.empty()) {
-				task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
-				break ;
-			}
-			const std::string &channel_name = task.params[0];
-
-			try {
-				Channel &channel = data.get_channel(channel_name);
-
-				if (task.params.size() == 1) {
-					std::string topic = channel.get_topic();
-					// if (!topic.empty()) {
-						// "332 " + user.get_nickname() + " " + channel_name + " :" + topic
-					// }
-					// else
-					// {
-						// "331 " + user.get_nickname() + " " + channel_name + " :No topic is set"
-					// }
+		case Command::INVITE:
+			{
+				if (!user_data.is_user_exist(task.get_connection())) {
+					return replies;
 				}
-				else if (task.params.size() >= 2) { // 채널의 주제를 설정하는 경우에
-					if (!channel.is_operator(user) && channel.topic_protected) {
+				const User& user = user_data.get_user(task.get_connection());
+				const string& target_user_name = task.params[0];
+				const string& channel_name = task.params[1];
+				if (!user_data.is_user_exist(target_user_name)) {
+					task.add_error(Error(Error::ERR_NOSUCHNICK));
+				}
+				else if (!data.is_channel_exist(channel_name))
+					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+				else if (!user.is_joined(channel_name)) 
+					task.add_error(Error(Error::ERR_NOTONCHANNEL));
+				else {
+					const Channel& channel = data.get_channel(channel_name);
+					const User& target_user = user_data.get_user(target_user_name);
+					if (target_user.is_joined(channel_name))
+						task.add_error(Error(Error::ERR_USERONCHANNEL));
+					else if (!channel.is_allowed_to_invite(user)) 
 						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
-						break ;
+					else {
+						add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
+						string message = ":" + user.get_info().get_id() + ' ' + Command::get_command_name(Command::INVITE) + ' ' + target_user_name + ' ' + channel_name;
+						add_new_message(strs_to_vector(message), target_user.get_connection().socket_fd, replies);
 					}
-					const std::string &new_topic = task.params[1];
-					channel.set_topic(new_topic, user);
-					// 332 + user.get_nickname() + " " + channel_name + " :" + new_topic
 				}
+				break;
 			}
-			catch (ChannelData::ChannelNotExist&) {
-				task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
-			}
-			break ;
-		}
-		case Command::MODE:
-		{
-			if (task.params.size() < 2) {
-				task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
-				break ;
-			}
-
-			const std::string &target = task.params[0];
-			const std::string &mode = task.params[1];
-
-			if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX) {
-				try {
-					Channel &channel = data.get_channel(target);
-
+		case Command::KICK:
+			{
+				if (!user_data.is_user_exist(task.get_connection())) 
+					return replies;
+				const User& user = user_data.get_user(task.get_connection());
+				const string& channel_name = task.params[0];
+				const string& target_user_name = task.params[1];
+				if (!user_data.is_user_exist(target_user_name))
+					task.add_error(Error(Error::ERR_NOSUCHNICK));
+				else if (!data.is_channel_exist(channel_name))
+					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+				else if (!user.is_joined(channel_name))
+					task.add_error(Error(Error::ERR_NOTONCHANNEL));
+				else {
+					const Channel& channel = data.get_channel(channel_name);
 					if (!channel.is_operator(user))
-					{
 						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
-						break ;
+					else {
+						string message = ":" + user.get_info().get_id() +
+							' ' + Command::get_command_name(Command::KICK) + ' ' + channel_name;
+						if (task.params.size() > 2) 
+							message += " :" + task.params[2];
+						else	
+							message += " :" + user.get_nickname();
+						add_new_message(strs_to_vector(message), task.get_connection().socket_fd, replies);
+						add_broadcast_to_others(strs_to_vector(message),
+								replies, channel, user);
+						data.leave_channel(channel, user_data.get_user(target_user_name));	
 					}
-					bool setting = true;
-					for (size_t i = 0 ; i < mode.length() ; ++i) {
-						char modeChar = mode[i];
+				}
+						
+				break;
+			}
+		case Command::TOPIC:
+			{
+				if (task.params.empty()) {
+					task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+					break ;
+				}
+				const std::string &channel_name = task.params[0];
 
-						if (modeChar == '+' || modeChar == '-') {
-							setting = (modeChar == '+');
-							continue ;
+				try {
+					Channel &channel = data.get_channel(channel_name);
+
+					if (task.params.size() == 1) {
+						std::string topic = channel.get_topic();
+						// if (!topic.empty()) {
+						// "332 " + user.get_nickname() + " " + channel_name + " :" + topic
+						// }
+						// else
+						// {
+						// "331 " + user.get_nickname() + " " + channel_name + " :No topic is set"
+						// }
+					}
+					else if (task.params.size() >= 2) { // 채널의 주제를 설정하는 경우에
+						if (!channel.is_operator(user) && channel.topic_protected) {
+							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+							break ;
 						}
-
-						switch (modeChar) {
-							case 'i': {
-								channel.set_invite_only(setting);
-								break;
-							}
-							case 't':
-							{
-								channel.set_topic_protection(setting);
-								break;
-							}
-							case 'k':
-							{
-								if (setting && (i + 1 < task.params.size())) {
-									channel.set_key(task.params[i + 1]);
-									i++;
-								} else {
-									channel.set_key("");
-								}
-								break ;
-							}
-							case 'l':
-							{
-								if (setting && (i + 1 < task.params.size())) {
-									char *end;
-									long limit = std::strtol(task.params[i + 1].c_str(), &end, 10);
-
-									if (*end == '\0' && end != task.params[i + 1].c_str())
-										channel.set_user_limit(static_cast<int>(limit));
-									else
-										task.add_error(Error(Error::ERR_UNKNOWNMODE));
-									i++;
-								}
-								else
-									channel.remove_user_limit();
-								break ;
-							}
-							case 'o':
-							{
-								if (i + 1 < task.params.size()) {
-									try {
-										User &target_user = Udata.get_user(task.params[i + 1]);
-										if (setting)
-											channel.add_operator(target_user);
-										else
-											channel.remove_operator(target_user);
-										i++;
-									}
-									catch (UserData::UserNotExist&) {
-										task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
-									}
-									break ;
-								}
-							}
-						}
+						const std::string &new_topic = task.params[1];
+						channel.set_topic(new_topic, user);
+						// 332 + user.get_nickname() + " " + channel_name + " :" + new_topic
 					}
 				}
 				catch (ChannelData::ChannelNotExist&) {
 					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
 				}
+				break ;
 			}
-			break;
-		}
+		case Command::MODE:
+			{
+				if (task.params.size() < 2) {
+					task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+					break ;
+				}
+
+				const std::string &target = task.params[0];
+				const std::string &mode = task.params[1];
+
+				if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX) {
+					try {
+						Channel &channel = data.get_channel(target);
+
+						if (!channel.is_operator(user))
+						{
+							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+							break ;
+						}
+						bool setting = true;
+						for (size_t i = 0 ; i < mode.length() ; ++i) {
+							char modeChar = mode[i];
+
+							if (modeChar == '+' || modeChar == '-') {
+								setting = (modeChar == '+');
+								continue ;
+							}
+
+							switch (modeChar) {
+								case 'i': {
+														channel.set_invite_only(setting);
+														break;
+													}
+								case 't':
+													{
+														channel.set_topic_protection(setting);
+														break;
+													}
+								case 'k':
+													{
+														if (setting && (i + 1 < task.params.size())) {
+															channel.set_key(task.params[i + 1]);
+															i++;
+														} else {
+															channel.set_key("");
+														}
+														break ;
+													}
+								case 'l':
+													{
+														if (setting && (i + 1 < task.params.size())) {
+															char *end;
+															long limit = std::strtol(task.params[i + 1].c_str(), &end, 10);
+
+															if (*end == '\0' && end != task.params[i + 1].c_str())
+																channel.set_user_limit(static_cast<int>(limit));
+															else
+																task.add_error(Error(Error::ERR_UNKNOWNMODE));
+															i++;
+														}
+														else
+															channel.remove_user_limit();
+														break ;
+													}
+								case 'o':
+													{
+														if (i + 1 < task.params.size()) {
+															try {
+																User &target_user = user_data.get_user(task.params[i + 1]);
+																if (setting)
+																	channel.add_operator(target_user);
+																else
+																	channel.remove_operator(target_user);
+																i++;
+															}
+															catch (UserData::UserNotExist&) {
+																task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+															}
+															break ;
+														}
+													}
+							}
+						}
+					}
+					catch (ChannelData::ChannelNotExist&) {
+						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+					}
+				}
+				break;
+			}
 		default:
 			throw Command::UnSupported();
 	}
@@ -368,6 +432,22 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 				add_new_message(updated.get_reply(), "" , make_pair(task.get_connection().socket_fd, ""), replies);
 				break;
 			}
+		case Command::QUIT: 
+			{
+				if (!data.is_user_exist(task.get_connection()))
+					return replies;
+				User& user = data.get_user(task.get_connection());
+				if (!task.params.empty()) {
+					vector<const Channel*> channels = user.get_all_channels();
+					string prefix = user.get_info().get_id() + ' ' + Command::get_command_name(Command::QUIT);
+					vector<string> messages = strs_to_vector(prefix + " :" + task.params[0]);
+					for (size_t i = 0; i < channels.size(); ++i) {
+						add_broadcast_to_others(messages, replies, *channels[i], user);
+					}
+				}
+				data.delete_user(user);
+				break;
+			}
 		default:
 			throw Command::UnSupported();
 	}
@@ -376,15 +456,15 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 
 void add_broadcast_to_others(const vector<string> new_messages, vector<Message>& messages, const Channel& channel, const User& sender) {
 
-		vector<const User*> users = channel.get_users();	
-		vector<int> fds;
+	vector<const User*> users = channel.get_users();	
+	vector<int> fds;
 
-		for (size_t i = 0; i < users.size(); ++i) {
-			if (users[i]->get_nickname() == sender.get_nickname())
-				continue;
-			fds.push_back(get_fd(users[i]));
-		}
-		add_new_message(new_messages, fds, messages);
+	for (size_t i = 0; i < users.size(); ++i) {
+		if (users[i]->get_nickname() == sender.get_nickname())
+			continue;
+		fds.push_back(get_fd(users[i]));
+	}
+	add_new_message(new_messages, fds, messages);
 }
 
 int get_fd(const User* user) {
