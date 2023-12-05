@@ -31,8 +31,8 @@ namespace IRC {
 			INVITE,
 			KICK,
 			PRIVMSG,
-			//PING,
-			//PONG,
+			PING,
+			PONG,
 			Unknown,
 		} type;
 
