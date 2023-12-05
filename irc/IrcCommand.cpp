@@ -32,8 +32,8 @@ const char *all_commands[] = {
 	CMD_STRINGIFY(INVITE),
 	CMD_STRINGIFY(KICK),
 	CMD_STRINGIFY(PRIVMSG),
-	//CMD_STRINGIFY(PING),
-	//CMD_STRINGIFY(PONG),
+	CMD_STRINGIFY(PING),
+	CMD_STRINGIFY(PONG),
 };
 
 Command::Command(): type(Unknown){ }
@@ -76,6 +76,10 @@ const Command::range Command::parameter_range() const {
 			break;
 		case INVITE:
 			range = make_pair(2, 2);
+			break;
+		case PING:
+		case PONG:
+			range = make_pair(1, 1);
 			break;
 		default:
 			break;
