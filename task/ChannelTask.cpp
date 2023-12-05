@@ -112,7 +112,7 @@ string ChannelTask::get_channel_part_message(const Channel& channel, const User&
 	const string user_id = ":" + user.get_info().get_id();
 	string reply = user_id + " PART " + channel.get_name(); 
 	if (!reason.empty())
-		reply += ":" + reason;
+		reply += " :" + reason;
 	return reply;
 }
 
