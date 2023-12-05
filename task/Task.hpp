@@ -95,4 +95,16 @@ struct ChannelTask: public Task {
 		std::vector<const Channel*> channels_to_reply;
 };
 
+struct PingTask: public Task {
+
+	public:
+		PingTask(const Task&, const std::vector<std::string>&);
+		virtual std::string _get_label() const;
+		virtual std::vector<std::string> get_reply() const;
+		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const;
+
+	private:
+		std::string _content;
+};
+
 #endif
