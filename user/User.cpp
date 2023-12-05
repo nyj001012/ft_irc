@@ -60,8 +60,7 @@ Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd)
 		return;
 }
 string User::Info::get_id() const {
-	const string address = "127.0.0.1";
-	return nick_name + "!" + user_name + '@' + address;
+	return nick_name + "!~" + user_name + '@' + host_name;
 }
 
 bool User::Info::is_equal(const User::Info& other) const {

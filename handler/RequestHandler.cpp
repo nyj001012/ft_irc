@@ -112,8 +112,10 @@ RequestHandler::execute(MessageTask& task) {
 					const Channel& channel = channel_data.get_channel(name);
 					vector<const User*> users = channel.get_users();
 					for (size_t i = 0; i < users.size(); ++i) {
-						recipients.push_back(
-								make_pair(users[i]->get_connection().socket_fd, name));
+						if (users[i] != &sender) {
+							recipients.push_back(
+									make_pair(users[i]->get_connection().socket_fd, name));
+						}
 					}
 				}
 				break;
@@ -393,7 +395,7 @@ RequestHandler::execute(ChannelTask& task) {
 				break;
 			}
 		default:
-			throw Command::UnSupported();
+			throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}
 	return replies;
 }
@@ -437,7 +439,7 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 				}
 				data.create_user(updated.get_connection(),updated.info);
 				data.remove_task(updated.get_connection());
-				add_new_message(updated.get_reply(), "" , make_pair(task.get_connection().socket_fd, ""), replies);
+				add_new_message(updated.get_reply(), task.get_connection().socket_fd, replies);
 				break;
 			}
 		case Command::QUIT: 
@@ -457,14 +459,20 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 				break;
 			}
 		default:
-			throw Command::UnSupported();
+			throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}
 	return replies;
 }
 
 vector<Message> RequestHandler::execute(PingTask& task) {
 	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
-	add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
+	UserData& data = UserData::get_storage();
+	if (data.is_user_exist(task.get_connection())) {
+		const User& user = data.get_user(task.get_connection());
+		vector<string> reply = task.get_reply();
+		reply[0] += " :" + user.get_nickname();
+		add_new_message(reply, task.get_connection().socket_fd, replies);
+	}
 	return replies;
 }
 

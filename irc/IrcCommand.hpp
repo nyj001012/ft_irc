@@ -43,10 +43,6 @@ namespace IRC {
 
 		virtual std::string _get_label() const;
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
-
-		struct UnSupported: public std::exception {
-			virtual const char* what() const throw();
-		};
 	};
 }
 bool operator==(const IRC::Command&, const IRC::Command::Type&);

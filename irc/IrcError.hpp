@@ -25,6 +25,7 @@ namespace IRC {
 			ERR_NOTOPIC,
 			ERR_USERONCHANNEL,
 			ERR_NOORIGIN,
+			ERR_UNKNOWNCOMMAND,
 		} code;
 
 		Error();

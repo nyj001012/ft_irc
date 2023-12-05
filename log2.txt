@@ -1,0 +1,106 @@
+<< NICK sejokim
+<< USER bart bart irc.dal.net :bart
+>> :sakura.jp.as.dal.net NOTICE AUTH :*** Looking up your hostname...
+>> :sakura.jp.as.dal.net NOTICE AUTH :*** Checking Ident
+>> :sakura.jp.as.dal.net NOTICE AUTH :*** Found your hostname
+>> :sakura.jp.as.dal.net NOTICE AUTH :*** No Ident response
+>> :sakura.jp.as.dal.net 433 * sejokim :Nickname is already in use.
+<< NICK sejokim_
+>> :sakura.jp.as.dal.net 001 sejokim_ :Welcome to the DALnet IRC Network sejokim_!~bart@210.57.232.145
+<< MODE sejokim_ +i
+<< WHOIS sejokim
+>> :sakura.jp.as.dal.net 002 sejokim_ :Your host is sakura.jp.as.dal.net, running version bahamut-2.2.2
+>> :sakura.jp.as.dal.net 003 sejokim_ :This server was created Tue 23 Aug UTC at 2022 02:59:44 AM
+>> :sakura.jp.as.dal.net 004 sejokim_ sakura.jp.as.dal.net bahamut-2.2.2 aAbcCdefFghHiIjkKmnoOPrRsSwxXy AbceiIjklLmMnoOpPrRsStv beIjklov
+>> :sakura.jp.as.dal.net 005 sejokim_ NETWORK=DALnet SAFELIST MAXBANS=200 MAXCHANNELS=50 CHANNELLEN=32 KICKLEN=307 NICKLEN=30 TOPICLEN=307 MODES=6 CHANTYPES=# CHANLIMIT=#:50 PREFIX=(ohv)@%+ STATUSMSG=@%+ :are available on this server
+>> :sakura.jp.as.dal.net 005 sejokim_ CASEMAPPING=ascii WATCH=128 SILENCE=10 ELIST=cmntu EXCEPTS INVEX CHANMODES=beI,k,jl,ciPAmMnOprRsSt MAXLIST=b:200,e:100,I:100 TARGMAX=DCCALLOW:,JOIN:,KICK:4,KILL:20,NOTICE:20,PART:,PRIVMSG:20,WHOIS:,WHOWAS: :are available on this server
+>> :sakura.jp.as.dal.net 251 sejokim_ :There are 64 users and 7490 invisible on 38 servers
+>> :sakura.jp.as.dal.net 252 sejokim_ 74 :IRC Operators online
+>> :sakura.jp.as.dal.net 254 sejokim_ 3789 :channels formed
+>> :sakura.jp.as.dal.net 255 sejokim_ :I have 1354 clients and 1 servers
+>> :sakura.jp.as.dal.net 265 sejokim_ :Current local users: 1354 Max: 3677
+>> :sakura.jp.as.dal.net 266 sejokim_ :Current global users: 7554 Max: 12059
+>> :sakura.jp.as.dal.net NOTICE sejokim_ :*** Notice -- motd was last changed at 26/11/2020 19:53
+>> :sakura.jp.as.dal.net 375 sejokim_ :- sakura.jp.as.dal.net Message of the Day - 
+>> :sakura.jp.as.dal.net 372 sejokim_ :-26/11/2020 19:53
+>> :sakura.jp.as.dal.net 372 sejokim_ :- =====================================================================
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- Server: sakura.jp.as.dal.net
+>> :sakura.jp.as.dal.net 372 sejokim_ :- Plaintext ports: 6660 - 6669, 7000
+>> :sakura.jp.as.dal.net 372 sejokim_ :- SSL/TLS port: 6697
+>> :sakura.jp.as.dal.net 372 sejokim_ :- Both IPv4 and IPv6 are supported on this server
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- Server Administrator: xPsycho (xpsycho@DAL.net)
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :-            __.--~~.,-.__
+>> :sakura.jp.as.dal.net 372 sejokim_ :-            `~-._.-(`-.__`-.
+>> :sakura.jp.as.dal.net 372 sejokim_ :-                    \    `~~`
+>> :sakura.jp.as.dal.net 372 sejokim_ :-               .--./ \ 
+>> :sakura.jp.as.dal.net 372 sejokim_ :-              /#   \  \.--.
+>> :sakura.jp.as.dal.net 372 sejokim_ :-              \    /  /#   \ 
+>> :sakura.jp.as.dal.net 372 sejokim_ :-          jgs  '--'   \    /
+>> :sakura.jp.as.dal.net 372 sejokim_ :-                       '--'
+>> :sakura.jp.as.dal.net 372 sejokim_ :-                                                                                        
+>> :sakura.jp.as.dal.net 372 sejokim_ :- This server is proudly sponsored by DataPacket.com
+>> :sakura.jp.as.dal.net 372 sejokim_ :-       <https://www.datapacket.com/>
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- =====================================================================
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- Welcome to DALnet!  By connecting to this network, you agree to abide
+>> :sakura.jp.as.dal.net 372 sejokim_ :- by its acceptable use policy available at: https://www.dal.net/aup
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- We reserve the right to deny access to this server to anyone at any
+>> :sakura.jp.as.dal.net 372 sejokim_ :- time without warning or explanation.
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- To help prevent abuse, this server will check your PC for open proxy
+>> :sakura.jp.as.dal.net 372 sejokim_ :- servers when you connect. If you do not want this test performed, do
+>> :sakura.jp.as.dal.net 372 sejokim_ :- not connect.
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- =====================================================================
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- If you need general IRC assistance or help with services commands,
+>> :sakura.jp.as.dal.net 372 sejokim_ :- please view our multilingual documentation at http://docs.dal.net/
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- If your question is not answered after reading our documention,
+>> :sakura.jp.as.dal.net 372 sejokim_ :- please /join #help for general questions or /join #OperHelp if you
+>> :sakura.jp.as.dal.net 372 sejokim_ :- require the immediate assistance of an IRC Operator.
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- =====================================================================
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- Thank you, and enjoy your day!
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 372 sejokim_ :- =====================================================================
+>> :sakura.jp.as.dal.net 372 sejokim_ :- 
+>> :sakura.jp.as.dal.net 376 sejokim_ :End of /MOTD command.
+>> :sejokim_ MODE sejokim_ :+iH
+>> :sakura.jp.as.dal.net 311 sejokim_ sejokim ~bart 93c8-a67-628c-3b4-fc34.57.210.ip * :bart
+--> nickfind event whois
+>> :sakura.jp.as.dal.net 319 sejokim_ sejokim :@#&42 
+--> event empty
+>> :sakura.jp.as.dal.net 312 sejokim_ sejokim atw.hu.eu.dal.net :ATW.hu DALnet IRC server
+--> event empty
+>> :sakura.jp.as.dal.net 318 sejokim_ sejokim :End of /WHOIS list.
+--> event empty
+<< PING sakura.jp.as.dal.net
+>> :sakura.jp.as.dal.net PONG sakura.jp.as.dal.net :sejokim_
+--> lag pong
+<< JOIN #&42
+>> :sejokim_!~bart@93c8-a67-628c-3b4-fc34.57.210.ip JOIN :#&42
+>> :sakura.jp.as.dal.net 353 sejokim_ = #&42 :sejokim_ @sejokim 
+>> :sakura.jp.as.dal.net 366 sejokim_ #&42 :End of /NAMES list.
+<< MODE #&42
+>> :sakura.jp.as.dal.net 324 sejokim_ #&42 + 
+--> chanquery mode
+>> :sakura.jp.as.dal.net 329 sejokim_ #&42 1701795527
+--> event 329
+<< WHO #&42
+>> :sakura.jp.as.dal.net 352 sejokim_ #&42 ~bart 93c8-a67-628c-3b4-fc34.57.210.ip sakura.jp.as.dal.net sejokim_ H :0 bart
+--> silent event who
+>> :sakura.jp.as.dal.net 352 sejokim_ #&42 ~bart 93c8-a67-628c-3b4-fc34.57.210.ip atw.hu.eu.dal.net sejokim H@ :6 bart
+--> silent event who
+>> :sakura.jp.as.dal.net 315 sejokim_ #&42 :End of /WHO list.
+--> chanquery who end
+<< MODE #&42 b
+>> :sakura.jp.as.dal.net 368 sejokim_ #&42 :End of Channel Ban List
+--> chanquery ban end
+<< QUIT :leaving

@@ -31,7 +31,6 @@ ostream& PingTask::_add_to_serialization(ostream& os, const int) const {
 
 vector<string> PingTask::get_reply() const {
 	vector<string> reply;
-	reply.push_back("PONG");
-	reply.push_back(_content);
+	reply.push_back("PONG " + _content);
 	return reply;
 }

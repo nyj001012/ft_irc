@@ -69,9 +69,9 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 		case Command::PING:
 			return auto_ptr<Task>(new PingTask(base, tokens));
 		default:
+			throw Error(Error::ERR_UNKNOWNCOMMAND);
 			break;
 	}
-	throw Command::UnSupported();
 }
 
 

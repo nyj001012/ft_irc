@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcCommand.hpp"
 #include "../include/json.hpp"
+#include "../include/Irc.hpp"
 #include <climits>
 #define CMD_STRINGIFY(name) # name
 
@@ -44,7 +44,7 @@ Command::Command(const string& str) {
 			return ;
 		}
 	}
-	throw Command::UnSupported();
+	throw Error(Error::ERR_UNKNOWNCOMMAND);
 }
 
 string Command::get_command_name(const Type t) {
@@ -89,14 +89,11 @@ const Command::range Command::parameter_range() const {
 
 string Command::_get_label() const {
 	if (type == Unknown) {
-		throw Command::UnSupported();
+		throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}
 	return all_commands[type];
 }
 
-const char* Command::UnSupported::what() const throw(){
-	return "Unsupported command";
-}
 
 std::ostream& Command::_add_to_serialization(std::ostream& os,const int) const {
 	_json(os, "type", ':', _get_label());
