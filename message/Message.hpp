@@ -42,7 +42,7 @@ template <typename T> void Message::foreach(T& t,void (T::*func)(int, std::strin
 			}
 			std::string result;
 			if (!prefix.empty()) {
-				result = prefix + ' ';
+				result = ":" + prefix + ' ';
 			}
 			if (!iter->second.empty()) {
 				result += iter->second + ' ';
