@@ -243,19 +243,23 @@ RequestHandler::execute(ChannelTask& task) {
 					if (!channel.is_operator(user))
 						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
 					else {
-						string message = ":" + user.get_info().get_id() +
+						vector<string> messages;
+						string kick_message = ":" + user.get_info().get_id() +
 							' ' + Command::get_command_name(Command::KICK) + ' ' + channel_name;
 						if (task.params.size() > 2) 
-							message += " :" + task.params[2];
+							kick_message += " :" + task.params[2];
 						else	
-							message += " :" + user.get_nickname();
-						add_new_message(strs_to_vector(message), task.get_connection().socket_fd, replies);
-						add_broadcast_to_others(strs_to_vector(message),
+							kick_message += " :" + user.get_nickname();
+						messages.push_back(kick_message);
+						string part_message = ChannelTask::get_channel_part_message(channel, user_data.get_user(target_user_name), "KICK by " + user.get_nickname());
+						messages.push_back(part_message);
+						add_new_message(messages, task.get_connection().socket_fd, replies);
+						add_broadcast_to_others(messages,
 								replies, channel, user);
+
 						data.leave_channel(channel, user_data.get_user(target_user_name));	
 					}
 				}
-						
 				break;
 			}
 		case Command::TOPIC:
