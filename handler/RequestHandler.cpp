@@ -60,6 +60,10 @@ vector<Message>  RequestHandler::get_request(vector<string>& req, const Connecti
 		if (message_task != NULL) {
 			reply = execute(*message_task);	
 		}
+		PingTask* ping_task = dynamic_cast<PingTask*>(task.get());
+		if (ping_task != NULL) {
+			reply = execute(*ping_task);
+		}
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
@@ -455,6 +459,12 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 		default:
 			throw Command::UnSupported();
 	}
+	return replies;
+}
+
+vector<Message> RequestHandler::execute(PingTask& task) {
+	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
+	add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
 	return replies;
 }
 

@@ -338,7 +338,6 @@ void Server::receiveMessage(int client_socket)
 		buffer.resize(BUFFER_SIZE);
 	if (this->_is_debug)
 		std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
-	FD_SET(client_socket, &this->_read_fds);
 	_read_buffers[client_socket] = buffer.data();
 }
 
@@ -368,12 +367,22 @@ void Server::closeClient(int client_socket)
  */
 void Server::sendMessage(int client_socket, std::string& message)
 {
+	FD_SET(client_socket, &this->_write_fds);
 	ssize_t write_size = write(client_socket, message.data(), message.length());
 	if (write_size == -1)
-		throw std::runtime_error("Error: write() failed");
-	if (write_size == static_cast<ssize_t >(message.length()))
 	{
-		FD_SET(client_socket, &this->_write_fds);
+		FD_CLR(client_socket, &this->_write_fds);
+		this->closeClient(client_socket);
+		throw std::runtime_error("Error: write() failed");
+	}
+	if (write_size < static_cast<ssize_t>(message.length()))
+	{
+		_write_buffers[client_socket] = message.substr(write_size);
+	}
+	else
+	{
+		_write_buffers[client_socket] = "";
+		FD_CLR(client_socket, &this->_write_fds);
 	}
 }
 

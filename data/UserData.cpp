@@ -92,8 +92,8 @@ void UserData::delete_user(const User& user) {
 		map<int, UserIter>::iterator socket_found = user_socket_map.find(user.get_connection().socket_fd);;
 		map<string, UserIter>::iterator nick_found = user_nick_map.find(user.get_nickname());
 		user_socket_map.erase(socket_found);
-		user_nick_map.erase(nick_found);
 		users.erase(nick_found->second);
+		user_nick_map.erase(nick_found);
 	}
 	else {
 		users.remove(user);

@@ -30,5 +30,6 @@ class RequestHandler {
 		std::vector<Message> execute(UserTask&);
 		std::vector<Message> execute(ChannelTask&);
 		std::vector<Message> execute(MessageTask&);
+		std::vector<Message> execute(PingTask&);
 };
 #endif
