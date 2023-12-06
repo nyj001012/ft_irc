@@ -33,7 +33,8 @@ using IRC::Command;
 using IRC::Reply;
 
 int get_fd(const User*);
-void add_broadcast_to_others(const vector<string>, vector<Message>&, const Channel&, const User&);
+Message add_broadcast_to_others(const vector<string>, vector<Message>&, const Channel&, const User&);
+Message add_broadcast_to_all(const vector<string>, vector<Message>&, const Channel&);
 
 RequestHandler::RequestHandler() {}
 
@@ -308,7 +309,7 @@ RequestHandler::execute(ChannelTask& task) {
 						const std::string &new_topic = task.params[1];
 						channel.set_topic(new_topic, user);
 						std::string message = "332 " + user.get_nickname() + " " + channel_name + " :" + new_topic;
-						add_broadcast_to_others(strs_to_vector(message), replies, channel, user);
+						add_broadcast_to_all(strs_to_vector(message), replies, channel);
 					}
 				}
 				catch (ChannelData::ChannelNotExist&) {
@@ -510,7 +511,7 @@ vector<Message> RequestHandler::execute(PingTask& task) {
 	return replies;
 }
 
-void add_broadcast_to_others(const vector<string> new_messages, vector<Message>& messages, const Channel& channel, const User& sender) {
+Message add_broadcast_to_others(const vector<string> new_messages, vector<Message>& messages, const Channel& channel, const User& sender) {
 
 	vector<const User*> users = channel.get_users();	
 	vector<int> fds;
@@ -520,7 +521,18 @@ void add_broadcast_to_others(const vector<string> new_messages, vector<Message>&
 			continue;
 		fds.push_back(get_fd(users[i]));
 	}
-	add_new_message(new_messages, fds, messages);
+	return add_new_message(new_messages, fds, messages);
+}
+
+Message add_broadcast_to_all(const vector<string> new_messages, vector<Message>& messages, const Channel& channel) {
+
+	vector<const User*> users = channel.get_users();	
+	vector<int> fds;
+
+	for (size_t i = 0; i < users.size(); ++i) {
+		fds.push_back(get_fd(users[i]));
+	}
+	return add_new_message(new_messages, fds, messages);
 }
 
 int get_fd(const User* user) {

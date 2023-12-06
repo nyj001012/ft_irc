@@ -21,6 +21,7 @@ struct Message {
 		static std::vector<int> get_all_fds(const std::vector<Message>&);
 		static std::vector<Message> create_start_from(const int);
 		std::vector<std::pair<int, std::string> > recipients;
+		void add_recipient(std::pair<int, std::string>);
 		std::vector<std::string> contents;
 		std::string prefix;
 		template <typename T> void foreach(T&, void (T::*func)(int, std::string&));

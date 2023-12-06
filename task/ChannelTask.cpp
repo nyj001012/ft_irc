@@ -151,10 +151,12 @@ void add_channel_join_reply(const Channel& channel, const User& user, vector<str
 	vec.push_back(ChannelTask::get_channel_join_message(channel, user));
 	string mode; //TODO: Channel mode
 	vec.push_back(":" + SERVER_NAME + " MODE " + channel.get_name() + ' ' + mode);	
+	
 	string topic = channel.get_topic();
-	if (!topic.empty()) {
-		vec.push_back(Reply(Reply::RPL_TOPIC, SERVER_NAME, strs_to_vector(topic)).to_string());
-	}
+	if (topic.empty())
+		topic = ":";
+	vec.push_back(Reply(Reply::RPL_TOPIC, SERVER_NAME, 
+				strs_to_vector(user.get_nickname(), channel.get_name(), topic)).to_string());
 	vector<string> name_params = strs_to_vector(user.get_nickname(), channel.get_name());
 	vector<const User*> users = channel.get_users();
 	for (size_t i = 0; i < users.size(); ++i) {

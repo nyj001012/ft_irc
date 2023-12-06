@@ -48,9 +48,12 @@ int main(int argc, char* argv[])
 		{
 			port = (getPortInDebugMode()).c_str();
 			server.setIsDebug(true);
+			Reflector::shared().set_debug(true);
 		}
-		else
+		else {
 			server.setIsDebug(false);
+			Reflector::shared().set_debug(false);
+		}
 		if (!isValidPort(port))
 		{
 			printError("Error: Invalid port number: " + static_cast<std::string>(port));
