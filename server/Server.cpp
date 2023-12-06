@@ -336,7 +336,9 @@ void Server::runServer()
 		{
 			std::string read_buffer = _read_buffers[fd];
 			size_t crlf_pos = read_buffer.find("\r\n");
-			if (crlf_pos != std::string::npos)
+			if (crlf_pos == 0)
+				_write_buffers[fd] = "";
+			else if (crlf_pos != std::string::npos)
 			{
 				std::string new_read_data = read_buffer.substr(crlf_pos + 2);
 				_write_buffers[fd] = read_buffer.substr(0, crlf_pos + 2);
@@ -362,12 +364,15 @@ void Server::runServer()
 		{
 			this->closeClient(client_socket);
 		}
+		std::string str_buffer = static_cast<std::string>(buffer.data());
+		if (str_buffer.find("\r\n") == std::string::npos)
+			return;
 		if (read_size < BUFFER_SIZE - 2)
 			buffer.resize(read_size);
 		else
 			buffer.resize(BUFFER_SIZE);
 		if (this->_is_debug)
-			std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
+			std::cout << F_YELLOW << "[DEBUG] Message received: " << str_buffer << FB_DEFAULT << std::endl;
 		_read_buffers[client_socket] = buffer.data();
 	}
 
