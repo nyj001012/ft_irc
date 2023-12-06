@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcReply.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 01:11:20 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 01:16:10 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/05 21:17:45 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ namespace IRC {
 			RPL_ENDOFNAMES,
 			RPL_TOPIC,
 			RPL_INVITING,
+			RPL_CHANNELMODEIS,
 		} code;
 
 		std::string prefix;

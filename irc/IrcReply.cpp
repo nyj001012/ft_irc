@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcReply.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 01:15:10 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 01:20:46 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/05 23:24:47 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ const char *all_reply[] = {
 	REPLY_STRINGIFY(RPL_ENDOFNAMES),
 	REPLY_STRINGIFY(RPL_TOPIC),
 	REPLY_STRINGIFY(RPL_INVITING),
+	REPLY_STRINGIFY(RPL_CHANNELMODEIS),
 };
 
 string get_code(const Code code) {

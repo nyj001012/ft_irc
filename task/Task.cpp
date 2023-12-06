@@ -60,6 +60,8 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 		case Command::JOIN:
 		case Command::PART:
 		case Command::TOPIC:
+			return auto_ptr<Task>(new ChannelTask(base, tokens));
+			break ;
 		case Command::MODE:
 		case Command::INVITE:
 		case Command::KICK:

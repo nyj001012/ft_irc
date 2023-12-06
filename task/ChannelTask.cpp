@@ -42,6 +42,29 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 				params.push_back(raw_params[1]);
 			}
 			break;
+		case Command::MODE:
+		{
+		    const string& channel_name = raw_params[0];
+			if (!is_valid_channel_name(channel_name)) {
+				throw Error(Error::ERR_NOSUCHCHANNEL);
+			}
+			for (size_t i = 1; i < raw_params.size(); ++i) {
+				params.push_back(raw_params[i]);
+			}
+			break ;
+		}
+		case Command::TOPIC:
+		{
+		    const string& channel_name = raw_params[0];
+			if (!is_valid_channel_name(channel_name)) {
+				throw Error(Error::ERR_NOSUCHCHANNEL);
+			}
+			params.push_back(channel_name);
+			if (raw_params.size() > 1) {
+				params.push_back(raw_params[1]);
+			}
+			break ;
+		}
 		case Command::INVITE: 
 		case Command::KICK:
 			{

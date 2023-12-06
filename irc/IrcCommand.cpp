@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcCommand.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:28:24 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/29 23:04:06 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/05 22:46:03 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,11 @@ const Command::range Command::parameter_range() const {
 			range = make_pair(4, 4);
 			break;
 		case KICK:
+		case MODE:
+			range = make_pair(2, INT_MAX);
+			break;
 		case TOPIC:
-			range = make_pair(2, 3);
+			range = make_pair(1, 2);
 			break;
 		case INVITE:
 			range = make_pair(2, 2);

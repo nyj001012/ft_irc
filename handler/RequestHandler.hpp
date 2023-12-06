@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestHandler.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:26:09 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/30 02:53:30 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/05 16:15:44 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ struct Message;
 class RequestHandler {
 	
 	public:
-		RequestHandler(); 
+		RequestHandler();
 		std::vector<Message> 
 			get_request(std::vector<std::string>&, const Connection&);
 	private:

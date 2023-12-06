@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kimsejoon <kimsejoon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 17:50:03 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/04 18:57:15 by kimsejoon        ###   ########.fr       */
+/*   Updated: 2023/12/05 16:40:56 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class Channel: public Serializable {
 		bool is_allowed_to_join(const User&) const;
 		bool is_allowed_to_invite(const User&) const;
 		bool is_operator(const User &user) const;
+		bool is_invite_only() const;
 
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
@@ -51,6 +52,7 @@ class Channel: public Serializable {
 		void	remove_user_limit();
 		void	add_operator(const User &user);
 		void	remove_operator(const User &user);
+		bool	can_join() const;
 
 		struct AlreadyJoined: std::exception {
 			virtual const char * what() const throw();

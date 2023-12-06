@@ -6,7 +6,7 @@
 /*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 18:42:07 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/04 16:03:03 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/05 16:41:50 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,11 @@ bool	Channel::is_operator(const User &user) const
 	return &get_operator() == &user;
 }
 
+bool Channel::is_invite_only() const
+{
+	return invite_only;
+}
+
 bool Channel::is_allowed_to_join(const User& user) const {
 	if (invite_only) {
 		return false;
@@ -129,6 +134,10 @@ bool Channel::is_allowed_to_invite(const User& user) const {
 	if (!invite_only)
 		return true;
 	return is_operator(user);
+}
+
+bool Channel::can_join() const {
+	return user_limit == -1 || users.size() < static_cast<size_t>(user_limit);
 }
 
 // Serializable
