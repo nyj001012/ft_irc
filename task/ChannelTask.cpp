@@ -45,7 +45,7 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 		case Command::MODE:
 			{
 			const string& channel_name = raw_params[0];
-			if (isascii(channel_name[0])) {
+			if (isalpha(channel_name[0])) {
 				throw Error(Error::ERR_UNKNOWNCOMMAND);
 			}
 			if (!is_valid_channel_name(channel_name)) {
