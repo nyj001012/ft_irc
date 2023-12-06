@@ -147,13 +147,14 @@ RequestHandler::execute(ChannelTask& task) {
 				vector<string> name_key = split_string(task.params[i]);
 				try {
 					// TODO: throw error no permission
-					const Channel& joined = (name_key.size() == 2 ? 
-							data.join_channel(name_key[0], name_key[1], user):
-							data.join_channel(name_key[0], user));
-					if (!joined.can_join()) {
+					const string& channel_name = task.params[0];
+					if (!data.is_channel_exist(channel_name) && data.get_channel(channel_name).can_join()) {
 						task.add_error(Error(Error::ERR_CHANNELISFULL));
 						continue ;
 					}
+					const Channel& joined = (name_key.size() == 2 ? 
+							data.join_channel(name_key[0], name_key[1], user):
+							data.join_channel(name_key[0], user));
 					user.add_channel(joined);
 					task.add_channel_to_reply(joined);
 					if (joined.get_number_of_users() > 1) {

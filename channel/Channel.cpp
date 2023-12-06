@@ -36,7 +36,8 @@ Channel::Channel(const string& name, const User& operator_user)
 	:name(name),
 	key(string()),
 	users(vector<const User*>()),
-	operator_user(&operator_user)
+	operator_user(&operator_user),
+	user_limit(-1)
 { 
 	users.push_back(&operator_user);
 }
@@ -45,7 +46,8 @@ Channel::Channel(const Channel& other)
 	:name(other.name), 
 	topic(other.topic),
 	users(other.users),
-	operator_user(other.operator_user)
+	operator_user(other.operator_user),
+	user_limit(-1)
 { }
 
 const string& Channel::get_key() const {

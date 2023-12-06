@@ -43,12 +43,15 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 			}
 			break;
 		case Command::MODE:
-		{
-		    const string& channel_name = raw_params[0];
+			{
+			const string& channel_name = raw_params[0];
+			if (isascii(channel_name[0])) {
+				throw Error(Error::ERR_UNKNOWNCOMMAND);
+			}
 			if (!is_valid_channel_name(channel_name)) {
 				throw Error(Error::ERR_NOSUCHCHANNEL);
 			}
-			for (size_t i = 1; i < raw_params.size(); ++i) {
+			for (size_t i = 0; i < raw_params.size(); ++i) {
 				params.push_back(raw_params[i]);
 			}
 			break ;
