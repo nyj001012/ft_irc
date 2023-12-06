@@ -1,4 +1,4 @@
-/*const  ************************************************************************** */
+/**************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   RequestHandler.cpp                                 :+:      :+:    :+:   */
@@ -421,7 +421,7 @@ RequestHandler::execute(ChannelTask& task) {
                         	break;
             		    }
         		    }
-            	add_broadcast_to_others(strs_to_vector(broadcast_message), replies, channel, user);
+            	add_broadcast_to_all(strs_to_vector(broadcast_message), replies, channel);
 			} catch (ChannelData::ChannelNotExist&)
 			{
            		task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
