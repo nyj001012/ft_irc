@@ -148,7 +148,8 @@ RequestHandler::execute(ChannelTask& task) {
 				try {
 					// TODO: throw error no permission
 					const string& channel_name = task.params[0];
-					if (!data.is_channel_exist(channel_name) && data.get_channel(channel_name).can_join()) {
+					if (data.is_channel_exist(channel_name) && 
+							!data.get_channel(channel_name).can_join()) {
 						task.add_error(Error(Error::ERR_CHANNELISFULL));
 						continue ;
 					}

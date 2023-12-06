@@ -158,6 +158,8 @@ ostream& Channel::_add_to_serialization(ostream& os, const int depth) const {
 	_json(os, "name", ':', name, ',');
 	_json(os, "topic", ':', topic, ',');
 	if (depth > 0) {
+		_json(os, "invite only", ':', invite_only, ',');
+		_json(os, "user limit", ':', user_limit, ',');
 		const vector<const Serializable *> vec(users.begin(), users.end());
 		_json(os, "users", ':') << ::_serialize(vec, depth - 1);
 	}
