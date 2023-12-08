@@ -33,6 +33,7 @@ namespace IRC {
 		Error();
 		virtual ~Error() throw();
 		Error(const Code);
+		Error(const Code code, const std::vector<std::string>&);
 		virtual std::string _get_label() const;
 		virtual const char* what() const throw();
 		static std::string _get_message(const Error&);
@@ -41,6 +42,8 @@ namespace IRC {
 		struct UnKnownError: public std::exception { 
 			virtual const char* what() const throw();
 		};
+
+		std::vector<std::string> params;
 	};
 }
 bool operator==(const IRC::Error::Code, const IRC::Error&);

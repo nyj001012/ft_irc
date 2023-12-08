@@ -155,8 +155,9 @@ RequestHandler::execute(ChannelTask& task) {
 							task.add_error(Error(Error::ERR_CHANNELISFULL));
 							continue;
 						}
-						if (existed_channel.is_invite_only() && !existed_channel.is_allowed_to_invite(user)) {
-							task.add_error(Error(Error::ERR_INVITEONLYCHAN));
+						if (existed_channel.is_invite_only() 
+								&& !existed_channel.is_allowed_to_invite(user)) {
+							task.add_error(Error(Error::ERR_INVITEONLYCHAN, strs_to_vector(user.get_nickname(), channel_name)));
 							continue ;
 						}
 					}
@@ -244,7 +245,7 @@ RequestHandler::execute(ChannelTask& task) {
 				else {
 					const Channel& channel = data.get_channel(channel_name);
 					if (channel.is_invite_only() && !channel.is_operator(user))
-						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel_name)));
 					else if (!channel.can_join()) 
 						task.add_error(Error(Error::ERR_CHANNELISFULL));
 					else {
@@ -252,7 +253,7 @@ RequestHandler::execute(ChannelTask& task) {
 						if (target_user.is_joined(channel_name))
 							task.add_error(Error(Error::ERR_USERONCHANNEL));
 						else if (!channel.is_allowed_to_invite(user)) 
-							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel_name)));
 						else {
 							add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
 							string message = ":" + user.get_info().get_id() + ' ' + Command::get_command_name(Command::INVITE) + ' ' + target_user_name + ' ' + channel_name;
@@ -277,8 +278,10 @@ RequestHandler::execute(ChannelTask& task) {
 					task.add_error(Error(Error::ERR_NOTONCHANNEL));
 				else {
 					const Channel& channel = data.get_channel(channel_name);
-					if (!channel.is_operator(user))
-						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+					if (!channel.is_operator(user)) {
+						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel_name)));
+						break;
+					}
 					else {
 						vector<string> messages;
 						string kick_message = ":" + user.get_info().get_id() +
@@ -318,7 +321,7 @@ RequestHandler::execute(ChannelTask& task) {
 					}
 					else if (task.params.size() >= 2) { // 채널의 주제를 설정하는 경우에
 						if (!channel.is_operator(user) && channel.topic_protected) {
-							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel.get_name())));
 							break ;
 						}
 						const std::string &new_topic = task.params[1];
@@ -332,118 +335,119 @@ RequestHandler::execute(ChannelTask& task) {
 				}
 				break ;
 			}
-			case Command::MODE: {
-    		if (task.params.size() < 2)
+		case Command::MODE: 
 			{
-        		task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
-        		break;
-    		}
-    		const std::string &target = task.params[0];
-    		const std::string &mode_params = task.params[1];
-    		std::string broadcast_message = ":" + user.get_nickname() + " MODE " + target;
-
-    		if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX)
-			{
-        		try
+				if (task.params.size() < 2)
 				{
-            		Channel &channel = data.get_channel(target);
+					task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+					break;
+				}
+				const std::string &target = task.params[0];
+				const std::string &mode_params = task.params[1];
+				std::string broadcast_message = ":" + user.get_nickname() + " MODE " + target;
 
-		            if (!channel.is_operator(user))
+				if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX)
+				{
+					try
 					{
-        		        task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
-		                break;
-       		     	}
+						Channel &channel = data.get_channel(target);
 
-            		bool setting = true;
-            		for (size_t i = 0; i < mode_params.length(); ++i) {
-                	char modeChar = mode_params[i];
+						if (!channel.is_operator(user))
+						{
+							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel.get_name())));
+							break;
+						}
 
-                	if (modeChar == '+' || modeChar == '-')
-					{
-                    	setting = (modeChar == '+');
-                    	broadcast_message += " ";
-                    	broadcast_message += modeChar; // Append '+' or '-' to broadcast message
-                    	continue;
-                	}
+						bool setting = true;
+						for (size_t i = 0; i < mode_params.length(); ++i) {
+							char modeChar = mode_params[i];
 
-                	switch (modeChar) {
-                    	case 'i':
-                        	channel.set_invite_only(setting);
-                        	broadcast_message += "i";
-                        	break;
-                    	case 't':
-                        	channel.set_topic_protection(setting);
-                        	broadcast_message += "t";
-                        	break;
-                    	case 'k':
-                        	if (setting && (i + 1 < task.params.size()))
+							if (modeChar == '+' || modeChar == '-')
 							{
-                            	channel.set_key(task.params[i + 1]);
-                            	broadcast_message += "k ";
-                            	broadcast_message += task.params[i + 1];
-                            	i++; // Skip key value in loop
-                        	}
-							else
-							{
-                            channel.set_key("");
-                            broadcast_message += "k";
-                        	}
-                        	break;
-                    	case 'l':
-                        	if (setting && (i + 1 < task.params.size()))
-							{
-                            	char *end;
-                            	long limit = std::strtol(task.params[i + 1].c_str(), &end, 10);
-                            	if (*end == '\0' && end != task.params[i + 1].c_str())
-								{
-                                	channel.set_user_limit(static_cast<int>(limit));
-                                	broadcast_message += "l ";
-                                	broadcast_message += task.params[i + 1];
-                                	i++; // Skip limit value in loop
-                            	}
-								else
-                                	task.add_error(Error(Error::ERR_UNKNOWNMODE));
-                        	} else
-							{
-                            	channel.remove_user_limit();
-                            	broadcast_message += "l";
-                        	}
-                        	break;
-                    	case 'o':
-						if (i + 1 < task.params.size())
-							{
-                            	try
-								{
-                                	User &target_user = user_data.get_user(task.params[i + 1]);
-                                	if (setting)
+								setting = (modeChar == '+');
+								broadcast_message += " ";
+								broadcast_message += modeChar; // Append '+' or '-' to broadcast message
+								continue;
+							}
+
+							switch (modeChar) {
+								case 'i':
+									channel.set_invite_only(setting);
+									broadcast_message += "i";
+									break;
+								case 't':
+									channel.set_topic_protection(setting);
+									broadcast_message += "t";
+									break;
+								case 'k':
+									if (setting && (i + 1 < task.params.size()))
 									{
-                                    	channel.add_operator(target_user);
-                                    	broadcast_message += "o ";
-                                    	broadcast_message += task.params[i + 1];
-                                	}
+										channel.set_key(task.params[i + 1]);
+										broadcast_message += "k ";
+										broadcast_message += task.params[i + 1];
+										i++; // Skip key value in loop
+									}
 									else
 									{
-                                    	channel.remove_operator(target_user);
-                                    	broadcast_message += "o ";
-                                    	broadcast_message += task.params[i + 1];
-                                	}
-                                	i++; // Skip nickname in loop
-                            	}
-								catch (UserData::UserNotExist&) {
-                                	task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
-								}
-                        	}
-                        	break;
-            		    }
-        		    }
-            	add_broadcast_to_all(strs_to_vector(broadcast_message), replies, channel);
-			} catch (ChannelData::ChannelNotExist&)
-			{
-           		task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
-        	}
-	  	}
-   			break;
-	}
+										channel.set_key("");
+										broadcast_message += "k";
+									}
+									break;
+								case 'l':
+									if (setting && (i + 1 < task.params.size()))
+									{
+										char *end;
+										long limit = std::strtol(task.params[i + 1].c_str(), &end, 10);
+										if (*end == '\0' && end != task.params[i + 1].c_str())
+										{
+											channel.set_user_limit(static_cast<int>(limit));
+											broadcast_message += "l ";
+											broadcast_message += task.params[i + 1];
+											i++; // Skip limit value in loop
+										}
+										else
+											task.add_error(Error(Error::ERR_UNKNOWNMODE));
+									} else
+									{
+										channel.remove_user_limit();
+										broadcast_message += "l";
+									}
+									break;
+								case 'o':
+									if (i + 1 < task.params.size())
+									{
+										try
+										{
+											User &target_user = user_data.get_user(task.params[i + 1]);
+											if (setting)
+											{
+												channel.add_operator(target_user);
+												broadcast_message += "o ";
+												broadcast_message += task.params[i + 1];
+											}
+											else
+											{
+												channel.remove_operator(target_user);
+												broadcast_message += "o ";
+												broadcast_message += task.params[i + 1];
+											}
+											i++; // Skip nickname in loop
+										}
+										catch (UserData::UserNotExist&) {
+											task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+										}
+									}
+									break;
+							}
+						}
+						add_broadcast_to_all(strs_to_vector(broadcast_message), replies, channel);
+					} catch (ChannelData::ChannelNotExist&)
+					{
+						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+					}
+				}
+				break;
+			}
 		default:
 			throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}

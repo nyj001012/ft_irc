@@ -1,6 +1,8 @@
 #include "IrcError.hpp"
+#include "../include/config.hpp"
 #include <sstream>
 #include <string>
+#include <vector>
 #define ERROR_STRINGIFY(name) # name
 
 typedef IRC::Error Error;
@@ -8,6 +10,7 @@ typedef Error::Code Code;
 using std::string;
 using std::pair;
 using std::make_pair;
+using std::vector;
 
 const pair<const char *, int> all_errors[] = {
 	make_pair(ERROR_STRINGIFY(ERR_NEEDMOREPARAMS), 461),
@@ -35,6 +38,7 @@ const pair<const char *, int> all_errors[] = {
 Error::Error(): code(UnKnown) {}
 Error::~Error() throw(){}
 Error::Error(const Code code): code(code) {}
+Error::Error(const Code code, const vector<string>& params): code(code), params(params) {}
 
 string Error::_get_label() const {
 	return string("code: ") + all_errors[code].first;
@@ -49,7 +53,11 @@ const char* Error::what() const throw() {
 
 string Error::get_message() const {
 	std::stringstream ss;
+	ss << ":" + SERVER_NAME + ' ';
 	ss << all_errors[code].second;
+	for (size_t i = 0; i < params.size(); ++i) {
+		ss << ' ' << params[i];
+	}
 	ss << " :" << all_errors[code].first;
 	return ss.str();
 }

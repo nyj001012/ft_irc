@@ -116,7 +116,7 @@ bool Channel::is_equal(const Channel& other) const {
 
 bool	Channel::is_operator(const User &user) const
 {
-	return &get_operator() == &user;
+	return operator_user == &user;
 }
 
 bool Channel::is_invite_only() const
@@ -201,8 +201,13 @@ void	Channel::add_operator(const User &user)
 
 void	Channel::remove_operator(const User &user)
 {
-	if (operator_user == &user)
-		operator_user = NULL;
+	if (operator_user != &user) 
+		return;
+	for (size_t i = 0; i < users.size(); ++i) {
+		if (users[i] != & user) {
+			operator_user = users[i];
+		}
+	}
 }
 
 bool operator==(const Channel& a, const Channel& b) {
