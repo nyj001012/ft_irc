@@ -6,7 +6,7 @@
 /*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 18:42:07 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/08 16:00:09 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:06:00 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,6 @@ void Channel::remove_user(const User& user) {
 	users.erase(found);
 	if (&user == operator_user && !users.empty()) 
 		operator_user = users[0];	
-}
-
-void	Channel::enable_operator_assignment(bool enable)
-{
-	operator_assignment_enabled = enable;
-}
-
-bool	Channel::is_operator_assignment_enabled() const
-{
-	return operator_assignment_enabled;
 }
 
 bool Channel::is_equal(const Channel& other) const {

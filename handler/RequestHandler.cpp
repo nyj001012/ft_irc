@@ -6,7 +6,7 @@
 /*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/08 16:32:55 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:06:28 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,15 +399,8 @@ RequestHandler::execute(ChannelTask& task) {
                         	}
                         	break;
                     	case 'o':
-							if (task.params.size() == 2)
-								channel.enable_operator_assignment(modeChar != '+');
-                        	else if (i + 1 < task.params.size())
+						if (i + 1 < task.params.size())
 							{
-								if (!channel.is_operator_assignment_enabled())
-								{
-									task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
-									break ;
-								}
                             	try
 								{
                                 	User &target_user = user_data.get_user(task.params[i + 1]);
