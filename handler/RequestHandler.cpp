@@ -6,7 +6,7 @@
 /*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/08 15:43:03 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/08 16:32:55 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,10 @@ RequestHandler::execute(ChannelTask& task) {
 					const Channel& joined = (name_key.size() == 2 ? 
 							data.join_channel(name_key[0], name_key[1], user):
 							data.join_channel(name_key[0], user));
+					if (joined.is_invite_only() && !joined.is_allowed_to_invite(user)) {
+						task.add_error(Error(Error::ERR_INVITEONLYCHAN));
+						continue ;
+					}
 					user.add_channel(joined);
 					task.add_channel_to_reply(joined);
 					if (joined.get_number_of_users() > 1) {
@@ -395,8 +399,15 @@ RequestHandler::execute(ChannelTask& task) {
                         	}
                         	break;
                     	case 'o':
-                        	if (i + 1 < task.params.size())
+							if (task.params.size() == 2)
+								channel.enable_operator_assignment(modeChar != '+');
+                        	else if (i + 1 < task.params.size())
 							{
+								if (!channel.is_operator_assignment_enabled())
+								{
+									task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+									break ;
+								}
                             	try
 								{
                                 	User &target_user = user_data.get_user(task.params[i + 1]);

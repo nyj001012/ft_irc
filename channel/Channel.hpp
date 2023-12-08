@@ -6,7 +6,7 @@
 /*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 17:50:03 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/05 16:40:56 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/08 15:53:47 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ class Channel: public Serializable {
 		};
 
 		bool	topic_protected;
+		void	enable_operator_assignment(bool enable);
+		bool	is_operator_assignment_enabled() const;
 	
 	private:
 		std::string name;
@@ -73,6 +75,7 @@ class Channel: public Serializable {
 
 		bool	invite_only;
 		int	user_limit;
+		bool	operator_assignment_enabled; // 운영자 지정 기능 활성화 / 비활성화
 
 		Channel();
 		Channel& operator=(const Channel&);
