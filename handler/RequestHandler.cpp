@@ -6,7 +6,7 @@
 /*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/08 16:32:55 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:11:00 by heshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,24 +149,35 @@ RequestHandler::execute(ChannelTask& task) {
 				try {
 					// TODO: throw error no permission
 					const string& channel_name = task.params[0];
-					if (data.is_channel_exist(channel_name) && 
-							!data.get_channel(channel_name).can_join()) {
-						task.add_error(Error(Error::ERR_CHANNELISFULL));
-						continue ;
+					if (data.is_channel_exist(channel_name)) {
+						const Channel& existed_channel = data.get_channel(channel_name);
+						if (!existed_channel.can_join()) {
+							task.add_error(Error(Error::ERR_CHANNELISFULL));
+							continue;
+						}
+						if (existed_channel.is_invite_only() && !existed_channel.is_allowed_to_invite(user)) {
+							task.add_error(Error(Error::ERR_INVITEONLYCHAN));
+							continue ;
+						}
 					}
-					const Channel& joined = (name_key.size() == 2 ? 
-							data.join_channel(name_key[0], name_key[1], user):
-							data.join_channel(name_key[0], user));
-					if (joined.is_invite_only() && !joined.is_allowed_to_invite(user)) {
-						task.add_error(Error(Error::ERR_INVITEONLYCHAN));
-						continue ;
+					const Channel* joined = NULL;
+					try {
+						if (name_key.size() == 2) {
+							joined = &data.join_channel(name_key[0], name_key[1], user);
+						}
+						else {
+							joined = &data.join_channel(name_key[0], user);
+						}
+					} catch(Error& e) {
+						task.add_error(e);
+						continue;
 					}
-					user.add_channel(joined);
-					task.add_channel_to_reply(joined);
-					if (joined.get_number_of_users() > 1) {
-						string message = ChannelTask::get_channel_join_message(joined, user);
+					user.add_channel(*joined);
+					task.add_channel_to_reply(*joined);
+					if (joined->get_number_of_users() > 1) {
+						string message = ChannelTask::get_channel_join_message(*joined, user);
 						add_broadcast_to_others(strs_to_vector(message),
-								replies, joined, user);
+								replies, *joined, user);
 					}
 					
 				}
