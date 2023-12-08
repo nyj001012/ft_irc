@@ -250,7 +250,7 @@ void Server::runServer()
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
-//						if (tokens[0].type == COMMAND && 
+//						if (tokens[0].type == COMMAND &&
 //								tokens[0].value == "WHOIS" && tokens.size() > 1) {
 //
 //							std::string& nickname = tokens[1].value;
@@ -272,7 +272,7 @@ void Server::runServer()
 //							if (UserData::get_storage().is_user_exist(nickname)) {
 //								const User& user = UserData::get_storage().get_user(nickname);
 //
-//								std::string message = std::string(":") + user.get_info().get_id() + " MODE " + user.get_nickname() + ' ' + tokens[2].value + "\r\n"; 
+//								std::string message = std::string(":") + user.get_info().get_id() + " MODE " + user.get_nickname() + ' ' + tokens[2].value + "\r\n";
 //								sendMessage(i, message);
 //							}
 //							_write_buffers[i] = "";
@@ -293,11 +293,16 @@ void Server::runServer()
 						{
 							_write_buffers[all_fds[j]] = "";
 						}
-						if (tokens[0].type == COMMAND && 
-								tokens[0].value == "QUIT") {
+						if (tokens[0].type == COMMAND &&
+								tokens[0].value == "QUIT")
+						{
 							this->closeClient(connection.socket_fd);
-
 						}
+					}
+					else
+					{
+						_write_buffers[i] = "";
+						throw std::runtime_error("Error: Invalid message format: " + write_buffer);
 					}
 					this->saveLineToBuffer(i);
 					}
