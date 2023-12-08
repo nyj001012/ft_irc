@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/03 17:50:03 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/08 17:05:43 by sejokim          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 # include "../debug/Serializable.hpp"
@@ -52,7 +40,7 @@ class Channel: public Serializable {
 		void	remove_user_limit();
 		void	add_operator(const User &user);
 		void	remove_operator(const User &user);
-		bool	can_join() const;
+		bool	cannot_join_full() const;
 
 		struct AlreadyJoined: std::exception {
 			virtual const char * what() const throw();

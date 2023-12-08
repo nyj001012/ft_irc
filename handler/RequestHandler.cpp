@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   RequestHandler.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/08 18:29:34 by sejokim          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "RequestHandler.hpp"
 #include "../include/Irc.hpp"
@@ -245,7 +234,7 @@ RequestHandler::execute(ChannelTask& task) {
 					const Channel& channel = data.get_channel(channel_name);
 					if (channel.is_invite_only() && !channel.is_operator(user))
 						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
-					else if (!channel.can_join()) 
+					else if (!channel.cannot_join_full()) 
 						task.add_error(Error(Error::ERR_CHANNELISFULL));
 					else {
 						const User& target_user = user_data.get_user(target_user_name);
@@ -324,12 +313,7 @@ RequestHandler::execute(ChannelTask& task) {
 						const std::string &new_topic = task.params[1];
 						channel.set_topic(new_topic, user);
 						std::string message = "332 " + user.get_nickname() + " " + channel_name + " :" + new_topic;
-<<<<<<< HEAD
 						add_broadcast_to_all(strs_to_vector(message), replies, channel);
-=======
-						add_broadcast_to_others(strs_to_vector(message), replies, channel, user);
-						add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
->>>>>>> ee95e17 (fix: topic)
 					}
 				}
 				catch (ChannelData::ChannelNotExist&) {

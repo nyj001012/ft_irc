@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kimsejoon <kimsejoon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 18:42:07 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/08 17:06:00 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/08 18:35:07 by kimsejoon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ bool Channel::is_allowed_to_invite(const User& user) const {
 	return is_operator(user);
 }
 
-bool Channel::can_join() const {
+bool Channel::cannot_join_full() const {
 	return user_limit == -1 || users.size() < static_cast<size_t>(user_limit);
 }
 
