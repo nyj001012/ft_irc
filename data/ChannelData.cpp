@@ -14,6 +14,7 @@
 #include "../channel/Channel.hpp"
 #include "../user/User.hpp"
 #include "../include/json.hpp"
+#include "../include/utils.hpp"
 #include <utility>
 #include <sstream>
 
@@ -60,7 +61,7 @@ Channel& ChannelData::join_channel(const string& name, const string& key, const 
 	else {
 		Channel& channel= *const_cast<Channel *>(found->second);
 		if (channel.get_key() != key)
-			throw Error(Error::ERR_BADCHANNELKEY);
+			throw Error(Error::ERR_BADCHANNELKEY, strs_to_vector(user.get_nickname(), name));
 		channel.add_user(user);
 		return channel;
 	}

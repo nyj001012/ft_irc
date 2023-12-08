@@ -80,7 +80,7 @@ UserTask& UserTask::add_next(const UserTask& next) {
 	}
 	else if (next.command == Command::NICK) {
 		if (!is_valid_nickname(next.info.nick_name))
-			throw IRC::Error(IRC::Error::ERR_ERRONEUSNICKNAME);
+			throw IRC::Error(IRC::Error::ERR_ERRONEUSNICKNAME, strs_to_vector(next.info.nick_name));
 		info.nick_name = next.info.nick_name;
 	}
 	else {

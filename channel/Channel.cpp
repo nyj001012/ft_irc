@@ -15,6 +15,7 @@
 #include "../include/json.hpp"
 #include "../debug/Serializable.hpp"
 #include "../include/Irc.hpp"
+#include "../include/utils.hpp"
 #include <algorithm>
 #include <ostream>
 #include <iterator>
@@ -61,7 +62,7 @@ const string& Channel::get_name() const {
 void	Channel::set_topic(const std::string &new_topic, const User &user)
 {
 	if (topic_protected && !is_operator(user))
-		throw Error(Error::ERR_CHANOPRIVSNEEDED);
+		throw Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(name));
 	topic = new_topic;
 	// mode -t 가 설정이 되어있으면 operator가 아니면 topic을 바꿀 수 없다.
 }

@@ -14,6 +14,7 @@
 #include "../include/utils.hpp"
 #include "../include/json.hpp"
 #include "../include/Irc.hpp"
+#include "../include/utils.hpp"
 #include <sstream>
 
 using IRC::Error;
@@ -34,14 +35,14 @@ MessageTask::MessageTask(const Task& parent, const std::vector<std::string>& raw
 		}
 		if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX) {
 			if (!ChannelTask::is_valid_channel_name(target)) {
-				add_error(Error(Error::ERR_CANNOTSENDTOCHAN));
+				add_error(Error(Error::ERR_CANNOTSENDTOCHAN, strs_to_vector(target)));
 				continue;
 			}
 			type = CHANNEL;
 		}
 		else {
 			if (!UserTask::is_valid_nickname(target)) {
-				add_error(Error(Error::ERR_NOSUCHNICK));
+				add_error(Error(Error::ERR_NOSUCHNICK, strs_to_vector(target)));
 				continue;
 			}
 			type = USER;

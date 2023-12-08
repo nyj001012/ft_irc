@@ -99,7 +99,7 @@ RequestHandler::execute(MessageTask& task) {
 		switch (task.recipients[i].first) {
 			case MessageTask::USER:
 				if (!user_data.is_user_exist(name))
-					task.add_error(Error(Error::ERR_NOSUCHNICK));
+					task.add_error(Error(Error::ERR_NOSUCHNICK, strs_to_vector(name)));
 				else {
 					const User& recipient = user_data.get_user(name);
 					recipients.push_back(
@@ -108,9 +108,9 @@ RequestHandler::execute(MessageTask& task) {
 				break;
 			case MessageTask::CHANNEL:
 				if (!channel_data.is_channel_exist(name)) 
-					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+					task.add_error(Error(Error::ERR_NOSUCHCHANNEL, strs_to_vector(name)));
 				else if (!sender.is_joined(name)) 
-					task.add_error(Error(Error::ERR_NOTONCHANNEL));
+					task.add_error(Error(Error::ERR_NOTONCHANNEL, strs_to_vector(name)));
 				else {
 					const Channel& channel = channel_data.get_channel(name);
 					vector<const User*> users = channel.get_users();
@@ -152,7 +152,7 @@ RequestHandler::execute(ChannelTask& task) {
 					if (data.is_channel_exist(channel_name)) {
 						const Channel& existed_channel = data.get_channel(channel_name);
 						if (!existed_channel.can_join()) {
-							task.add_error(Error(Error::ERR_CHANNELISFULL));
+							task.add_error(Error(Error::ERR_CHANNELISFULL, strs_to_vector(user.get_nickname(), channel_name)));
 							continue;
 						}
 						if (existed_channel.is_invite_only() 
@@ -201,7 +201,7 @@ RequestHandler::execute(ChannelTask& task) {
 				for (size_t i = 0; i < number_of_channels; ++i) {
 					const string& channel_name = task.params[i];
 					if(!user.is_joined(channel_name)) {
-						task.add_error(Error(Error::ERR_NOTONCHANNEL));
+						task.add_error(Error(Error::ERR_NOTONCHANNEL, strs_to_vector(channel_name)));
 						continue;
 					}
 					try {
@@ -219,7 +219,7 @@ RequestHandler::execute(ChannelTask& task) {
 						}
 					}
 					catch (ChannelData::ChannelNotExist&) {
-						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+						task.add_error(Error(Error::ERR_NOSUCHCHANNEL, strs_to_vector(channel_name)));
 					}
 					add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
 					for (size_t i = 0; i < empty_channels.size(); ++i)
@@ -236,22 +236,22 @@ RequestHandler::execute(ChannelTask& task) {
 				const string& target_user_name = task.params[0];
 				const string& channel_name = task.params[1];
 				if (!user_data.is_user_exist(target_user_name)) {
-					task.add_error(Error(Error::ERR_NOSUCHNICK));
+					task.add_error(Error(Error::ERR_NOSUCHNICK, strs_to_vector(target_user_name)));
 				}
 				else if (!data.is_channel_exist(channel_name))
-					task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+					task.add_error(Error(Error::ERR_NOSUCHCHANNEL, strs_to_vector(channel_name)));
 				else if (!user.is_joined(channel_name)) 
-					task.add_error(Error(Error::ERR_NOTONCHANNEL));
+					task.add_error(Error(Error::ERR_NOTONCHANNEL, strs_to_vector(channel_name)));
 				else {
 					const Channel& channel = data.get_channel(channel_name);
 					if (channel.is_invite_only() && !channel.is_operator(user))
 						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel_name)));
 					else if (!channel.can_join()) 
-						task.add_error(Error(Error::ERR_CHANNELISFULL));
+						task.add_error(Error(Error::ERR_CHANNELISFULL, strs_to_vector(user.get_nickname(), channel_name)));
 					else {
 						const User& target_user = user_data.get_user(target_user_name);
 						if (target_user.is_joined(channel_name))
-							task.add_error(Error(Error::ERR_USERONCHANNEL));
+							task.add_error(Error(Error::ERR_USERONCHANNEL, strs_to_vector(target_user_name, channel_name)));
 						else if (!channel.is_allowed_to_invite(user)) 
 							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel_name)));
 						else {
@@ -443,7 +443,7 @@ RequestHandler::execute(ChannelTask& task) {
 						add_broadcast_to_all(strs_to_vector(broadcast_message), replies, channel);
 					} catch (ChannelData::ChannelNotExist&)
 					{
-						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+						task.add_error(Error(Error::ERR_NOSUCHCHANNEL, strs_to_vector(target)));
 					}
 				}
 				break;
@@ -466,7 +466,7 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 			break;
 		case Command::NICK:
 			if (data.is_duplicated(task.info.nick_name)) {
-				task.add_error(Error(Error::ERR_NICKNAMEINUSE));
+				task.add_error(Error(Error::ERR_NICKNAMEINUSE, strs_to_vector(task.info.nick_name)));
 				return replies;
 			}
 			else if (data.is_pedding_user_exist(task.get_connection()))
