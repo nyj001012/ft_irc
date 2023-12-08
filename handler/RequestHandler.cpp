@@ -36,6 +36,7 @@ int get_fd(const User*);
 void add_broadcast_to_others(const vector<string>, vector<Message>&, const Channel&, const User&);
 
 RequestHandler::RequestHandler() {}
+
 vector<Message>  RequestHandler::get_request(vector<string>& req, const Connection& connection) {
 
 	auto_ptr<Task> task;

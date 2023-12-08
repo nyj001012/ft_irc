@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yena <yena@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 22:23:09 by yena              #+#    #+#             */
-/*   Updated: 2023/11/29 13:18:21 by yena             ###   ########.fr       */
+/*   Updated: 2023/12/05 16:14:21 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ private:
 	bool _is_debug;
 	RequestHandler handler;
 	fd_set _read_fds;
-	fd_set _write_fds;
 	fd_set _read_fds_backup;
 	fd_set _write_fds_backup;
+	fd_set _write_fds;
 	std::map<int, Connection> _connections;
 	std::map<int, std::string > _write_buffers;
 	std::map<int, std::string > _read_buffers;
