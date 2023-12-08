@@ -140,7 +140,7 @@ RequestHandler::execute(ChannelTask& task) {
 					const string& channel_name = task.params[0];
 					if (data.is_channel_exist(channel_name)) {
 						const Channel& existed_channel = data.get_channel(channel_name);
-						if (!existed_channel.can_join()) {
+						if (!existed_channel.cannot_join_full()) {
 							task.add_error(Error(Error::ERR_CHANNELISFULL));
 							continue;
 						}
