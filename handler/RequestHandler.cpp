@@ -156,7 +156,7 @@ RequestHandler::execute(ChannelTask& task) {
 							continue;
 						}
 						if (existed_channel.is_invite_only() 
-								&& !existed_channel.is_allowed_to_invite(user)) {
+								&& !existed_channel.is_invited(user)) {
 							task.add_error(Error(Error::ERR_INVITEONLYCHAN, strs_to_vector(user.get_nickname(), channel_name)));
 							continue ;
 						}
@@ -244,10 +244,8 @@ RequestHandler::execute(ChannelTask& task) {
 					task.add_error(Error(Error::ERR_NOTONCHANNEL, strs_to_vector(channel_name)));
 				else {
 					const Channel& channel = data.get_channel(channel_name);
-					if (channel.is_invite_only() && !channel.is_operator(user))
+					if (!channel.is_operator(user))
 						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel_name)));
-					else if (!channel.can_join()) 
-						task.add_error(Error(Error::ERR_CHANNELISFULL, strs_to_vector(user.get_nickname(), channel_name)));
 					else {
 						const User& target_user = user_data.get_user(target_user_name);
 						if (target_user.is_joined(channel_name))
@@ -255,6 +253,7 @@ RequestHandler::execute(ChannelTask& task) {
 						else if (!channel.is_allowed_to_invite(user)) 
 							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED, strs_to_vector(channel_name)));
 						else {
+							data.invite_user(target_user, channel);	
 							add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
 							string message = ":" + user.get_info().get_id() + ' ' + Command::get_command_name(Command::INVITE) + ' ' + target_user_name + ' ' + channel_name;
 							add_new_message(strs_to_vector(message), target_user.get_connection().socket_fd, replies);

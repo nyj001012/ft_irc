@@ -16,6 +16,7 @@
 # include <exception>
 # include <vector>
 # include <string>
+# include <set>
 
 class User;
 
@@ -36,10 +37,11 @@ class Channel: public Serializable {
 		bool is_equal(const Channel&) const;
 		void add_user(const User&);
 		void remove_user(const User&);
-		bool is_allowed_to_join(const User&) const;
+		bool is_invited(const User&) const;
 		bool is_allowed_to_invite(const User&) const;
 		bool is_operator(const User &user) const;
 		bool is_invite_only() const;
+		void invite(const User&);
 
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::vector<std::pair<std::string, const Serializable*> > _get_children() const;
@@ -76,6 +78,7 @@ class Channel: public Serializable {
 
 		Channel();
 		Channel& operator=(const Channel&);
+		std::set<const User *> invited_users;
 };
 
 bool operator==(const Channel&, const Channel&);

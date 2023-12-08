@@ -32,6 +32,7 @@ class ChannelData: public Serializable {
 		Channel& get_channel(const std::string&) const;
 		Channel& join_channel(const std::string&, const User&);
 		Channel& join_channel(const std::string&, const std::string&, const User&);
+		void invite_user(const User&, const Channel&);
 		void leave_channel(const Channel&, const User&);
 		void leave_all_joined_channels(const User&);
 		void remove_channel(const Channel&);

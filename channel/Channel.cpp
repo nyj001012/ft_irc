@@ -125,12 +125,12 @@ bool Channel::is_invite_only() const
 	return invite_only;
 }
 
-bool Channel::is_allowed_to_join(const User& user) const {
-	if (invite_only) {
-		return false;
-	}
-	(void) user;
-	return true;
+bool Channel::is_invited(const User& user) const {
+	return invited_users.find(&user) != invited_users.end();
+}
+
+void Channel::invite(const User& user) {
+	invited_users.insert(&user);
 }
 
 bool Channel::is_allowed_to_invite(const User& user) const {

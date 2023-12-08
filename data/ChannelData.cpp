@@ -98,6 +98,10 @@ void ChannelData::remove_channel(const Channel& channel) {
 	}
 	channels.remove(channel);
 }
+void ChannelData::invite_user(const User& user, const Channel& channel) {
+	 Channel& channel_to_invte = const_cast<Channel &>(channel);
+	 channel_to_invte.invite(user);
+}
 
 // Serializable
 
