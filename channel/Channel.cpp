@@ -6,7 +6,7 @@
 /*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 18:42:07 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/04 16:03:03 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/05 16:41:50 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ Channel::Channel(const string& name, const User& operator_user)
 	:name(name),
 	key(string()),
 	users(vector<const User*>()),
-	operator_user(&operator_user)
+	operator_user(&operator_user),
+	user_limit(-1)
 { 
 	users.push_back(&operator_user);
 }
@@ -45,7 +46,8 @@ Channel::Channel(const Channel& other)
 	:name(other.name), 
 	topic(other.topic),
 	users(other.users),
-	operator_user(other.operator_user)
+	operator_user(other.operator_user),
+	user_limit(-1)
 { }
 
 const string& Channel::get_key() const {
@@ -117,6 +119,11 @@ bool	Channel::is_operator(const User &user) const
 	return &get_operator() == &user;
 }
 
+bool Channel::is_invite_only() const
+{
+	return invite_only;
+}
+
 bool Channel::is_allowed_to_join(const User& user) const {
 	if (invite_only) {
 		return false;
@@ -129,6 +136,10 @@ bool Channel::is_allowed_to_invite(const User& user) const {
 	if (!invite_only)
 		return true;
 	return is_operator(user);
+}
+
+bool Channel::can_join() const {
+	return user_limit == -1 || users.size() < static_cast<size_t>(user_limit);
 }
 
 // Serializable
@@ -147,6 +158,8 @@ ostream& Channel::_add_to_serialization(ostream& os, const int depth) const {
 	_json(os, "name", ':', name, ',');
 	_json(os, "topic", ':', topic, ',');
 	if (depth > 0) {
+		_json(os, "invite only", ':', invite_only, ',');
+		_json(os, "user limit", ':', user_limit, ',');
 		const vector<const Serializable *> vec(users.begin(), users.end());
 		_json(os, "users", ':') << ::_serialize(vec, depth - 1);
 	}

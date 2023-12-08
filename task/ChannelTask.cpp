@@ -42,6 +42,32 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 				params.push_back(raw_params[1]);
 			}
 			break;
+		case Command::MODE:
+			{
+			const string& channel_name = raw_params[0];
+			if (isalpha(channel_name[0])) {
+				throw Error(Error::ERR_UNKNOWNCOMMAND);
+			}
+			if (!is_valid_channel_name(channel_name)) {
+				throw Error(Error::ERR_NOSUCHCHANNEL);
+			}
+			for (size_t i = 0; i < raw_params.size(); ++i) {
+				params.push_back(raw_params[i]);
+			}
+			break ;
+		}
+		case Command::TOPIC:
+		{
+		    const string& channel_name = raw_params[0];
+			if (!is_valid_channel_name(channel_name)) {
+				throw Error(Error::ERR_NOSUCHCHANNEL);
+			}
+			params.push_back(channel_name);
+			if (raw_params.size() > 1) {
+				params.push_back(raw_params[1]);
+			}
+			break ;
+		}
 		case Command::INVITE: 
 		case Command::KICK:
 			{
@@ -58,7 +84,7 @@ ChannelTask::ChannelTask(const Task& parent, const vector<string>& raw_params): 
 				break;
 			}
 		default:
-			throw Command::UnSupported();
+			throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}
 }
 
@@ -112,7 +138,7 @@ string ChannelTask::get_channel_part_message(const Channel& channel, const User&
 	const string user_id = ":" + user.get_info().get_id();
 	string reply = user_id + " PART " + channel.get_name(); 
 	if (!reason.empty())
-		reply += ":" + reason;
+		reply += " :" + reason;
 	return reply;
 }
 
@@ -121,17 +147,24 @@ string ChannelTask::get_channel_join_message(const Channel &channel, const User 
 }
 
 void add_channel_join_reply(const Channel& channel, const User& user, vector<string>& vec){
-
+	
 	vec.push_back(ChannelTask::get_channel_join_message(channel, user));
 	string mode; //TODO: Channel mode
 	vec.push_back(":" + SERVER_NAME + " MODE " + channel.get_name() + ' ' + mode);	
+	
 	string topic = channel.get_topic();
-	if (!topic.empty()) {
-		vec.push_back(Reply(Reply::RPL_TOPIC, SERVER_NAME, strs_to_vector(topic)).to_string());
-	}
+	if (topic.empty())
+		topic = ":";
+	vec.push_back(Reply(Reply::RPL_TOPIC, SERVER_NAME, 
+				strs_to_vector(user.get_nickname(), channel.get_name(), topic)).to_string());
 	vector<string> name_params = strs_to_vector(user.get_nickname(), channel.get_name());
-	vector<string> users = channel.get_user_names();
-	name_params.insert(name_params.end(), users.begin(), users.end());
+	vector<const User*> users = channel.get_users();
+	for (size_t i = 0; i < users.size(); ++i) {
+		if (channel.is_operator(*users[i])) 
+			name_params.push_back(string("@") + users[i]->get_nickname());
+		else 
+			name_params.push_back((users[i]->get_nickname()));
+	}
 	vec.push_back(Reply(Reply::RPL_NAMREPLY, SERVER_NAME, name_params).to_string());
 	vec.push_back(Reply(Reply::RPL_ENDOFNAMES, SERVER_NAME, 
 				strs_to_vector(user.get_nickname(), channel.get_name())).to_string());

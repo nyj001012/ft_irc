@@ -217,6 +217,7 @@ void Server::initializeServer(const char* port)
  * 이벤트가 발생했다면 acceptClient() 또는 receiveMessage() 함수를 호출한다.
  * 이벤트가 발생하지 않았다면 다시 select() 함수를 호출한다.
  */
+#include "../data/UserData.hpp"
 void Server::runServer()
 {
 	struct timeval tv = { TIMEOUT_SEC, 0 };
@@ -249,6 +250,34 @@ void Server::runServer()
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
+//						if (tokens[0].type == COMMAND && 
+//								tokens[0].value == "WHOIS" && tokens.size() > 1) {
+//
+//							std::string& nickname = tokens[1].value;
+//							if (UserData::get_storage().is_user_exist(nickname)) {
+//								const User& user = UserData::get_storage().get_user(nickname);
+//								User::Info info = user.get_info();
+//
+//								std::string message = std::string(":ft_irc.42.kr") + " 311 " + info.nick_name + ' ' + info.nick_name + ' ' + info.user_name + ' ' + info.host_name +  " * " + ':' + info.real_name + "\r\n";
+//								sendMessage(i, message);
+//							}
+//							_write_buffers[i] = "";
+//						}
+//						else if (tokens[0].type == COMMAND &&
+//								tokens[0].value == "MODE" && tokens.size() > 2) {
+//
+//							std::string& nickname = tokens[1].value;
+//
+//	//vec.push_back(string(":") + info.nick_name + " MODE " + info.nick_name + " :+iH");
+//							if (UserData::get_storage().is_user_exist(nickname)) {
+//								const User& user = UserData::get_storage().get_user(nickname);
+//
+//								std::string message = std::string(":") + user.get_info().get_id() + " MODE " + user.get_nickname() + ' ' + tokens[2].value + "\r\n"; 
+//								sendMessage(i, message);
+//							}
+//							_write_buffers[i] = "";
+//						}
+//						else {
 						std::vector<std::string> vec = getTokensValue(tokens);
 						// handle repuest
 						Connection connection;
@@ -267,147 +296,162 @@ void Server::runServer()
 						if (tokens[0].type == COMMAND && 
 								tokens[0].value == "QUIT") {
 							this->closeClient(connection.socket_fd);
+
 						}
 					}
 					this->saveLineToBuffer(i);
+					}
 				}
 			}
 		}
 	}
-}
 
-/**
- * 클라이언트의 연결 요청을 수락하고, 클라이언트 소켓을 fd_set에 추가한다.
- */
-void Server::acceptClient()
-{
-	socklen_t client_addr_len = sizeof(struct sockaddr_in);
-	struct sockaddr client_addr;
-	int client_socket = accept(this->_server_socket, &client_addr, &client_addr_len);
-	if (client_socket == -1)
-		throw std::runtime_error("Error: accept() failed");
-	FD_SET(client_socket, &this->_read_fds);
-	if (client_socket > this->_fd_max)
-		this->_fd_max = client_socket;
-	Connection connection;
-	connection.socket_fd = client_socket;
-	_connections.insert(std::make_pair(client_socket, connection));
-	_write_buffers.insert(std::make_pair(client_socket, ""));
-	_read_buffers.insert(std::make_pair(client_socket, ""));
-	if (this->_is_debug)
-		std::cout << F_YELLOW << "[DEBUG] New client connected: " << client_socket << FB_DEFAULT << std::endl;
-}
-
-void Server::saveLineToBuffer(int fd)
-{
-	if (!_read_buffers[fd].length())
-		return;
-	else
+	/**
+	 * 클라이언트의 연결 요청을 수락하고, 클라이언트 소켓을 fd_set에 추가한다.
+	 */
+	void Server::acceptClient()
 	{
-		std::string read_buffer = _read_buffers[fd];
-		size_t crlf_pos = read_buffer.find("\r\n");
-		if (crlf_pos != std::string::npos)
+		socklen_t client_addr_len = sizeof(struct sockaddr_in);
+		struct sockaddr client_addr;
+		int client_socket = accept(this->_server_socket, &client_addr, &client_addr_len);
+		if (client_socket == -1)
+			throw std::runtime_error("Error: accept() failed");
+		FD_SET(client_socket, &this->_read_fds);
+		if (client_socket > this->_fd_max)
+			this->_fd_max = client_socket;
+		Connection connection;
+		connection.socket_fd = client_socket;
+		_connections.insert(std::make_pair(client_socket, connection));
+		_write_buffers.insert(std::make_pair(client_socket, ""));
+		_read_buffers.insert(std::make_pair(client_socket, ""));
+		if (this->_is_debug)
+			std::cout << F_YELLOW << "[DEBUG] New client connected: " << client_socket << FB_DEFAULT << std::endl;
+	}
+
+	void Server::saveLineToBuffer(int fd)
+	{
+		if (!_read_buffers[fd].length())
+			return;
+		else
 		{
-			std::string new_read_data = read_buffer.substr(crlf_pos + 2);
-			_write_buffers[fd] = read_buffer.substr(0, crlf_pos + 2);
-			_read_buffers[fd] = new_read_data;
+			std::string read_buffer = _read_buffers[fd];
+			size_t crlf_pos = read_buffer.find("\r\n");
+			if (crlf_pos == 0)
+				_write_buffers[fd] = "";
+			else if (crlf_pos != std::string::npos)
+			{
+				std::string new_read_data = read_buffer.substr(crlf_pos + 2);
+				_write_buffers[fd] = read_buffer.substr(0, crlf_pos + 2);
+				_read_buffers[fd] = new_read_data;
+			}
+			else
+				_write_buffers[fd] = read_buffer;
+		}
+	}
+
+	/**
+	 * 클라이언트로부터 메시지를 받아온다.
+	 * @param client_socket 클라이언트 소켓
+	 */
+
+	void Server::receiveMessage(int client_socket)
+	{
+		std::vector<char> buffer(BUFFER_SIZE);
+		ssize_t read_size = read(client_socket, &buffer[0], BUFFER_SIZE);
+		if (read_size == -1)
+			throw std::runtime_error("Error: read() failed");
+		if (read_size == 0)
+		{
+			this->closeClient(client_socket);
+		}
+		std::string str_buffer = static_cast<std::string>(buffer.data());
+		if (str_buffer.find("\r\n") == std::string::npos)
+			return;
+		if (read_size < BUFFER_SIZE - 2)
+			buffer.resize(read_size);
+		else
+			buffer.resize(BUFFER_SIZE);
+		if (this->_is_debug)
+			std::cout << F_YELLOW << "[DEBUG] Message received: " << str_buffer << FB_DEFAULT << std::endl;
+		_read_buffers[client_socket] = buffer.data();
+	}
+
+	/**
+	 * 클라이언트 소켓을 닫고, fd_set에서 읽기용, 쓰기용 fd를 모두 제거한다.
+	 * @param client_socket
+	 */
+	void Server::closeClient(int client_socket)
+	{
+		if (client_socket == this->_server_socket)
+			return;
+		if (client_socket > 0)
+			close(client_socket);
+		FD_CLR(client_socket, &this->_read_fds);
+		FD_CLR(client_socket, &this->_write_fds);
+		_connections.erase(client_socket);
+		_read_buffers.erase(client_socket);
+		_write_buffers.erase(client_socket);
+		if (this->_is_debug)
+			std::cout << F_YELLOW << "[DEBUG] Client closed: " << client_socket << FB_DEFAULT << std::endl;
+	}
+
+	/**
+	 * 클라이언트에게 메시지를 보낸다.
+	 * @param client_socket 메시지를 보낼 클라이언트 소켓
+	 * @param message 보낼 메시지
+	 */
+	void Server::sendMessage(int client_socket, std::string& message)
+	{
+		FD_SET(client_socket, &this->_write_fds);
+		ssize_t write_size = write(client_socket, message.data(), message.length());
+		if (write_size == -1)
+		{
+			FD_CLR(client_socket, &this->_write_fds);
+			this->closeClient(client_socket);
+			throw std::runtime_error("Error: write() failed");
+		}
+		if (write_size < static_cast<ssize_t>(message.length()))
+		{
+			_write_buffers[client_socket] = message.substr(write_size);
 		}
 		else
-			_write_buffers[fd] = read_buffer;
-	}
-}
-
-/**
- * 클라이언트로부터 메시지를 받아온다.
- * @param client_socket 클라이언트 소켓
- */
-
-void Server::receiveMessage(int client_socket)
-{
-	std::vector<char> buffer(BUFFER_SIZE);
-	ssize_t read_size = read(client_socket, &buffer[0], BUFFER_SIZE);
-	if (read_size == -1)
-		throw std::runtime_error("Error: read() failed");
-	if (read_size == 0)
-	{
-		this->closeClient(client_socket);
-	}
-	if (read_size < BUFFER_SIZE - 2)
-		buffer.resize(read_size);
-	else
-		buffer.resize(BUFFER_SIZE);
-	if (this->_is_debug)
-		std::cout << F_YELLOW << "[DEBUG] Message received: " << buffer.data() << FB_DEFAULT << std::endl;
-	FD_SET(client_socket, &this->_read_fds);
-	_read_buffers[client_socket] = buffer.data();
-}
-
-/**
- * 클라이언트 소켓을 닫고, fd_set에서 읽기용, 쓰기용 fd를 모두 제거한다.
- * @param client_socket
- */
-void Server::closeClient(int client_socket)
-{
-	if (client_socket == this->_server_socket)
-		return;
-	if (client_socket > 0)
-		close(client_socket);
-	FD_CLR(client_socket, &this->_read_fds);
-	FD_CLR(client_socket, &this->_write_fds);
-	_connections.erase(client_socket);
-	_read_buffers.erase(client_socket);
-	_write_buffers.erase(client_socket);
-	if (this->_is_debug)
-		std::cout << F_YELLOW << "[DEBUG] Client closed: " << client_socket << FB_DEFAULT << std::endl;
-}
-
-/**
- * 클라이언트에게 메시지를 보낸다.
- * @param client_socket 메시지를 보낼 클라이언트 소켓
- * @param message 보낼 메시지
- */
-void Server::sendMessage(int client_socket, std::string& message)
-{
-	ssize_t write_size = write(client_socket, message.data(), message.length());
-	if (write_size == -1)
-		throw std::runtime_error("Error: write() failed");
-	if (write_size == static_cast<ssize_t >(message.length()))
-	{
-		FD_SET(client_socket, this->_write_fds);
-	}
-}
-
-/**
- * 서버 소켓을 닫는다.
- */
-void Server::closeServer()
-{
-	close(this->_server_socket);
-}
-
-std::ostream& operator<<(std::ostream& os, const fd_set& fds)
-{
-	os << "[ ";
-	for (int i = 0; i < FD_SETSIZE; i++)
-	{
-		if (FD_ISSET(i, &fds))
 		{
-			os << i << " ";
+			_write_buffers[client_socket] = "";
+			FD_CLR(client_socket, &this->_write_fds);
 		}
 	}
-	os << "]";
-	return os;
-}
 
-std::ostream& operator<<(std::ostream& os, const Server& server)
-{
-	struct sockaddr_in server_addr = server.getServerAddr();
+	/**
+	 * 서버 소켓을 닫는다.
+	 */
+	void Server::closeServer()
+	{
+		close(this->_server_socket);
+	}
 
-	os << F_YELLOW << "[DEBUG] Server: " << FB_DEFAULT << std::endl;
-	os << "=> Server socket       : " << server.getServerSocket() << std::endl;
-	os << "=> Server address      : " << inet_ntoa(server_addr.sin_addr) << std::endl;
-	os << "=> Server port         : " << ntohs(server_addr.sin_port) << std::endl;
-	os << "=> Max Client Number   : " << server.getMaxClientNumber() << std::endl;
-	os << "=> Server & Client Fds : " << server.getReadFds() << std::endl;
-	return os;
-}
+	std::ostream& operator<<(std::ostream& os, const fd_set& fds)
+	{
+		os << "[ ";
+		for (int i = 0; i < FD_SETSIZE; i++)
+		{
+			if (FD_ISSET(i, &fds))
+			{
+				os << i << " ";
+			}
+		}
+		os << "]";
+		return os;
+	}
+
+	std::ostream& operator<<(std::ostream& os, const Server& server)
+	{
+		struct sockaddr_in server_addr = server.getServerAddr();
+
+		os << F_YELLOW << "[DEBUG] Server: " << FB_DEFAULT << std::endl;
+		os << "=> Server socket       : " << server.getServerSocket() << std::endl;
+		os << "=> Server address      : " << inet_ntoa(server_addr.sin_addr) << std::endl;
+		os << "=> Server port         : " << ntohs(server_addr.sin_port) << std::endl;
+		os << "=> Max Client Number   : " << server.getMaxClientNumber() << std::endl;
+		os << "=> Server & Client Fds : " << server.getReadFds() << std::endl;
+		return os;
+	}

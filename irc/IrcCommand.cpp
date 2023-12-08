@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   IrcCommand.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:28:24 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/29 23:04:06 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/05 22:46:03 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcCommand.hpp"
 #include "../include/json.hpp"
+#include "../include/Irc.hpp"
 #include <climits>
 #define CMD_STRINGIFY(name) # name
 
@@ -32,8 +32,8 @@ const char *all_commands[] = {
 	CMD_STRINGIFY(INVITE),
 	CMD_STRINGIFY(KICK),
 	CMD_STRINGIFY(PRIVMSG),
-	//CMD_STRINGIFY(PING),
-	//CMD_STRINGIFY(PONG),
+	CMD_STRINGIFY(PING),
+	CMD_STRINGIFY(PONG),
 };
 
 Command::Command(): type(Unknown){ }
@@ -44,7 +44,7 @@ Command::Command(const string& str) {
 			return ;
 		}
 	}
-	throw Command::UnSupported();
+	throw Error(Error::ERR_UNKNOWNCOMMAND);
 }
 
 string Command::get_command_name(const Type t) {
@@ -71,11 +71,18 @@ const Command::range Command::parameter_range() const {
 			range = make_pair(4, 4);
 			break;
 		case KICK:
+		case MODE:
+			range = make_pair(2, INT_MAX);
+			break;
 		case TOPIC:
-			range = make_pair(2, 3);
+			range = make_pair(1, 2);
 			break;
 		case INVITE:
 			range = make_pair(2, 2);
+			break;
+		case PING:
+		case PONG:
+			range = make_pair(1, 1);
 			break;
 		default:
 			break;
@@ -85,14 +92,11 @@ const Command::range Command::parameter_range() const {
 
 string Command::_get_label() const {
 	if (type == Unknown) {
-		throw Command::UnSupported();
+		throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}
 	return all_commands[type];
 }
 
-const char* Command::UnSupported::what() const throw(){
-	return "Unsupported command";
-}
 
 std::ostream& Command::_add_to_serialization(std::ostream& os,const int) const {
 	_json(os, "type", ':', _get_label());

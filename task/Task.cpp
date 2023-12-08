@@ -60,16 +60,20 @@ auto_ptr<Task> Task::create(std::vector<std::string>& tokens, const Connection& 
 		case Command::JOIN:
 		case Command::PART:
 		case Command::TOPIC:
+			return auto_ptr<Task>(new ChannelTask(base, tokens));
+			break ;
 		case Command::MODE:
 		case Command::INVITE:
 		case Command::KICK:
 			return auto_ptr<Task>(new ChannelTask(base, tokens));
 		case Command::PRIVMSG:
 			return auto_ptr<Task>(new MessageTask(base, tokens));
+		case Command::PING:
+			return auto_ptr<Task>(new PingTask(base, tokens));
 		default:
+			throw Error(Error::ERR_UNKNOWNCOMMAND);
 			break;
 	}
-	throw Command::UnSupported();
 }
 
 

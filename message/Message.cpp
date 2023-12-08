@@ -77,3 +77,6 @@ vector<int> Message::get_all_fds(const vector<Message>& messages) {
 	}
 	return vector<int>(fds.begin(), fds.end());
 }
+void Message::add_recipient(std::pair<int, std::string> target) {
+	recipients.push_back(target);
+}

@@ -24,6 +24,7 @@ using std::string;
 using std::make_pair;
 using IRC::Command;
 using IRC::Reply;
+using IRC::Error;
 typedef std::pair<std::string, const Serializable*> KeyValue;
 
 bool UserTask::is_valid_nickname(const string& nick) {
@@ -60,7 +61,7 @@ UserTask::UserTask(const Task& parent, const vector<string>& raw_params): Task(p
 				params.push_back(raw_params[0]);
 			break;
 		default:
-			assert(Command::UnSupported().what());
+			throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}
 }
 
@@ -96,7 +97,8 @@ vector<string> UserTask::get_reply() const {
 	if (command != Command::USER)
 		return vec;	
 	
-	vector<string> params = strs_to_vector(WELCOM_MESSAGE + ' '+ info.get_id());
+	vector<string> params = strs_to_vector(info.nick_name);
+	params.push_back(WELCOM_MESSAGE + ", " + info.nick_name);
 	vec.push_back(Reply(Reply::RPL_WELCOME, SERVER_NAME, params).to_string());
 	return vec;
 }

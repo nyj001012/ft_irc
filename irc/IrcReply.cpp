@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcReply.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 01:15:10 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/23 01:20:46 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/05 23:24:47 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ const char *all_reply[] = {
 	REPLY_STRINGIFY(RPL_ENDOFNAMES),
 	REPLY_STRINGIFY(RPL_TOPIC),
 	REPLY_STRINGIFY(RPL_INVITING),
+	REPLY_STRINGIFY(RPL_CHANNELMODEIS),
 };
 
 string get_code(const Code code) {
@@ -35,7 +36,7 @@ string get_code(const Code code) {
 		case Reply::RPL_WELCOME:
 			return "001";
 		case Reply::RPL_NAMREPLY:
-			return "355";
+			return "353";
 		case Reply::RPL_ENDOFNAMES:
 			return "366";
 		case Reply::RPL_TOPIC:
@@ -77,7 +78,9 @@ string Reply::to_string() const {
 	switch (code) {
 		case RPL_NAMREPLY:
 		case RPL_ENDOFNAMES:
-			reply += " " + params[0] + " = " + params[1] + " :";
+			reply += " " + params[0];
+			reply += (code == RPL_NAMREPLY) ? " = ": " ";
+			reply += params[1] + " :";
 			if (code == RPL_NAMREPLY) {
 				for (size_t i = 2; i < params.size(); ++i) {
 					reply += params[i];
@@ -86,7 +89,7 @@ string Reply::to_string() const {
 				}
 			}
 			else
-				reply += "End of Names list";
+				reply += "End of /NAMES list";
 			break;
 		default:
 			for (size_t i = 0; i < params.size(); ++i) {

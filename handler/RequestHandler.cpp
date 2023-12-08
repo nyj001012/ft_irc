@@ -1,12 +1,12 @@
-/*const  ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   RequestHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heshin <heshin@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/11/30 03:21:10 by heshin           ###   ########.fr       */
+/*   Updated: 2023/12/08 15:43:03 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,18 @@ using IRC::Command;
 using IRC::Reply;
 
 int get_fd(const User*);
-void add_broadcast_to_others(const vector<string>, vector<Message>&, const Channel&, const User&);
+Message add_broadcast_to_others(const vector<string>, vector<Message>&, const Channel&, const User&);
+Message add_broadcast_to_all(const vector<string>, vector<Message>&, const Channel&);
 
 RequestHandler::RequestHandler() {}
+
 
 vector<Message>  RequestHandler::get_request(vector<string>& req, const Connection& connection) {
 
 	auto_ptr<Task> task;
 	vector<Message> reply;
 	try {
-		task = Task::create(req, connection);	
+		task = Task::create(req, connection);
 	}
 	catch(Error &e) {
 		add_new_message(strs_to_vector(e.get_message()), connection.socket_fd, reply);	
@@ -60,6 +62,10 @@ vector<Message>  RequestHandler::get_request(vector<string>& req, const Connecti
 		MessageTask* message_task = dynamic_cast<MessageTask*>(task.get());
 		if (message_task != NULL) {
 			reply = execute(*message_task);	
+		}
+		PingTask* ping_task = dynamic_cast<PingTask*>(task.get());
+		if (ping_task != NULL) {
+			reply = execute(*ping_task);
 		}
 	}
 	catch (std::exception& e) {
@@ -109,8 +115,10 @@ RequestHandler::execute(MessageTask& task) {
 					const Channel& channel = channel_data.get_channel(name);
 					vector<const User*> users = channel.get_users();
 					for (size_t i = 0; i < users.size(); ++i) {
-						recipients.push_back(
-								make_pair(users[i]->get_connection().socket_fd, name));
+						if (users[i] != &sender) {
+							recipients.push_back(
+									make_pair(users[i]->get_connection().socket_fd, name));
+						}
 					}
 				}
 				break;
@@ -140,6 +148,12 @@ RequestHandler::execute(ChannelTask& task) {
 				vector<string> name_key = split_string(task.params[i]);
 				try {
 					// TODO: throw error no permission
+					const string& channel_name = task.params[0];
+					if (data.is_channel_exist(channel_name) && 
+							!data.get_channel(channel_name).can_join()) {
+						task.add_error(Error(Error::ERR_CHANNELISFULL));
+						continue ;
+					}
 					const Channel& joined = (name_key.size() == 2 ? 
 							data.join_channel(name_key[0], name_key[1], user):
 							data.join_channel(name_key[0], user));
@@ -150,6 +164,7 @@ RequestHandler::execute(ChannelTask& task) {
 						add_broadcast_to_others(strs_to_vector(message),
 								replies, joined, user);
 					}
+					
 				}
 				catch (Error& e) {
 					task.add_error(e);
@@ -213,15 +228,21 @@ RequestHandler::execute(ChannelTask& task) {
 					task.add_error(Error(Error::ERR_NOTONCHANNEL));
 				else {
 					const Channel& channel = data.get_channel(channel_name);
-					const User& target_user = user_data.get_user(target_user_name);
-					if (target_user.is_joined(channel_name))
-						task.add_error(Error(Error::ERR_USERONCHANNEL));
-					else if (!channel.is_allowed_to_invite(user)) 
+					if (channel.is_invite_only() && !channel.is_operator(user))
 						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+					else if (!channel.can_join()) 
+						task.add_error(Error(Error::ERR_CHANNELISFULL));
 					else {
-						add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
-						string message = ":" + user.get_info().get_id() + ' ' + Command::get_command_name(Command::INVITE) + ' ' + target_user_name + ' ' + channel_name;
-						add_new_message(strs_to_vector(message), target_user.get_connection().socket_fd, replies);
+						const User& target_user = user_data.get_user(target_user_name);
+						if (target_user.is_joined(channel_name))
+							task.add_error(Error(Error::ERR_USERONCHANNEL));
+						else if (!channel.is_allowed_to_invite(user)) 
+							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+						else {
+							add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
+							string message = ":" + user.get_info().get_id() + ' ' + Command::get_command_name(Command::INVITE) + ' ' + target_user_name + ' ' + channel_name;
+							add_new_message(strs_to_vector(message), target_user.get_connection().socket_fd, replies);
+					}
 					}
 				}
 				break;
@@ -244,19 +265,23 @@ RequestHandler::execute(ChannelTask& task) {
 					if (!channel.is_operator(user))
 						task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
 					else {
-						string message = ":" + user.get_info().get_id() +
+						vector<string> messages;
+						string kick_message = ":" + user.get_info().get_id() +
 							' ' + Command::get_command_name(Command::KICK) + ' ' + channel_name;
 						if (task.params.size() > 2) 
-							message += " :" + task.params[2];
+							kick_message += " :" + task.params[2];
 						else	
-							message += " :" + user.get_nickname();
-						add_new_message(strs_to_vector(message), task.get_connection().socket_fd, replies);
-						add_broadcast_to_others(strs_to_vector(message),
+							kick_message += " :" + user.get_nickname();
+						messages.push_back(kick_message);
+						string part_message = ChannelTask::get_channel_part_message(channel, user_data.get_user(target_user_name), "KICK by " + user.get_nickname());
+						messages.push_back(part_message);
+						add_new_message(messages, task.get_connection().socket_fd, replies);
+						add_broadcast_to_others(messages,
 								replies, channel, user);
+
 						data.leave_channel(channel, user_data.get_user(target_user_name));	
 					}
 				}
-						
 				break;
 			}
 		case Command::TOPIC:
@@ -272,13 +297,9 @@ RequestHandler::execute(ChannelTask& task) {
 
 					if (task.params.size() == 1) {
 						std::string topic = channel.get_topic();
-						// if (!topic.empty()) {
-						// "332 " + user.get_nickname() + " " + channel_name + " :" + topic
-						// }
-						// else
-						// {
-						// "331 " + user.get_nickname() + " " + channel_name + " :No topic is set"
-						// }
+						std::string reply = topic.empty() ? "331 " + user.get_nickname() + " " + channel_name + " :No topic is set"
+                                              : "332 " + user.get_nickname() + " " + channel_name + " :" + topic;
+            			add_new_message(strs_to_vector(reply), task.get_connection().socket_fd, replies);
 					}
 					else if (task.params.size() >= 2) { // 채널의 주제를 설정하는 경우에
 						if (!channel.is_operator(user) && channel.topic_protected) {
@@ -287,7 +308,8 @@ RequestHandler::execute(ChannelTask& task) {
 						}
 						const std::string &new_topic = task.params[1];
 						channel.set_topic(new_topic, user);
-						// 332 + user.get_nickname() + " " + channel_name + " :" + new_topic
+						std::string message = "332 " + user.get_nickname() + " " + channel_name + " :" + new_topic;
+						add_broadcast_to_all(strs_to_vector(message), replies, channel);
 					}
 				}
 				catch (ChannelData::ChannelNotExist&) {
@@ -295,98 +317,120 @@ RequestHandler::execute(ChannelTask& task) {
 				}
 				break ;
 			}
-		case Command::MODE:
+			case Command::MODE: {
+    		if (task.params.size() < 2)
 			{
-				if (task.params.size() < 2) {
-					task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
-					break ;
-				}
+        		task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+        		break;
+    		}
+    		const std::string &target = task.params[0];
+    		const std::string &mode_params = task.params[1];
+    		std::string broadcast_message = ":" + user.get_nickname() + " MODE " + target;
 
-				const std::string &target = task.params[0];
-				const std::string &mode = task.params[1];
+    		if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX)
+			{
+        		try
+				{
+            		Channel &channel = data.get_channel(target);
 
-				if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX) {
-					try {
-						Channel &channel = data.get_channel(target);
+		            if (!channel.is_operator(user))
+					{
+        		        task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
+		                break;
+       		     	}
 
-						if (!channel.is_operator(user))
-						{
-							task.add_error(Error(Error::ERR_CHANOPRIVSNEEDED));
-							break ;
-						}
-						bool setting = true;
-						for (size_t i = 0 ; i < mode.length() ; ++i) {
-							char modeChar = mode[i];
+            		bool setting = true;
+            		for (size_t i = 0; i < mode_params.length(); ++i) {
+                	char modeChar = mode_params[i];
 
-							if (modeChar == '+' || modeChar == '-') {
-								setting = (modeChar == '+');
-								continue ;
-							}
+                	if (modeChar == '+' || modeChar == '-')
+					{
+                    	setting = (modeChar == '+');
+                    	broadcast_message += " ";
+                    	broadcast_message += modeChar; // Append '+' or '-' to broadcast message
+                    	continue;
+                	}
 
-							switch (modeChar) {
-								case 'i': {
-														channel.set_invite_only(setting);
-														break;
-													}
-								case 't':
-													{
-														channel.set_topic_protection(setting);
-														break;
-													}
-								case 'k':
-													{
-														if (setting && (i + 1 < task.params.size())) {
-															channel.set_key(task.params[i + 1]);
-															i++;
-														} else {
-															channel.set_key("");
-														}
-														break ;
-													}
-								case 'l':
-													{
-														if (setting && (i + 1 < task.params.size())) {
-															char *end;
-															long limit = std::strtol(task.params[i + 1].c_str(), &end, 10);
-
-															if (*end == '\0' && end != task.params[i + 1].c_str())
-																channel.set_user_limit(static_cast<int>(limit));
-															else
-																task.add_error(Error(Error::ERR_UNKNOWNMODE));
-															i++;
-														}
-														else
-															channel.remove_user_limit();
-														break ;
-													}
-								case 'o':
-													{
-														if (i + 1 < task.params.size()) {
-															try {
-																User &target_user = user_data.get_user(task.params[i + 1]);
-																if (setting)
-																	channel.add_operator(target_user);
-																else
-																	channel.remove_operator(target_user);
-																i++;
-															}
-															catch (UserData::UserNotExist&) {
-																task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
-															}
-															break ;
-														}
-													}
-							}
-						}
-					}
-					catch (ChannelData::ChannelNotExist&) {
-						task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
-					}
-				}
-				break;
-			}
+                	switch (modeChar) {
+                    	case 'i':
+                        	channel.set_invite_only(setting);
+                        	broadcast_message += "i";
+                        	break;
+                    	case 't':
+                        	channel.set_topic_protection(setting);
+                        	broadcast_message += "t";
+                        	break;
+                    	case 'k':
+                        	if (setting && (i + 1 < task.params.size()))
+							{
+                            	channel.set_key(task.params[i + 1]);
+                            	broadcast_message += "k ";
+                            	broadcast_message += task.params[i + 1];
+                            	i++; // Skip key value in loop
+                        	}
+							else
+							{
+                            channel.set_key("");
+                            broadcast_message += "k";
+                        	}
+                        	break;
+                    	case 'l':
+                        	if (setting && (i + 1 < task.params.size()))
+							{
+                            	char *end;
+                            	long limit = std::strtol(task.params[i + 1].c_str(), &end, 10);
+                            	if (*end == '\0' && end != task.params[i + 1].c_str())
+								{
+                                	channel.set_user_limit(static_cast<int>(limit));
+                                	broadcast_message += "l ";
+                                	broadcast_message += task.params[i + 1];
+                                	i++; // Skip limit value in loop
+                            	}
+								else
+                                	task.add_error(Error(Error::ERR_UNKNOWNMODE));
+                        	} else
+							{
+                            	channel.remove_user_limit();
+                            	broadcast_message += "l";
+                        	}
+                        	break;
+                    	case 'o':
+                        	if (i + 1 < task.params.size())
+							{
+                            	try
+								{
+                                	User &target_user = user_data.get_user(task.params[i + 1]);
+                                	if (setting)
+									{
+                                    	channel.add_operator(target_user);
+                                    	broadcast_message += "o ";
+                                    	broadcast_message += task.params[i + 1];
+                                	}
+									else
+									{
+                                    	channel.remove_operator(target_user);
+                                    	broadcast_message += "o ";
+                                    	broadcast_message += task.params[i + 1];
+                                	}
+                                	i++; // Skip nickname in loop
+                            	}
+								catch (UserData::UserNotExist&) {
+                                	task.add_error(Error(Error::ERR_NEEDMOREPARAMS));
+								}
+                        	}
+                        	break;
+            		    }
+        		    }
+            	add_broadcast_to_all(strs_to_vector(broadcast_message), replies, channel);
+			} catch (ChannelData::ChannelNotExist&)
+			{
+           		task.add_error(Error(Error::ERR_NOSUCHCHANNEL));
+        	}
+	  	}
+   			break;
+	}
 		default:
-			throw Command::UnSupported();
+			throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}
 	return replies;
 }
@@ -430,7 +474,7 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 				}
 				data.create_user(updated.get_connection(),updated.info);
 				data.remove_task(updated.get_connection());
-				add_new_message(updated.get_reply(), "" , make_pair(task.get_connection().socket_fd, ""), replies);
+				add_new_message(updated.get_reply(), task.get_connection().socket_fd, replies);
 				break;
 			}
 		case Command::QUIT: 
@@ -450,12 +494,24 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 				break;
 			}
 		default:
-			throw Command::UnSupported();
+			throw Error(Error::ERR_UNKNOWNCOMMAND);
 	}
 	return replies;
 }
 
-void add_broadcast_to_others(const vector<string> new_messages, vector<Message>& messages, const Channel& channel, const User& sender) {
+vector<Message> RequestHandler::execute(PingTask& task) {
+	vector<Message> replies = Message::create_start_from(task.get_connection().socket_fd);
+	UserData& data = UserData::get_storage();
+	if (data.is_user_exist(task.get_connection())) {
+		const User& user = data.get_user(task.get_connection());
+		vector<string> reply = task.get_reply();
+		reply[0] += " :" + user.get_nickname();
+		add_new_message(reply, task.get_connection().socket_fd, replies);
+	}
+	return replies;
+}
+
+Message add_broadcast_to_others(const vector<string> new_messages, vector<Message>& messages, const Channel& channel, const User& sender) {
 
 	vector<const User*> users = channel.get_users();	
 	vector<int> fds;
@@ -465,7 +521,18 @@ void add_broadcast_to_others(const vector<string> new_messages, vector<Message>&
 			continue;
 		fds.push_back(get_fd(users[i]));
 	}
-	add_new_message(new_messages, fds, messages);
+	return add_new_message(new_messages, fds, messages);
+}
+
+Message add_broadcast_to_all(const vector<string> new_messages, vector<Message>& messages, const Channel& channel) {
+
+	vector<const User*> users = channel.get_users();	
+	vector<int> fds;
+
+	for (size_t i = 0; i < users.size(); ++i) {
+		fds.push_back(get_fd(users[i]));
+	}
+	return add_new_message(new_messages, fds, messages);
 }
 
 int get_fd(const User* user) {
