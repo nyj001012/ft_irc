@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcCommand.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kimsejoon <kimsejoon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 04:28:24 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/05 22:46:03 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/08 11:46:26 by kimsejoon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ const char *all_commands[] = {
 	CMD_STRINGIFY(PING),
 	CMD_STRINGIFY(PONG),
 };
-
 Command::Command(): type(Unknown){ }
 Command::Command(const string& str) {
 	for (size_t i = 0; i < sizeof(all_commands) / sizeof(all_commands[0]); ++i) {
@@ -75,7 +74,7 @@ const Command::range Command::parameter_range() const {
 			range = make_pair(2, INT_MAX);
 			break;
 		case TOPIC:
-			range = make_pair(1, 2);
+			range = make_pair(0, 2);
 			break;
 		case INVITE:
 			range = make_pair(2, 2);

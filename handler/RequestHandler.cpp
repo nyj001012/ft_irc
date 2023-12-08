@@ -324,7 +324,12 @@ RequestHandler::execute(ChannelTask& task) {
 						const std::string &new_topic = task.params[1];
 						channel.set_topic(new_topic, user);
 						std::string message = "332 " + user.get_nickname() + " " + channel_name + " :" + new_topic;
+<<<<<<< HEAD
 						add_broadcast_to_all(strs_to_vector(message), replies, channel);
+=======
+						add_broadcast_to_others(strs_to_vector(message), replies, channel, user);
+						add_new_message(task.get_reply(), task.get_connection().socket_fd, replies);
+>>>>>>> ee95e17 (fix: topic)
 					}
 				}
 				catch (ChannelData::ChannelNotExist&) {
