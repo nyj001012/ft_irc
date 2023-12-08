@@ -27,7 +27,9 @@ const pair<const char *, int> all_errors[] = {
 	make_pair(ERROR_STRINGIFY(ERR_NOTOPIC), 331),
 	make_pair(ERROR_STRINGIFY(ERR_USERONCHANNEL), 443),
 	make_pair(ERROR_STRINGIFY(ERR_NOORIGIN), 409),
-	make_pair(ERROR_STRINGIFY(ERR_UNKNOWNCOMMAND), 421)
+	make_pair(ERROR_STRINGIFY(ERR_UNKNOWNCOMMAND), 421),
+	make_pair(ERROR_STRINGIFY(ERR_CHANNELISFULL), 471),
+	make_pair(ERROR_STRINGIFY(ERR_INVITEONLYCHAN), 473),
 };
 
 Error::Error(): code(UnKnown) {}

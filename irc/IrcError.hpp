@@ -27,6 +27,7 @@ namespace IRC {
 			ERR_NOORIGIN,
 			ERR_UNKNOWNCOMMAND,
 			ERR_CHANNELISFULL,
+			ERR_INVITEONLYCHAN,
 		} code;
 
 		Error();
