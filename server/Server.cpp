@@ -246,38 +246,9 @@ void Server::runServer()
 				while (_write_buffers[i].length())
 				{
 					std::string write_buffer = _write_buffers[i];
-					//this->sendMessage(i, write_buffer);
 					std::vector<t_token> tokens;
 					if (parseMessageFormat(write_buffer, this->_is_debug, tokens))
 					{
-//						if (tokens[0].type == COMMAND &&
-//								tokens[0].value == "WHOIS" && tokens.size() > 1) {
-//
-//							std::string& nickname = tokens[1].value;
-//							if (UserData::get_storage().is_user_exist(nickname)) {
-//								const User& user = UserData::get_storage().get_user(nickname);
-//								User::Info info = user.get_info();
-//
-//								std::string message = std::string(":ft_irc.42.kr") + " 311 " + info.nick_name + ' ' + info.nick_name + ' ' + info.user_name + ' ' + info.host_name +  " * " + ':' + info.real_name + "\r\n";
-//								sendMessage(i, message);
-//							}
-//							_write_buffers[i] = "";
-//						}
-//						else if (tokens[0].type == COMMAND &&
-//								tokens[0].value == "MODE" && tokens.size() > 2) {
-//
-//							std::string& nickname = tokens[1].value;
-//
-//	//vec.push_back(string(":") + info.nick_name + " MODE " + info.nick_name + " :+iH");
-//							if (UserData::get_storage().is_user_exist(nickname)) {
-//								const User& user = UserData::get_storage().get_user(nickname);
-//
-//								std::string message = std::string(":") + user.get_info().get_id() + " MODE " + user.get_nickname() + ' ' + tokens[2].value + "\r\n";
-//								sendMessage(i, message);
-//							}
-//							_write_buffers[i] = "";
-//						}
-//						else {
 						std::vector<std::string> vec = getTokensValue(tokens);
 						// handle repuest
 						Connection connection;
