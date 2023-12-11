@@ -29,12 +29,13 @@ void printError(std::string message)
  */
 bool isNumber(const char* string)
 {
-	int i = -1;
+	size_t i = 0;
 
-	while (string[++i])
+	while (string[i])
 	{
 		if (string[i] < '0' || string[i] > '9')
 			return false;
+		i++;
 	}
 	return true;
 }
