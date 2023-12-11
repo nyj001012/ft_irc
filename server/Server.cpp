@@ -373,12 +373,12 @@ void Server::runServer()
 		if (str_buffer.find("\r\n") == std::string::npos)
 			return;
 		if (read_size < BUFFER_SIZE - 2)
-			buffer.resize(read_size);
+			str_buffer.resize(read_size);
 		else
-			buffer.resize(BUFFER_SIZE);
+			str_buffer.resize(BUFFER_SIZE);
 		if (this->_is_debug)
 			std::cout << F_YELLOW << "[DEBUG] Message received: " << str_buffer << FB_DEFAULT << std::endl;
-		_read_buffers[client_socket] = buffer.data();
+		_read_buffers[client_socket] = str_buffer;
 	}
 
 	/**
