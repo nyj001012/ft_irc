@@ -29,11 +29,11 @@ void printError(std::string message)
  */
 bool isNumber(const char* string)
 {
-	int i = 0;
+	size_t i = 0;
 
 	while (string[i])
 	{
-		if (!std::isdigit(string[i]))
+		if (string[i] < '0' || string[i] > '9')
 			return false;
 		i++;
 	}
