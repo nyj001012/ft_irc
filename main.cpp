@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	RequestHandler handler;
 	Reflector::shared().add(UserData::get_storage());
 	Reflector::shared().add(ChannelData::get_storage());
-	const char* port;
+	char* port;
 	Server server;
 
 	if (argc == 3 || (argc == 2 && !std::strcmp(argv[1], "DEBUG")))
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 		port = argv[1];
 		if (!std::strcmp(argv[1], "DEBUG"))
 		{
-			port = (getPortInDebugMode()).c_str();
+			std::strcpy(port, getPortInDebugMode().c_str());
 			server.setIsDebug(true);
 			Reflector::shared().set_debug(true);
 		}
