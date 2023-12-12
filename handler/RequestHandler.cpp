@@ -497,18 +497,27 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 			}
 		case Command::QUIT: 
 			{
+				const vector<const Channel*> empty_channels;
+				ChannelData& channel_data = ChannelData::get_storage();
 				if (!data.is_user_exist(task.get_connection()))
 					return replies;
 				User& user = data.get_user(task.get_connection());
-				if (!task.params.empty()) {
-					vector<const Channel*> channels = user.get_all_channels();
-					string prefix = user.get_info().get_id() + ' ' + Command::get_command_name(Command::QUIT);
-					vector<string> messages = strs_to_vector(prefix + " :" + task.params[0]);
-					for (size_t i = 0; i < channels.size(); ++i) {
-						add_broadcast_to_others(messages, replies, *channels[i], user);
-					}
-				}
+				if (task.params.empty()) 
+					return replies;
+				vector<const Channel*> channels = user.get_all_channels();
+				string prefix = user.get_info().get_id() + ' ' + Command::get_command_name(Command::QUIT);
+				vector<string> messages = strs_to_vector(prefix + " :" + task.params[0]);
+				for (size_t i = 0; i < channels.size(); ++i) {
+					add_broadcast_to_others(messages, replies, *channels[i], user);
+					channel_data.leave_channel(*channels[i], user);
+				}	
 				data.delete_user(user);
+				for (size_t i = 0; i < channels.size(); ++i) {
+					if(channels[i]->get_number_of_users() == 0) {
+						channel_data.remove_channel(*channels[i]);
+					}
+				}	
+
 				break;
 			}
 		default:
