@@ -6,7 +6,7 @@
 /*   By: sejokim <sejokim@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 23:40:08 by heshin            #+#    #+#             */
-/*   Updated: 2023/12/08 18:29:34 by sejokim          ###   ########.fr       */
+/*   Updated: 2023/12/12 16:08:27 by sejokim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,7 +325,7 @@ RequestHandler::execute(ChannelTask& task) {
 						}
 						const std::string &new_topic = task.params[1];
 						channel.set_topic(new_topic, user);
-						std::string message = "332 " + user.get_nickname() + " " + channel_name + " :" + new_topic;
+						std::string message = ":" + user.get_info().get_id() + " TOPIC " + channel_name + " :" + new_topic;
 						add_broadcast_to_all(strs_to_vector(message), replies, channel);
 					}
 				}
