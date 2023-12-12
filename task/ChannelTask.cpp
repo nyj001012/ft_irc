@@ -93,7 +93,7 @@ void ChannelTask::add_channel_to_reply(const Channel& channel) {
 }
 
 bool ChannelTask::is_valid_channel_name(const string& name) {
-	if (name.length() <= 1 || name.length() > 50)
+	if (name.length() <= 1 || name.length() > 200)
 		return false;
 	if (name[0] != '&')
 		return false;

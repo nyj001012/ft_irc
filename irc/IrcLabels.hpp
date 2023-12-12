@@ -13,6 +13,7 @@
 #ifndef IRC_LABELS_HPP
 # define IRC_LABELS_HPP
 # include <cstddef>
+# include <string>
 
 namespace IRC {
 
@@ -22,6 +23,7 @@ namespace IRC {
 			static const char LOCAL_CHANNEL_PREFIX = '&';
 			static const char* NOT_ALLOWED_CHARS;
 	};
+	std::string get_lower_name(const std::string&);
 };
 
 #endif

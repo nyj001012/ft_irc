@@ -41,7 +41,8 @@ UserData& UserData::get_storage() {
 }
 
 bool UserData::is_user_exist(const string& nickname) const {
-	return user_nick_map.find(nickname) != user_nick_map.end(); 
+	const string lower_name = IRC::get_lower_name(nickname);
+	return user_nick_map.find(lower_name) != user_nick_map.end(); 
 }
 
 bool UserData::is_user_exist(const Connection& connection) const {
@@ -75,7 +76,8 @@ User& UserData::create_user(const Connection connection, const User::Info& info)
 		users.pop_back();
 		throw UserAlreadyExist();
 	}
-	pair<string, UserIter> nick_pair = make_pair(iter->get_nickname(), iter);
+	const string lower_name = IRC::get_lower_name(iter->get_nickname());
+	pair<string, UserIter> nick_pair = make_pair(lower_name, iter);
 	if (!user_nick_map.insert(nick_pair).second) {
 		users.pop_back();
 		user_socket_map.erase(socket_inserted.first);
@@ -87,8 +89,9 @@ User& UserData::create_user(const Connection connection, const User::Info& info)
 void UserData::delete_user(const User& user) {
 
 	typedef list<User>::iterator UserIter;
-	if (user.get_nickname().length() != 0 &&
-			is_user_exist(user.get_nickname())) {
+	const string user_name = user.get_nickname();
+	if (user_name.length() != 0 &&
+			is_user_exist(IRC::get_lower_name(user_name))) {
 		map<int, UserIter>::iterator socket_found = user_socket_map.find(user.get_connection().socket_fd);;
 		map<string, UserIter>::iterator nick_found = user_nick_map.find(user.get_nickname());
 		user_socket_map.erase(socket_found);
@@ -122,7 +125,7 @@ void UserData::handle_connection_lost(const int socket_fd) {
 }
 
 bool UserData::is_duplicated(const string& nick_name) const {
-	if (is_user_exist(nick_name))
+	if (is_user_exist(IRC::get_lower_name(nick_name)))
 		return true;
 	map<int, UserTask>::const_iterator iter;
 	for (iter = pendding_users.begin(); iter != pendding_users.end(); ++iter) {

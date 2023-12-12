@@ -15,6 +15,7 @@
 #include "../user/User.hpp"
 #include "../include/json.hpp"
 #include "../include/utils.hpp"
+#include <cctype>
 #include <utility>
 #include <sstream>
 
@@ -39,7 +40,8 @@ ChannelData& ChannelData::get_storage() {
 }
 
 bool ChannelData::is_channel_exist(const string& name) const {
-	return channel_map.find(name) != channel_map.end(); 
+	const string lower_name = IRC::get_lower_name(name);
+	return channel_map.find(lower_name) != channel_map.end(); 
 }
 
 Channel& ChannelData::get_channel(const string& name) const {
@@ -87,7 +89,8 @@ Channel& ChannelData::create_channel(const string& name, const User& user) {
 	Channel ch = Channel(name, user);
 	channels.push_back(ch);
 	Channel& new_channel = channels.back();
-	channel_map.insert(make_pair(name, &new_channel));
+	const string lower_case_name = IRC::get_lower_name(name);
+	channel_map.insert(make_pair(lower_case_name, &new_channel));
 	return new_channel;
 }
 
