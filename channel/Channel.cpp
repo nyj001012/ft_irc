@@ -38,6 +38,7 @@ Channel::Channel(const string& name, const User& operator_user)
 	key(string()),
 	users(vector<const User*>()),
 	operator_user(&operator_user),
+	invite_only(false),
 	user_limit(-1)
 { 
 	users.push_back(&operator_user);
@@ -48,6 +49,7 @@ Channel::Channel(const Channel& other)
 	topic(other.topic),
 	users(other.users),
 	operator_user(other.operator_user),
+	invite_only(false),
 	user_limit(-1)
 { }
 

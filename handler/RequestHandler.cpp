@@ -343,7 +343,7 @@ RequestHandler::execute(ChannelTask& task) {
 				}
 				const std::string &target = task.params[0];
 				const std::string &mode_params = task.params[1];
-				std::string broadcast_message = ":" + user.get_nickname() + " MODE " + target;
+				std::string broadcast_message = ":" + user.get_info().get_id() + " MODE " + target;
 
 				if (target[0] == IRC::ChannelLabel::LOCAL_CHANNEL_PREFIX)
 				{
