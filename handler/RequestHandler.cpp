@@ -415,9 +415,25 @@ RequestHandler::execute(ChannelTask& task) {
 								case 'o':
 									if (i + 1 < task.params.size())
 									{
+										if (!UserData::get_storage().is_user_exist(task.params[i + 1])) { 
+
+											task.add_error(Error(Error::ERR_NOSUCHNICK, strs_to_vector(task.params[i + 1])));
+											break;
+										}
 										try
 										{
 											User &target_user = user_data.get_user(task.params[i + 1]);
+											const vector<const User*> users = channel.get_users();
+											bool is_exist = false;
+											for (size_t j = 0; !is_exist && j < users.size(); ++j) {
+												if (users[j] == &target_user) {
+													is_exist = true;
+												}
+											}
+											if (!is_exist) {
+											task.add_error(Error(Error::ERR_USERNOTINCHANNEL, strs_to_vector(target_user.get_nickname(), channel.get_name())));
+												break;
+											}
 											if (setting)
 											{
 												channel.add_operator(target_user);
@@ -439,7 +455,8 @@ RequestHandler::execute(ChannelTask& task) {
 									break;
 							}
 						}
-						add_broadcast_to_all(strs_to_vector(broadcast_message), replies, channel);
+						if (!task.has_error())
+							add_broadcast_to_all(strs_to_vector(broadcast_message), replies, channel);
 					} catch (ChannelData::ChannelNotExist&)
 					{
 						task.add_error(Error(Error::ERR_NOSUCHCHANNEL, strs_to_vector(target)));
@@ -517,7 +534,6 @@ vector<Message> RequestHandler::execute(UserTask& task) {
 						channel_data.remove_channel(*channels[i]);
 					}
 				}	
-
 				break;
 			}
 		default:

@@ -2,6 +2,7 @@
 #include "../include/config.hpp"
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 #define ERROR_STRINGIFY(name) # name
 
@@ -33,6 +34,7 @@ const pair<const char *, int> all_errors[] = {
 	make_pair(ERROR_STRINGIFY(ERR_UNKNOWNCOMMAND), 421),
 	make_pair(ERROR_STRINGIFY(ERR_CHANNELISFULL), 471),
 	make_pair(ERROR_STRINGIFY(ERR_INVITEONLYCHAN), 473),
+	make_pair(ERROR_STRINGIFY(ERR_USERNOTINCHANNEL), 441),
 };
 
 Error::Error(): code(UnKnown) {}

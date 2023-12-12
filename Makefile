@@ -29,7 +29,7 @@ SRCS = main.cpp \
 OBJS = ${SRCS:.cpp=.o}
 INCLUDE = -I include -I include/server
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g
 RM = rm -f
 
 all:	${NAME}
