@@ -34,31 +34,34 @@ using std::make_pair;
 
 typedef std::pair<string, const Serializable*> KeyValue;
 
-Connection::Connection(): is_alive(true) {}
-Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): 
-	is_alive(false), socket_fd(socket_fd), password() {
-	char buffer[INET6_ADDRSTRLEN];
-	switch (addr->ss_family) {
-		case (AF_INET):
-			ip_family = V4;
-			port = htons(((const struct sockaddr_in*)addr)->sin_port);
-			break;
-		case (AF_INET6):
-			ip_family = V6;
-			port = htons(((const struct sockaddr_in6*)addr)->sin6_port);
-			break;
-		default:
-			return;
-	}
-	if (inet_ntop(addr->ss_family, 
-				get_in_addr((const struct sockaddr*)addr), 
-				buffer, sizeof(buffer)) != NULL) {
-		address = string(buffer);
-		is_alive = true;
-	} 
-	else 
-		return;
-}
+Connection::Connection()
+//	: is_alive(true) 
+{}
+//Connection::Connection(const struct sockaddr_storage* addr, const int socket_fd): 
+//	//is_alive(false), 
+//	socket_fd(socket_fd), password() {
+//	char buffer[INET6_ADDRSTRLEN];
+//	switch (addr->ss_family) {
+//		case (AF_INET):
+//			ip_family = V4;
+//			port = htons(((const struct sockaddr_in*)addr)->sin_port);
+//			break;
+//		case (AF_INET6):
+//			ip_family = V6;
+//			port = htons(((const struct sockaddr_in6*)addr)->sin6_port);
+//			break;
+//		default:
+//			return;
+//	}
+//	if (inet_ntop(addr->ss_family, 
+//				get_in_addr((const struct sockaddr*)addr), 
+//				buffer, sizeof(buffer)) != NULL) {
+//		address = string(buffer);
+//		is_alive = true;
+//	} 
+//	else 
+//		return;
+//}
 string User::Info::get_id() const {
 	return nick_name + "!~" + user_name + '@' + host_name;
 }
@@ -96,9 +99,9 @@ User& User::operator=(const User& other) {
 	return *this;
 }
 
-bool User::is_available() const {
-	return connection.is_alive;
-}
+//bool User::is_available() const {
+//	return connection.is_alive;
+//}
 
 const string& User::get_nickname() const {
 	return info.nick_name;
@@ -165,14 +168,14 @@ bool User::is_equal(const User& other) const {
 }
 
 bool Connection::is_equal(const Connection& other) const {
-	if (is_alive != other.is_alive)
-		return false;
-	if (ip_family != other.ip_family)
-		return false;
-	if (address != other.address)
-		return false;
-	if (port != other.port)
-		return false;
+//	if (is_alive != other.is_alive)
+//		return false;
+//	if (ip_family != other.ip_family)
+//		return false;
+//	if (address != other.address)
+//		return false;
+//	if (port != other.port)
+//		return false;
 	if (socket_fd != other.socket_fd)
 		return false;
 	return true;
@@ -195,18 +198,18 @@ bool operator==(const User::Info& a, const User::Info& b) {
 string Connection::_get_label() const {
 	stringstream ss;
 	ss << "socket=" << socket_fd;
-	if (is_alive)
-		ss << "(alive)";
-	else 
-		ss << "(not alive)";
+//	if (is_alive)
+//		ss << "(alive)";
+//	else 
+//		ss << "(not alive)";
 	return ss.str();
 } 
 
 ostream& Connection::_add_to_serialization(ostream& os, const int _d) const {
 	
-	_json(os, "address", ':', address, ',');
-	_json(os, "port", ':', port, ',');
-	_json(os, "is_alive", ':', is_alive, ',');
+//	_json(os, "address", ':', address, ',');
+//	_json(os, "port", ':', port, ',');
+//	_json(os, "is_alive", ':', is_alive, ',');
 	_json(os, "socket_fd", ':', socket_fd, ',');
 	_json(os, "password", ':', password);
 	(void)_d;

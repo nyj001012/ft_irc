@@ -113,6 +113,14 @@ bool UserData::is_pedding_user_exist(const Connection& c) const {
 	return true;
 }
 
+void UserData::handle_connection_lost(const int socket_fd) {
+	map<int, list<User>::iterator>::iterator found = user_socket_map.find(socket_fd);
+	if (found == user_socket_map.end())
+		return ;
+	const User& user = *(found->second);
+	delete_user(user);
+}
+
 bool UserData::is_duplicated(const string& nick_name) const {
 	if (is_user_exist(nick_name))
 		return true;

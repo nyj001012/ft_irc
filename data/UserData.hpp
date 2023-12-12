@@ -38,6 +38,7 @@ class UserData: public Serializable {
 		void add_pendding_user(const UserTask&);
 		const UserTask& update_task(const UserTask&);
 		void remove_task(const Connection&);
+		void handle_connection_lost(const int);
 
 		virtual std::ostream& _add_to_serialization(std::ostream&, const int) const; 
 		virtual std::string _get_label() const;

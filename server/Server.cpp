@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "../user/User.hpp"
 #include "../message/Message.hpp"
+#include "../data/UserData.hpp"
 #include <cstring>
 #include <cstdlib>
 #include <exception>
@@ -338,6 +339,7 @@ void Server::runServer()
 			throw std::runtime_error("Error: read() failed");
 		if (read_size == 0)
 		{
+			UserData::get_storage().handle_connection_lost(client_socket);
 			this->closeClient(client_socket);
 		}
 		std::string str_buffer = static_cast<std::string>(buffer.data());

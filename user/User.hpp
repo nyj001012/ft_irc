@@ -11,14 +11,14 @@ class Channel;
 struct Connection: Serializable {
 
 public:
-	bool is_alive;
+//	bool is_alive;
 
-	enum {
-		V4,
-		V6
-	} ip_family;
-	std::string address;
-	int port;
+//	enum {
+//		V4,
+//		V6
+//	} ip_family;
+//	std::string address;
+//	int port;
 	int socket_fd;
 	std::string password;
 	virtual std::ostream& _add_to_serialization(std::ostream&, const int) const;

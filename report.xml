@@ -34,3 +34,43 @@
   <configuration>
   </configuration>
   <tdelta>0</tdelta>
+  <configuration>
+    <fileobject>
+      <filename>127.000.000.001.44138-127.000.000.001.08080</filename>
+      <filesize>54</filesize>
+      <tcpflow startime='2023-12-08T12:34:10.899433Z' endtime='2023-12-08T12:34:22.436765Z' family='2' src_ipn='127.0.0.1' dst_ipn='127.0.0.1' srcport='44138' dstport='8080' packets='13' len='912' />
+    </fileobject>
+    <fileobject>
+      <filename>127.000.000.001.08080-127.000.000.001.44138</filename>
+      <filesize>315</filesize>
+      <tcpflow startime='2023-12-08T12:34:06.657862Z' endtime='2023-12-08T12:34:22.436822Z' family='2' src_ipn='127.0.0.1' dst_ipn='127.0.0.1' srcport='8080' dstport='44138' packets='12' len='1107' />
+    </fileobject>
+    <fileobject>
+      <filename>127.000.000.001.08080-127.000.000.001.42012</filename>
+      <filesize>45</filesize>
+      <tcpflow startime='2023-12-08T12:34:06.657697Z' endtime='2023-12-08T12:34:15.195202Z' family='2' src_ipn='127.0.0.1' dst_ipn='127.0.0.1' srcport='8080' dstport='42012' packets='4' len='309' />
+    </fileobject>
+    <fileobject>
+      <filename>127.000.000.001.42012-127.000.000.001.08080</filename>
+      <filesize>34</filesize>
+      <tcpflow startime='2023-12-08T12:34:06.655672Z' endtime='2023-12-08T12:34:15.195187Z' family='2' src_ipn='127.0.0.1' dst_ipn='127.0.0.1' srcport='42012' dstport='8080' packets='5' len='364' />
+    </fileobject>
+  </configuration>
+  <summary />
+  <open_fds_at_end>0</open_fds_at_end>
+  <max_open_flows>0</max_open_flows>
+  <total_flows>4</total_flows>
+  <flow_map_size>4</flow_map_size>
+  <total_packets>34</total_packets>
+  <rusage>
+    <utime>0.013663</utime>
+    <stime>0.000000</stime>
+    <maxrss>13952</maxrss>
+    <minflt>1331</minflt>
+    <majflt>0</majflt>
+    <nswap>0</nswap>
+    <inblock>0</inblock>
+    <oublock>24</oublock>
+    <clocktime>126.634602</clocktime>
+  </rusage>
+</dfxml>
