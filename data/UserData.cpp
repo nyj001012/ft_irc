@@ -12,6 +12,7 @@
 
 #include "UserData.hpp"
 #include "../user/User.hpp"
+#include "ChannelData.hpp"
 #include "../include/json.hpp"
 #include <ostream>
 #include <sstream>
@@ -92,6 +93,8 @@ void UserData::delete_user(const User& user) {
 	const string user_name = user.get_nickname();
 	if (user_name.length() != 0 &&
 			is_user_exist(IRC::get_lower_name(user_name))) {
+		ChannelData &channel_data = ChannelData::get_storage();
+		channel_data.leave_all_joined_channels(user);
 		map<int, UserIter>::iterator socket_found = user_socket_map.find(user.get_connection().socket_fd);;
 		map<string, UserIter>::iterator nick_found = user_nick_map.find(user.get_nickname());
 		user_socket_map.erase(socket_found);
